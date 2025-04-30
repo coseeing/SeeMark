@@ -5,5 +5,5 @@ const latexDelimiterConvertor = require('./content-processor/latext-delimiter-co
 module.exports = {
   markedProcessorFactory,
   textProcessorFactory,
-  latexDelimiterConvertor,
+  latexDelimiterConvertor
 };
