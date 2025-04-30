@@ -1,0 +1,29 @@
+{
+  "name": "@coseeing/markdown-parser",
+  "version": "0.0.1",
+  "description": "A markdown parser for a11y",
+  "main": "dist/index.js",
+  "scripts": {
+    "lint": "eslint src --ext .js",
+    "format": "prettier --write src",
+    "build": "rollup --config",
+    "test": "npm run test"
+  },
+  "author": "coseeing",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.25.1",
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "eslint": "^9.25.1",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-prettier": "^5.2.6",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
+    "rollup": "^4.40.1"
+  },
+  "dependencies": {
+    "marked": "^15.0.11",
+    "mathjax-full": "^3.2.2"
+  }
+}
