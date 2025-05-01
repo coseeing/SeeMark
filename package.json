@@ -1,8 +1,8 @@
 {
-  "name": "@coseeing/SeeMark",
+  "name": "@coseeing/see-mark",
   "version": "0.0.1",
   "description": "A markdown parser for a11y",
-  "main": "dist/index.js",
+  "main": "./lib/see-mark.cjs",
   "scripts": {
     "lint": "eslint src --ext .js",
     "format": "prettier --write src",
@@ -14,7 +14,6 @@
   "devDependencies": {
     "@eslint/js": "^9.25.1",
     "@rollup/plugin-commonjs": "^28.0.3",
-    "@rollup/plugin-node-resolve": "^16.0.1",
     "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
