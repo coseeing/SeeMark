@@ -1,5 +1,5 @@
 {
-  "name": "@coseeing/markdown-parser",
+  "name": "@coseeing/SeeMark",
   "version": "0.0.1",
   "description": "A markdown parser for a11y",
   "main": "dist/index.js",
