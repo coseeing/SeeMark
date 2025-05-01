@@ -91,4 +91,4 @@ const textMathToLatexObjectFactory =
     return datas;
   };
 
-module.exports = textMathToLatexObjectFactory;
+export default textMathToLatexObjectFactory;

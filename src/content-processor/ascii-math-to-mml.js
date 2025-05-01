@@ -24,12 +24,10 @@
 //
 //  Load the packages needed for MathJax
 //
-const { AsciiMath } = require('mathjax-full/js/input/asciimath.js');
-const {
-  HTMLDocument,
-} = require('mathjax-full/js/handlers/html/HTMLDocument.js');
-const { liteAdaptor } = require('mathjax-full/js/adaptors/liteAdaptor.js');
-const { STATE } = require('mathjax-full/js/core/MathItem.js');
+import { AsciiMath } from 'mathjax-full/js/input/asciimath.js';
+import { HTMLDocument } from 'mathjax-full/js/handlers/html/HTMLDocument.js';
+import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor.js';
+import { STATE } from 'mathjax-full/js/core/MathItem.js';
 
 //
 //  Create the input jax
@@ -44,9 +42,7 @@ const html = new HTMLDocument('', liteAdaptor(), { InputJax: asciimath });
 //
 //  Create a MathML serializer
 //
-const {
-  SerializedMmlVisitor,
-} = require('mathjax-full/js/core/MmlTree/SerializedMmlVisitor.js');
+import { SerializedMmlVisitor } from 'mathjax-full/js/core/MmlTree/SerializedMmlVisitor.js';
 const visitor = new SerializedMmlVisitor();
 const toMathML = (node) => visitor.visitTree(node, html);
 
@@ -61,4 +57,4 @@ const asciiMathToMMLFactory =
     );
   };
 
-module.exports = asciiMathToMMLFactory;
+export default asciiMathToMMLFactory;

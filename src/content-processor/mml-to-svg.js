@@ -23,15 +23,13 @@
 
 //
 //  Load the packages needed for MathJax
-//
-const { mathjax } = require('mathjax-full/js/mathjax.js');
-const { MathML } = require('mathjax-full/js/input/mathml.js');
-const { SVG } = require('mathjax-full/js/output/svg.js');
-const { liteAdaptor } = require('mathjax-full/js/adaptors/liteAdaptor.js');
-const { RegisterHTMLHandler } = require('mathjax-full/js/handlers/html.js');
-const {
-  AssistiveMmlHandler,
-} = require('mathjax-full/js/a11y/assistive-mml.js');
+
+import { mathjax } from 'mathjax-full/js/mathjax.js';
+import { MathML } from 'mathjax-full/js/input/mathml.js';
+import { SVG } from 'mathjax-full/js/output/svg.js';
+import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor.js';
+import { RegisterHTMLHandler } from 'mathjax-full/js/handlers/html.js';
+import { AssistiveMmlHandler } from 'mathjax-full/js/a11y/assistive-mml.js';
 
 const argv = {
   _: [],
@@ -58,7 +56,7 @@ const mml = new MathML();
 const svg = new SVG({ fontCache: argv.fontCache ? 'local' : 'none' });
 const html = mathjax.document('', { InputJax: mml, OutputJax: svg });
 
-module.exports = (mstring) => {
+export default (mstring) => {
   //
   //  Typeset the math from the command line
   //

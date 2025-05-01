@@ -1,4 +1,4 @@
-const textMathToLatexObjectFactory = require('./text-math-to-latex-object-process');
+import textMathToLatexObjectFactory from './text-math-to-latex-object-process';
 
 const latexDelimiterConvertor = (mode) => (data) => {
   return data
@@ -39,4 +39,4 @@ const latexDelimiterConvertor = (mode) => (data) => {
     }, '');
 };
 
-module.exports = latexDelimiterConvertor;
+export default latexDelimiterConvertor;

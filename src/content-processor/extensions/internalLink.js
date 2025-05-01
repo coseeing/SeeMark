@@ -31,4 +31,4 @@ function markedInternalLink() {
   };
 }
 
-module.exports = markedInternalLink;
+export default markedInternalLink;

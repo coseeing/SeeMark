@@ -24,14 +24,12 @@
 //
 //  Load the packages needed for MathJax
 //
-const { TeX } = require('mathjax-full/js/input/tex.js');
-const {
-  HTMLDocument,
-} = require('mathjax-full/js/handlers/html/HTMLDocument.js');
-const { liteAdaptor } = require('mathjax-full/js/adaptors/liteAdaptor.js');
-const { STATE } = require('mathjax-full/js/core/MathItem.js');
+import { TeX } from 'mathjax-full/js/input/tex';
+import { HTMLDocument } from 'mathjax-full/js/handlers/html/HTMLDocument';
+import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor';
+import { STATE } from 'mathjax-full/js/core/MathItem';
 
-const { AllPackages } = require('mathjax-full/js/input/tex/AllPackages.js');
+import { AllPackages } from 'mathjax-full/js/input/tex/AllPackages.js';
 
 //
 //  Busproofs requires an output jax, which we aren't using
@@ -54,9 +52,7 @@ const html = new HTMLDocument('', liteAdaptor(), { InputJax: tex });
 //
 //  Create a MathML serializer
 //
-const {
-  SerializedMmlVisitor,
-} = require('mathjax-full/js/core/MmlTree/SerializedMmlVisitor.js');
+import { SerializedMmlVisitor } from 'mathjax-full/js/core/MmlTree/SerializedMmlVisitor.js';
 const visitor = new SerializedMmlVisitor();
 const toMathML = (node) => visitor.visitTree(node, html);
 
@@ -70,5 +66,4 @@ const texToMMLFactory =
       })
     );
   };
-
-module.exports = texToMMLFactory;
+export default texToMMLFactory;

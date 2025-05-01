@@ -1,8 +1,8 @@
-const markedProcessorFactory = require('./content-processor/markdown-process');
-const textProcessorFactory = require('./content-processor/text-process');
-const latexDelimiterConvertor = require('./content-processor/latext-delimiter-convertor');
+import markedProcessorFactory from './content-processor/markdown-process';
+import textProcessorFactory from './content-processor/text-process';
+import latexDelimiterConvertor from './content-processor/latext-delimiter-convertor';
 
-module.exports = {
+export {
   markedProcessorFactory,
   textProcessorFactory,
   latexDelimiterConvertor,

@@ -15,7 +15,7 @@ export default defineConfig([
   },
   {
     languageOptions: {
-      sourceType: 'commonjs',
+      sourceType: 'module',
     },
   },
   eslintPluginPrettierRecommended,

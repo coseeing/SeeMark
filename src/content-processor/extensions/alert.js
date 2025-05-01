@@ -167,4 +167,4 @@ function markedAlert() {
   };
 }
 
-module.exports = markedAlert;
+export default markedAlert;

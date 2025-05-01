@@ -1,7 +1,8 @@
-const textMathToLatexObjectFactory = require('./text-math-to-latex-object-process');
-const asciimath2mmlFactory = require('./ascii-math-to-mml');
-const latex2mmlFactory = require('./tex-to-mml');
-const mml2svg = require('./mml-to-svg');
+import textMathToLatexObjectFactory from './text-math-to-latex-object-process';
+import asciimath2mmlFactory from './ascii-math-to-mml';
+import latex2mmlFactory from './tex-to-mml';
+
+import mml2svg from './mml-to-svg';
 
 const textProcessorFactory =
   ({ latexDelimiter, htmlMathDisplay, asciimathDelimiter }) =>
@@ -38,4 +39,4 @@ const textProcessorFactory =
     });
   };
 
-module.exports = textProcessorFactory;
+export default textProcessorFactory;

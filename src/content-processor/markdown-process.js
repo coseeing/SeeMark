@@ -1,10 +1,10 @@
-const { Marked } = require('marked');
+import { Marked } from 'marked';
 
-const latex2mmlFactory = require('./tex-to-mml');
-const asciimath2mmlFactory = require('./ascii-math-to-mml');
-const mml2svg = require('./mml-to-svg');
-const markedAlert = require('./extensions/alert');
-const markedInternalLink = require('./extensions/internalLink');
+import latex2mmlFactory from './tex-to-mml';
+import asciimath2mmlFactory from './ascii-math-to-mml';
+import mml2svg from './mml-to-svg';
+import markedAlert from './extensions/alert';
+import markedInternalLink from './extensions/internalLink';
 
 const LaTeX_delimiter_dict = {
   latex: {
@@ -166,4 +166,4 @@ const markedProcessorFactory = ({
   return (raw) => marked.parse(raw);
 };
 
-module.exports = markedProcessorFactory;
+export default markedProcessorFactory;
