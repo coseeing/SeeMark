@@ -11,7 +11,7 @@
     "lint": "eslint src --ext .js",
     "format": "prettier --write src",
     "build": "rollup --config",
-    "test": "jest"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "author": "coseeing",
   "license": "ISC",
@@ -20,6 +20,7 @@
     "@rollup/plugin-commonjs": "^28.0.3",
     "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-jest": "^28.14.0",
     "eslint-plugin-prettier": "^5.2.6",
     "globals": "^16.0.0",
     "jest": "^30.0.0",
@@ -29,5 +30,6 @@
   "dependencies": {
     "marked": "^15.0.11",
     "mathjax-full": "^3.2.2"
-  }
+  },
+  "type": "module"
 }

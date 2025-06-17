@@ -176,7 +176,7 @@ const config = {
   // testRunner: "jest-circus/runner",
 
   // A map from regular expressions to paths to transformers
-  // transform: undefined,
+  transform: {},
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [
@@ -197,4 +197,4 @@ const config = {
   // watchman: true,
 };
 
-module.exports = config;
+export default config;
