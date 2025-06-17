@@ -11,7 +11,7 @@
     "lint": "eslint src --ext .js",
     "format": "prettier --write src",
     "build": "rollup --config",
-    "test": "npm run test"
+    "test": "jest"
   },
   "author": "coseeing",
   "license": "ISC",
@@ -22,6 +22,7 @@
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
     "globals": "^16.0.0",
+    "jest": "^30.0.0",
     "prettier": "^3.5.3",
     "rollup": "^4.40.1"
   },
