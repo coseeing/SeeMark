@@ -28,6 +28,7 @@
     "rollup": "^4.40.1"
   },
   "dependencies": {
+    "html-react-parser": "^5.2.5",
     "marked": "^15.0.11",
     "mathjax-full": "^3.2.2"
   },
