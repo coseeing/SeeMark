@@ -41,4 +41,20 @@ describe('markdownProcessor', () => {
     // snapshot matching
     expect(container).toMatchSnapshot();
   });
+
+  it('should handle math expressions with dollar', () => {
+    const markdownContent = '${{\\left( -3 \\right)}^{3}}$';
+    const options = {
+      latexDelimiter: 'dollar',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    // snapshot matching
+    expect(container).toMatchSnapshot();
+  });
 });
