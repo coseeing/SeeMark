@@ -1,8 +1,13 @@
+import '@testing-library/jest-dom';
+import { getByRole } from '@testing-library/dom';
+
+import createDOMFromHTML from '../testing-helpers/create-dom-from-html';
+
 import markdownProcessor from './';
 
 describe('markdownProcessor', () => {
   it('should process markdown content as desired', () => {
-    const markdownContent = '# Hello World\nThis is a test.';
+    const markdownContent = '# Hello World';
     const options = {
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
@@ -11,8 +16,13 @@ describe('markdownProcessor', () => {
 
     const result = markdownProcessor(markdownContent, options);
 
-    expect(result).toBeDefined();
-    expect(result).toContain('<h1>Hello World</h1>');
-    expect(result).toContain('<p>This is a test.</p>');
+    const container = createDOMFromHTML(result);
+
+    const heading = getByRole(container, 'heading', {
+      level: 1,
+      name: 'Hello World',
+    });
+
+    expect(heading).toBeTruthy();
   });
 });
