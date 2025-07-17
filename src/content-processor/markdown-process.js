@@ -53,11 +53,13 @@ const createBlobUrlManager = () => {
 const markedProcessorFactory = ({
   latexDelimiter,
   asciimathDelimiter,
-  htmlMathDisplay,
+  documentFormat,
   imageFiles,
 }) => {
-  const asciimath2mml = asciimath2mmlFactory({ htmlMathDisplay });
-  const latex2mml = latex2mmlFactory({ htmlMathDisplay });
+  const asciimath2mml = asciimath2mmlFactory({
+    htmlMathDisplay: documentFormat,
+  });
+  const latex2mml = latex2mmlFactory({ htmlMathDisplay: documentFormat });
 
   const LaTeX_delimiter = LaTeX_delimiter_dict[latexDelimiter];
   const AsciiMath_delimiter = AsciiMath_delimiter_dict[asciimathDelimiter];

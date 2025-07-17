@@ -1,9 +1,7 @@
-// TODO: update the default options
 const DEFAULT_OPTINOS = {
-  latexDelimiter: null,
-  asciimathDelimiter: null,
-  htmlMathDisplay: null,
-  imageFiles: null,
+  latexDelimiter: 'bracket',
+  documentFormat: 'inline',
+  imageFiles: {},
 };
 
 export const createMarkdownParserOptions = (options = DEFAULT_OPTINOS) => {

@@ -1,4 +1,4 @@
-import markdownProcessor from '../markdown-processors';
+import markdownProcessor from '../markdown-processor';
 import convertMarkup from '../see-mark-markup-converters/react/converter';
 
 import { createMarkdownParserOptions } from './options';
@@ -6,7 +6,6 @@ import { createMarkdownParserOptions } from './options';
 const createMarkdownToReactParser = ({
   options = {
     latexDelimiter: null,
-    asciimathDelimiter: null,
     htmlMathDisplay: null,
     imageFiles: null,
   },
