@@ -25,4 +25,20 @@ describe('markdownProcessor', () => {
 
     expect(heading).toBeTruthy();
   });
+
+  it('should handle math expressions with brackets', () => {
+    const markdownContent = '\\({{\\left( -3 \\right)}^{3}}\\)';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    // snapshot matching
+    expect(container).toMatchSnapshot();
+  });
 });
