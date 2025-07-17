@@ -27,7 +27,7 @@ const createMarkdownToReactParser = ({
       parsedOptions
     );
 
-    console.log('React Components:', reactComponents);
+    return reactComponents;
   };
 
   return parseMarkdown;
