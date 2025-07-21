@@ -160,8 +160,8 @@ const markedProcessorFactory = ({
     renderer,
   });
 
-  extensions.forEach((plugin) => {
-    marked.use(plugin());
+  extensions.forEach((extension) => {
+    marked.use(extension());
   });
 
   return (raw) => marked.parse(raw);
