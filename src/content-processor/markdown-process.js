@@ -3,8 +3,6 @@ import { Marked } from 'marked';
 import latex2mmlFactory from './tex-to-mml';
 import asciimath2mmlFactory from './ascii-math-to-mml';
 import mml2svg from './mml-to-svg';
-import markedAlert from './extensions/alert';
-import markedInternalLink from './extensions/internalLink';
 
 const LaTeX_delimiter_dict = {
   latex: {
@@ -55,6 +53,7 @@ const markedProcessorFactory = ({
   asciimathDelimiter,
   documentFormat,
   imageFiles,
+  extensions = [],
 }) => {
   const asciimath2mml = asciimath2mmlFactory({
     htmlMathDisplay: documentFormat,
@@ -161,9 +160,9 @@ const markedProcessorFactory = ({
     renderer,
   });
 
-  marked.use(markedAlert());
-
-  marked.use(markedInternalLink());
+  extensions.forEach((plugin) => {
+    marked.use(plugin());
+  });
 
   return (raw) => marked.parse(raw);
 };

@@ -3,7 +3,7 @@ import { getByRole } from '@testing-library/dom';
 
 import createDOMFromHTML from '../testing-helpers/create-dom-from-html';
 
-import markdownProcessor from './';
+import markdownProcessor from './markdown-processor';
 
 describe('markdownProcessor', () => {
   it('should process markdown content as desired', () => {
