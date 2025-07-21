@@ -1,7 +1,4 @@
-import {
-  SEE_MARK_PAYLOAD_DATA_ATTRIBUTES,
-  SEEMARK_ELEMENT_TYPE_DATA_ATTRIBUTE,
-} from '../../shared/common-markup';
+import { buildHTMLMarkup } from './helpers';
 
 /**
  * The default configuration for alert variants.
@@ -121,13 +118,8 @@ function markedAlert() {
         name: 'alert',
         level: 'block',
         renderer({ meta, tokens = [] }) {
-          const payload = JSON.stringify(meta);
-
-          const result = `
-            <div ${SEE_MARK_PAYLOAD_DATA_ATTRIBUTES}='${payload}' ${SEEMARK_ELEMENT_TYPE_DATA_ATTRIBUTE}="alert">${this.parser.parse(tokens)}</div>
-          `;
-
-          return result;
+          const children = this.parser.parse(tokens);
+          return buildHTMLMarkup(meta, children);
         },
       },
     ],
