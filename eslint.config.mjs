@@ -3,6 +3,7 @@ import globals from 'globals';
 import { defineConfig } from 'eslint/config';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import pluginJest from 'eslint-plugin-jest';
+import react from 'eslint-plugin-react';
 
 export default defineConfig([
   {
@@ -33,6 +34,19 @@ export default defineConfig([
       'jest/no-identical-title': 'error',
       'jest/prefer-to-have-length': 'warn',
       'jest/valid-expect': 'error',
+    },
+  },
+  {
+    files: ['**/*.{js,jsx,mjs,cjs,ts,tsx}', '**/*.spec.js', '**/*.test.js'],
+    plugins: {
+      react,
+    },
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
     },
   },
 ]);
