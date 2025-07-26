@@ -4,6 +4,7 @@ import { getByRole } from '@testing-library/dom';
 import createDOMFromHTML from '../testing-helpers/create-dom-from-html';
 import { getElementByType } from '../testing-helpers/custom-query';
 import { SEE_MARK_PAYLOAD_DATA_ATTRIBUTES } from '../shared/common-markup';
+import { SUPPORTED_COMPONENT_TYPES } from '../shared/supported-components';
 
 import markdownProcessor from './markdown-processor';
 
@@ -72,7 +73,10 @@ describe('markdownProcessor', () => {
 
     const container = createDOMFromHTML(result);
 
-    const alertContainer = getElementByType(container, 'alert');
+    const alertContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.ALERT
+    );
 
     expect(alertContainer).toBeTruthy();
 

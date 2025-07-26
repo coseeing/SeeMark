@@ -1,3 +1,5 @@
+import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
+
 import { buildHTMLMarkup } from './helpers';
 
 /**
@@ -101,7 +103,7 @@ function markedAlert() {
       if (!matchedVariant) return;
 
       Object.assign(token, {
-        type: 'alert',
+        type: SUPPORTED_COMPONENT_TYPES.ALERT,
         meta: {
           variant: matchedVariant.type,
           title: matchedVariant.title || ucfirst(matchedVariant.type),
@@ -115,11 +117,15 @@ function markedAlert() {
     },
     extensions: [
       {
-        name: 'alert',
+        name: SUPPORTED_COMPONENT_TYPES.ALERT,
         level: 'block',
         renderer({ meta, tokens = [] }) {
           const children = this.parser.parse(tokens);
-          return buildHTMLMarkup(meta, children);
+          return buildHTMLMarkup(
+            SUPPORTED_COMPONENT_TYPES.ALERT,
+            meta,
+            children
+          );
         },
       },
     ],
