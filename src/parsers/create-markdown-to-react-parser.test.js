@@ -37,8 +37,6 @@ describe('createMarkdownToReactParser', () => {
     const markdownContent = `> [!WARNING]\n> Critical content demanding immediate user attention due to potential risks.`;
     const reactComponents = parseMarkdown(markdownContent);
 
-    console.log('reactComponents', reactComponents);
-
     render(reactComponents);
 
     expect(
