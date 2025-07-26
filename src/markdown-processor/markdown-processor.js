@@ -1,4 +1,4 @@
-import markedProcessorFactory from '../content-processor/markdown-process';
+import markedProcessorFactory from './marked-wrapper/marked-wrapper';
 
 import alert from './marked-extentions/alert';
 import internalLink from './marked-extentions/internalLink';
