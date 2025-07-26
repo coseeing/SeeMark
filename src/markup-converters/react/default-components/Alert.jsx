@@ -1,7 +1,9 @@
 import React from 'react';
 
-const Alert = () => {
-  return <div className="alert">Alert</div>;
+const Alert = ({ children, ...props }) => {
+  console.log('Alert component props:', props);
+
+  return <div className="alert">{children}</div>;
 };
 
 export default Alert;

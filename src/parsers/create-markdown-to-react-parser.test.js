@@ -23,4 +23,26 @@ describe('createMarkdownToReactParser', () => {
       screen.getByRole('heading', { level: 1, name: 'Hello World' })
     ).toBeInTheDocument();
   });
+
+  it('should parse alert to default component', () => {
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+    const components = {};
+
+    const parseMarkdown = createMarkdownToReactParser({ options, components });
+
+    const markdownContent = `> [!WARNING]\n> Critical content demanding immediate user attention due to potential risks.`;
+    const reactComponents = parseMarkdown(markdownContent);
+
+    console.log('reactComponents', reactComponents);
+
+    render(reactComponents);
+
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Hello World' })
+    ).toBeInTheDocument();
+  });
 });
