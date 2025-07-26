@@ -1,5 +1,5 @@
 import markdownProcessor from '../markdown-processor/markdown-processor';
-import convertMarkup from '../see-mark-markup-converters/react/converter';
+import convertMarkup from '../markup-converters/react/converter';
 
 import { createMarkdownParserOptions } from './options';
 
