@@ -3,7 +3,7 @@ export default {
     [
       '@babel/preset-react',
       {
-        runtime: 'automatic', // Use automatic JSX runtime (React 17+)
+        runtime: 'automatic',
       },
     ],
   ],
