@@ -13,7 +13,6 @@ const createMarkdownToReactParser = ({
 }) => {
   const parsedOptions = createMarkdownParserOptions(options);
   const parseMarkdown = (markdownContent) => {
-    // TODO: validate and clean markdownContent
     const seemarkMarkup = markdownProcessor(markdownContent, parsedOptions);
 
     const reactNodes = convertMarkup(seemarkMarkup, components, parsedOptions);
