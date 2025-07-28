@@ -34,13 +34,16 @@ describe('createMarkdownToReactParser', () => {
 
     const parseMarkdown = createMarkdownToReactParser({ options, components });
 
-    const markdownContent = `> [!WARNING]\n> Critical content demanding immediate user attention due to potential risks.`;
+    const markdownContent = `> [!WARNING]\n> This is a warning message.`;
     const reactComponents = parseMarkdown(markdownContent);
 
     render(reactComponents);
 
-    expect(
-      screen.getByRole('heading', { level: 1, name: 'Hello World' })
-    ).toBeInTheDocument();
+    const alertElement = screen.getByRole('region');
+
+    expect(alertElement).toBeInTheDocument();
+    expect(alertElement).toHaveAttribute('aria-label', 'Warning');
+
+    expect(screen.getByText('WARNING')).toBeInTheDocument();
   });
 });
