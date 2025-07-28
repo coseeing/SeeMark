@@ -20,6 +20,13 @@ export default defineConfig([
       sourceType: 'module',
     },
   },
+  {
+    languageOptions: {
+      globals: {
+        require: 'readonly',
+      },
+    },
+  },
   eslintPluginPrettierRecommended,
   {
     // update this to match your test files
