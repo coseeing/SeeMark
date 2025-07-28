@@ -25,8 +25,8 @@ describe('Converter', () => {
     const payload = { text: 'Custom Component Text' };
 
     const html = `<div ${SEEMARK_ELEMENT_TYPE_DATA_ATTRIBUTE}="${elementType}" ${SEE_MARK_PAYLOAD_DATA_ATTRIBUTES}='${JSON.stringify(payload)}'><div>
-
 </div></div>`;
+
     const CustomComponent = ({ text }) => (
       <div className="customComponentWrapper">
         <p className="customComponentText">{text}</p>
