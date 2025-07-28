@@ -21,4 +21,5 @@ export default {
     }),
   ],
   jsx: 'react',
+  external: [/node_modules/],
 };
