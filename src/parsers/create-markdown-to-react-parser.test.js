@@ -45,5 +45,6 @@ describe('createMarkdownToReactParser', () => {
     expect(alertElement).toHaveAttribute('aria-label', 'Warning');
 
     expect(screen.getByText('WARNING')).toBeInTheDocument();
+    expect(screen.getByText('This is a warning message.')).toBeInTheDocument();
   });
 });

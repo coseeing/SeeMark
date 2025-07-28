@@ -37,8 +37,9 @@ const convertMarkup = (
       const payloadString = domNode.attribs[SEE_MARK_PAYLOAD_DATA_ATTRIBUTES];
 
       const props = JSON.parse(payloadString);
+      const childrenNode = domToReact(domNode.children, options);
 
-      return createElement(Component, props);
+      return createElement(Component, props, childrenNode);
     },
   });
 };
