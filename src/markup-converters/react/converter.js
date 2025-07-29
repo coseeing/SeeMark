@@ -30,10 +30,13 @@ const convertMarkup = (
     replace(domNode) {
       const elementType =
         domNode?.attribs?.[SEEMARK_ELEMENT_TYPE_DATA_ATTRIBUTE];
+
       // If the node doesn't have seemark type attribute, skip it
       if (!elementType) {
         return;
       }
+
+      console.log('debug: elementType', elementType);
 
       const Component = proccessedComponents[elementType];
 
