@@ -1,6 +1,6 @@
 import { createElement } from 'react';
 
-// treat to a esmodule only lib
+// Since we need to convert bnudle to commonjs for mathjax, we need to dynamically handle the default export of html-react-parser
 import htmlReactParser, { domToReact } from 'html-react-parser';
 
 // Handle both ESM and CommonJS scenarios
