@@ -1,7 +1,7 @@
 import { createElement } from 'react';
 
 // treat to a esmodule only lib
-const parse = require('html-react-parser');
+import * as parse from 'html-react-parser';
 
 import {
   SEEMARK_ELEMENT_TYPE_DATA_ATTRIBUTE,
