@@ -12,7 +12,11 @@ export default {
     },
   ],
   plugins: [
-    commonjs(),
+    commonjs({
+      requireReturnsDefault: (id) => {
+        return id === 'html-react-parser';
+      },
+    }),
     nodeResolve(),
     babel({
       babelHelpers: 'bundled',

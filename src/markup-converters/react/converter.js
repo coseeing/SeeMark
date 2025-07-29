@@ -1,7 +1,13 @@
 import { createElement } from 'react';
 
 // treat to a esmodule only lib
-import parse, { domToReact } from 'html-react-parser';
+import htmlReactParser, { domToReact } from 'html-react-parser';
+
+// Handle both ESM and CommonJS scenarios
+const parser =
+  typeof htmlReactParser === 'function'
+    ? htmlReactParser
+    : htmlReactParser.default;
 
 import {
   SEEMARK_ELEMENT_TYPE_DATA_ATTRIBUTE,
@@ -20,7 +26,7 @@ const convertMarkup = (
     ...components,
   };
 
-  return parse(markup, {
+  return parser(markup, {
     replace(domNode) {
       const elementType =
         domNode?.attribs?.[SEEMARK_ELEMENT_TYPE_DATA_ATTRIBUTE];
