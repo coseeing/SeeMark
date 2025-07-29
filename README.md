@@ -36,7 +36,7 @@ const content = seeMarkReactParse(markdown);
 
 ### Supported Custom Components
 
-#### Alert
+#### alert
 
 ```markdown
 > [!NOTE]
@@ -50,7 +50,7 @@ const content = seeMarkReactParse(markdown);
 | variant        | string    | ''            | The variant of the alert (e.g., 'info', 'warning'). |
 | title          | string    | ''            | The title of the alert.                             |
 
-#### Internal Link
+#### internalLink
 
 ```markdown
 [some text]<sample-id>
