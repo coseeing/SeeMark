@@ -91,4 +91,35 @@ describe('markdownProcessor', () => {
       internalLinkId: null,
     });
   });
+
+  it('should process internal link', () => {
+    const markdownContent = `[some text]<sample-id>`;
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const internalLinkContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK
+    );
+
+    expect(internalLinkContainer).toBeTruthy();
+
+    const payloadString = internalLinkContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      text: 'some text',
+      id: 'sample-id',
+    });
+  });
 });
