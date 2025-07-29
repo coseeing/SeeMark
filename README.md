@@ -7,6 +7,15 @@
 ```js
 import { createMarkdownToReactParser } from '@coseeing/see-mark';
 
+const Alert = ({ children, internalLinkId, variant, title }) => {
+  return (
+    <div className={`alert alert-${variant}`}>
+      {title && <strong>{title}</strong>}
+      {children}
+    </div>
+  );
+};
+
 const markdown = `# Hello World
 
 const seeMarkReactParse = useCallback(
