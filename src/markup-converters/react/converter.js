@@ -1,7 +1,7 @@
 import { createElement } from 'react';
 
 // treat to a esmodule only lib
-import * as parse from 'html-react-parser';
+import parse, { domToReact } from 'html-react-parser';
 
 import {
   SEEMARK_ELEMENT_TYPE_DATA_ATTRIBUTE,
@@ -20,7 +20,7 @@ const convertMarkup = (
     ...components,
   };
 
-  return parse.default(markup, {
+  return parse(markup, {
     replace(domNode) {
       const elementType =
         domNode?.attribs?.[SEEMARK_ELEMENT_TYPE_DATA_ATTRIBUTE];
@@ -38,7 +38,7 @@ const convertMarkup = (
       const payloadString = domNode.attribs[SEE_MARK_PAYLOAD_DATA_ATTRIBUTES];
 
       const props = JSON.parse(payloadString);
-      const childrenNode = parse.domToReact(domNode.children, options);
+      const childrenNode = domToReact(domNode.children, options);
 
       return createElement(Component, props, childrenNode);
     },
