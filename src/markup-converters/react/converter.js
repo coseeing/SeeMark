@@ -36,8 +36,6 @@ const convertMarkup = (
         return;
       }
 
-      console.log('debug: elementType', elementType);
-
       const Component = proccessedComponents[elementType];
 
       if (!Component) {

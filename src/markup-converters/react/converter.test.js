@@ -1,3 +1,5 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 
@@ -32,6 +34,10 @@ describe('Converter', () => {
         <p className="customComponentText">{text}</p>
       </div>
     );
+
+    CustomComponent.propTypes = {
+      text: PropTypes.string.isRequired,
+    };
 
     render(
       converter(html, {

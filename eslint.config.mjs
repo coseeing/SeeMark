@@ -4,12 +4,12 @@ import { defineConfig } from 'eslint/config';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import pluginJest from 'eslint-plugin-jest';
 import react from 'eslint-plugin-react';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
 
 export default defineConfig([
   {
-    files: ['**/*.{js,mjs,cjs}'],
-    plugins: { js },
-    extends: ['js/recommended'],
+    ...js.configs.recommended,
+    languageOptions: { globals: globals.node },
   },
   {
     files: ['**/*.{js,mjs,cjs}'],
@@ -47,6 +47,7 @@ export default defineConfig([
     files: ['**/*.{js,jsx,mjs,cjs,ts,tsx}', '**/*.spec.js', '**/*.test.js'],
     plugins: {
       react,
+      'jsx-a11y': jsxA11y,
     },
     languageOptions: {
       parserOptions: {
@@ -54,6 +55,10 @@ export default defineConfig([
           jsx: true,
         },
       },
+    },
+    rules: {
+      ...react.configs.recommended.rules,
+      ...jsxA11y.configs.recommended.rules,
     },
   },
 ]);
