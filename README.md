@@ -43,3 +43,14 @@ const content = seeMarkReactParse(markdown);
 | internalLinkId | string    | ''            | The ID for internal linking.                        |
 | variant        | string    | ''            | The variant of the alert (e.g., 'info', 'warning'). |
 | title          | string    | ''            | The title of the alert.                             |
+
+#### Internal Link
+
+```markdown
+[some text]<sample-id>
+```
+
+| Prop Name | Type   | Default Value | Description                                |
+| --------- | ------ | ------------- | ------------------------------------------ |
+| text      | string | ''            | The text to display for the link.          |
+| id        | string | ''            | The ID of the target element for the link. |
