@@ -140,15 +140,15 @@ const markedProcessorFactory = ({
           // For HTML render
           const imageId = token.href.split('/').pop();
           const imageExt = window.contentConfig.images[imageId];
-          return `<img src="./images/${imageExt}" alt="${token.text}">`;
+          return `<img src="./images/${imageExt}" alt="${token.text}" data-seemark-image-id="${imageId}">`;
         }
         // For editor preview
         const imageFile = imageFiles[token.href];
         const blobUrl = blobUrlManager(token.href, imageFile);
-        return `<img src="${blobUrl}" alt="${token.text}">`;
+        return `<img src="${blobUrl}" alt="${token.text}" data-seemark-image-id="${token.href}">`;
       } catch (error) {
         console.error('Error processing image:', error);
-        return `<img src="${token.href}" alt="${token.text}">`;
+        return `<img src="${token.href}" alt="${token.text}" data-seemark-image-id="${token.href}">`;
       }
     },
   };
