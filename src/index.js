@@ -1,9 +1,5 @@
-import markedProcessorFactory from './content-processor/markdown-process';
-import textProcessorFactory from './content-processor/text-process';
 import latexDelimiterConvertor from './content-processor/latext-delimiter-convertor';
 
-export {
-  markedProcessorFactory,
-  textProcessorFactory,
-  latexDelimiterConvertor,
-};
+import createMarkdownToReactParser from './parsers/create-markdown-to-react-parser';
+
+export { latexDelimiterConvertor, createMarkdownToReactParser };
