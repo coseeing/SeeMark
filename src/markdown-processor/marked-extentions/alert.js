@@ -94,7 +94,7 @@ function processTokenContent(token, variantType) {
   token.tokens = [createProcessedFirstLine(firstLine), ...remainingLines];
 }
 
-function markedAlert() {
+const markedAlert = () => {
   return {
     walkTokens(token) {
       if (token.type !== 'blockquote') return;
@@ -130,6 +130,6 @@ function markedAlert() {
       },
     ],
   };
-}
+};
 
 export default markedAlert;

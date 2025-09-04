@@ -4,7 +4,7 @@ import { buildHTMLMarkup } from './helpers';
 
 const LINK_REGEXP = /^\[([^\]]+)\]<([^>]+)>/;
 
-function markedInternalLink() {
+const markedInternalLink = () => {
   return {
     extensions: [
       {
@@ -41,6 +41,6 @@ function markedInternalLink() {
       },
     ],
   };
-}
+};
 
 export default markedInternalLink;
