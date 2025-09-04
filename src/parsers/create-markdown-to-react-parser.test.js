@@ -101,6 +101,7 @@ describe('createMarkdownToReactParser - image', () => {
       imageFiles: {
         'pikachu-path': 'path/to/pikachu.png',
       },
+      shouldBuildImageObjectURL: true,
     };
 
     const components = {};
@@ -125,6 +126,9 @@ describe('createMarkdownToReactParser - image', () => {
     const options = {
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
+      imageFiles: {
+        'pikachu-path': 'path/to/pikachu.png',
+      },
     };
 
     const components = {};
@@ -137,6 +141,6 @@ describe('createMarkdownToReactParser - image', () => {
 
     const image = screen.getByAltText('pikachu');
     expect(image).toBeInTheDocument();
-    expect(image).toHaveAttribute('src', 'pikachu-path');
+    expect(image).toHaveAttribute('src', 'path/to/pikachu.png');
   });
 });

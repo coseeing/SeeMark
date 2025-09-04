@@ -17,25 +17,17 @@ const createBlobUrlManager = () => {
 
 const blobUrlManager = createBlobUrlManager();
 
-const markedImage = ({ imageFiles }) => {
+const markedImage = ({ imageFiles, shouldBuildImageObjectURL }) => {
   const renderer = {
     image(token) {
       try {
-        if (!imageFiles) {
-          const alt = token.text;
-          const imageId = token.href;
-
-          const src = token.href;
-
-          const meta = { alt, imageId, src };
-
-          return buildHTMLMarkup(SUPPORTED_COMPONENT_TYPES.IMAGE, meta);
-        }
         const alt = token.text;
         const imageId = token.href;
         const imageFile = imageFiles[imageId];
 
-        const src = blobUrlManager(token.href, imageFile);
+        const src = shouldBuildImageObjectURL
+          ? blobUrlManager(imageId, imageFile)
+          : imageFile;
 
         const meta = { alt, imageId, src };
 

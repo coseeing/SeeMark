@@ -12,6 +12,7 @@ const markdownProcessor = (markdownContent = '', options = {}) => {
     asciimathDelimiter,
     documentFormat: options.documentFormat,
     imageFiles: options.imageFiles,
+    shouldBuildImageObjectURL: options.shouldBuildImageObjectURL,
     extensions: [alert, internalLink, image],
   });
 

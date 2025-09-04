@@ -40,6 +40,7 @@ const markedProcessorFactory = ({
   asciimathDelimiter,
   documentFormat,
   imageFiles = {},
+  shouldBuildImageObjectURL = false,
   extensions = [],
 }) => {
   const asciimath2mml = asciimath2mmlFactory({
@@ -127,7 +128,7 @@ const markedProcessorFactory = ({
   });
 
   extensions.forEach((extension) => {
-    marked.use(extension({ imageFiles }));
+    marked.use(extension({ imageFiles, shouldBuildImageObjectURL }));
   });
 
   return (raw) => marked.parse(raw);
