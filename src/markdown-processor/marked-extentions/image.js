@@ -21,19 +21,23 @@ const markedImage = ({ imageFiles }) => {
   const renderer = {
     image(token) {
       try {
-        if (!imageFiles) {
-          // For HTML render
-          const imageId = token.href.split('/').pop();
-          const imageExt = window.contentConfig.images[imageId];
-          return `<img src="./images/${imageExt}" alt="${token.text}" data-seemark-image-id="${imageId}">`;
-        }
         // For editor preview
-        const imageFile = imageFiles[token.href];
-        const blobUrl = blobUrlManager(token.href, imageFile);
-        return `<img src="${blobUrl}" alt="${token.text}" data-seemark-image-id="${token.href}">`;
+        const alt = token.text;
+        const imageId = token.href;
+        const imageFile = imageFiles[imageId];
+        const src = blobUrlManager(token.href, imageFile);
+
+        const meta = { alt, imageId, src };
+
+        return buildHTMLMarkup(SUPPORTED_COMPONENT_TYPES.IMAGE, meta);
       } catch (error) {
         console.error('Error processing image:', error);
-        return `<img src="${token.href}" alt="${token.text}" data-seemark-image-id="${token.href}">`;
+
+        const alt = token.text;
+        const imageId = token.href;
+        const meta = { alt, imageId, src: imageId };
+
+        return buildHTMLMarkup(SUPPORTED_COMPONENT_TYPES.IMAGE, meta);
       }
     },
   };
