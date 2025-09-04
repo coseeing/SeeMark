@@ -35,24 +35,11 @@ const AsciiMath_delimiter_dict = {
   },
 };
 
-const createBlobUrlManager = () => {
-  const cache = new Map();
-
-  return (href, imageFile) => {
-    if (cache.has(href)) {
-      return cache.get(href);
-    }
-    const blobUrl = URL.createObjectURL(imageFile);
-    cache.set(href, blobUrl);
-    return blobUrl;
-  };
-};
-
 const markedProcessorFactory = ({
   latexDelimiter,
   asciimathDelimiter,
   documentFormat,
-  imageFiles,
+  imageFiles = {},
   extensions = [],
 }) => {
   const asciimath2mml = asciimath2mmlFactory({
@@ -123,45 +110,14 @@ const markedProcessorFactory = ({
     },
   };
 
-  const blobUrlManager = createBlobUrlManager();
-
-  const renderer = {
-    text(token) {
-      if (token.tokens?.length > 0) {
-        return this.parser.parseInline(token.tokens);
-      }
-      return token.text.replace(/\n/g, '<br />');
-    },
-
-    // Use Marked's built-in image renderer
-    image(token) {
-      try {
-        if (!imageFiles) {
-          // For HTML render
-          const imageId = token.href.split('/').pop();
-          const imageExt = window.contentConfig.images[imageId];
-          return `<img src="./images/${imageExt}" alt="${token.text}" data-seemark-image-id="${imageId}">`;
-        }
-        // For editor preview
-        const imageFile = imageFiles[token.href];
-        const blobUrl = blobUrlManager(token.href, imageFile);
-        return `<img src="${blobUrl}" alt="${token.text}" data-seemark-image-id="${token.href}">`;
-      } catch (error) {
-        console.error('Error processing image:', error);
-        return `<img src="${token.href}" alt="${token.text}" data-seemark-image-id="${token.href}">`;
-      }
-    },
-  };
-
   const marked = new Marked();
 
   marked.use({
     extensions: [math],
-    renderer,
   });
 
   extensions.forEach((extension) => {
-    marked.use(extension());
+    marked.use(extension({ imageFiles }));
   });
 
   return (raw) => marked.parse(raw);
