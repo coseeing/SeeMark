@@ -21,10 +21,20 @@ const markedImage = ({ imageFiles }) => {
   const renderer = {
     image(token) {
       try {
-        // For editor preview
+        if (!imageFiles) {
+          const alt = token.text;
+          const imageId = token.href;
+
+          const src = token.href;
+
+          const meta = { alt, imageId, src };
+
+          return buildHTMLMarkup(SUPPORTED_COMPONENT_TYPES.IMAGE, meta);
+        }
         const alt = token.text;
         const imageId = token.href;
         const imageFile = imageFiles[imageId];
+
         const src = blobUrlManager(token.href, imageFile);
 
         const meta = { alt, imageId, src };

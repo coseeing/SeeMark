@@ -23,13 +23,13 @@ const seeMarkReactParse = useCallback(
     return createMarkdownToReactParser({
       options: {
         latexDelimiter,
-        htmlMathDisplay,
+        documentFormat,
         imageFiles,
       },
       components: { alert: Alert },
     })(markdown);
   },
-  [imageFiles, latexDelimiter, htmlMathDisplay]
+  [imageFiles, latexDelimiter, documentFormat]
 );
 
 const content = seeMarkReactParse(markdown);

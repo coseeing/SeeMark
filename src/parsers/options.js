@@ -1,7 +1,7 @@
 const DEFAULT_OPTINOS = {
   latexDelimiter: 'bracket',
   documentFormat: 'inline',
-  imageFiles: {},
+  imageFiles: null,
 };
 
 export const createMarkdownParserOptions = (options = DEFAULT_OPTINOS) => {
