@@ -94,12 +94,12 @@ describe('createMarkdownToReactParser - image', () => {
   });
 
   it('should process image', () => {
-    const markdownContent = `![pikachu](pikachu-key)`;
+    const markdownContent = `![pikachu](pikachu-path)`;
     const options = {
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
       imageFiles: {
-        'pikachu-key': 'path/to/pikachu.png',
+        'pikachu-path': 'path/to/pikachu.png',
       },
     };
 
@@ -121,7 +121,7 @@ describe('createMarkdownToReactParser - image', () => {
   });
 
   it('should process image without imageFiles', () => {
-    const markdownContent = `![pikachu](pikachu-key)`;
+    const markdownContent = `![pikachu](pikachu-path)`;
     const options = {
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
@@ -137,6 +137,6 @@ describe('createMarkdownToReactParser - image', () => {
 
     const image = screen.getByAltText('pikachu');
     expect(image).toBeInTheDocument();
-    expect(image).toHaveAttribute('src', 'pikachu-key');
+    expect(image).toHaveAttribute('src', 'pikachu-path');
   });
 });

@@ -69,3 +69,15 @@ const content = seeMarkReactParse(markdown);
 | --------- | ------ | ------------- | ------------------------------------------ |
 | text      | string | ''            | The text to display for the link.          |
 | id        | string | ''            | The ID of the target element for the link. |
+
+#### image
+
+```markdown
+![pikachu](pikachu-path)
+```
+
+| Prop Name | Type   | Default Value | Description                         |
+| --------- | ------ | ------------- | ----------------------------------- |
+| src       | string | ''            | The source path of the image.       |
+| alt       | string | ''            | The alternative text for the image. |
+| imageId   | string | ''            | image ID                            |
