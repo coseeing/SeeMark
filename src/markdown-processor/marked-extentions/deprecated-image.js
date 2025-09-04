@@ -17,7 +17,6 @@ const markedImage = ({ imageFiles }) => {
   const renderer = {
     image(token) {
       try {
-        // TODO: reconsider to remove this logic
         if (!imageFiles) {
           // For HTML render
           const imageId = token.href.split('/').pop();
