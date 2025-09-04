@@ -19,14 +19,6 @@ const blobUrlManager = createBlobUrlManager();
 
 const markedImage = ({ imageFiles }) => {
   const renderer = {
-    text(token) {
-      if (token.tokens?.length > 0) {
-        return this.parser.parseInline(token.tokens);
-      }
-      return token.text.replace(/\n/g, '<br />');
-    },
-
-    // Use Marked's built-in image renderer
     image(token) {
       try {
         if (!imageFiles) {
