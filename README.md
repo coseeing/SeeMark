@@ -25,6 +25,7 @@ const seeMarkReactParse = useCallback(
         latexDelimiter,
         documentFormat,
         imageFiles,
+        shouldBuildImageObjectURL,
       },
       components: { alert: Alert },
     })(markdown);
@@ -37,11 +38,12 @@ const content = seeMarkReactParse(markdown);
 
 ### options
 
-| Option Name    | Type   | Default Value  | Description                                                        |
-| -------------- | ------ | -------------- | ------------------------------------------------------------------ |
-| latexDelimiter | string | 'bracket'      | The delimiter for LaTeX expressions. Options: 'bracket', 'dollar'. |
-| documentFormat | string | 'inline'       | The format of the document. Options: 'inline', 'block'.            |
-| imageFiles     | object | { [ID]: File } | A map of image IDs to File objects for image rendering.            |
+| Option Name               | Type    | Default Value  | Description                                                        |
+| ------------------------- | ------- | -------------- | ------------------------------------------------------------------ |
+| latexDelimiter            | string  | 'bracket'      | The delimiter for LaTeX expressions. Options: 'bracket', 'dollar'. |
+| documentFormat            | string  | 'inline'       | The format of the document. Options: 'inline', 'block'.            |
+| imageFiles                | object  | { [ID]: File } | A map of image IDs to File objects for image rendering.            |
+| shouldBuildImageObjectURL | boolean | false          | should build image object URL.                                     |
 
 ### Supported Custom Components
 
