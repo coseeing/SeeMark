@@ -25,6 +25,39 @@ describe('createMarkdownToReactParser', () => {
     ).toBeInTheDocument();
   });
 
+  it('should parse markdown content with null-lish options', () => {
+    const components = {};
+
+    const parseMarkdown = createMarkdownToReactParser({ components });
+
+    const markdownContent = '# Hello World\nThis is a test.';
+    const reactComponents = parseMarkdown(markdownContent);
+
+    render(reactComponents);
+
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Hello World' })
+    ).toBeInTheDocument();
+  });
+
+  it('should parse markdown content with empty options', () => {
+    const components = {};
+
+    const parseMarkdown = createMarkdownToReactParser({
+      optinos: {},
+      components,
+    });
+
+    const markdownContent = '# Hello World\nThis is a test.';
+    const reactComponents = parseMarkdown(markdownContent);
+
+    render(reactComponents);
+
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Hello World' })
+    ).toBeInTheDocument();
+  });
+
   it('should parse alert to default component', () => {
     const options = {
       latexDelimiter: 'bracket',

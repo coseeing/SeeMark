@@ -3,14 +3,7 @@ import convertMarkup from '../markup-converters/react/converter';
 
 import { createMarkdownParserOptions } from './options';
 
-const createMarkdownToReactParser = ({
-  options = {
-    latexDelimiter: null,
-    htmlMathDisplay: null,
-    imageFiles: null,
-  },
-  components,
-}) => {
+const createMarkdownToReactParser = ({ options, components }) => {
   const parsedOptions = createMarkdownParserOptions(options);
   const parseMarkdown = (markdownContent) => {
     const seemarkMarkup = markdownProcessor(markdownContent, parsedOptions);
