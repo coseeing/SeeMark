@@ -103,6 +103,7 @@ const markedProcessorFactory = ({
       } else {
         mathMl = latex2mml(token.math);
       }
+      mathMl = mathMl.replace(/\n/g, ''); // remove all \n in mathMl markup
       return `${this.parser.parseInline(
         token.tokens
       )}<span class="sr-only">${mathMl}</span><span aria-hidden="true">${mml2svg(
