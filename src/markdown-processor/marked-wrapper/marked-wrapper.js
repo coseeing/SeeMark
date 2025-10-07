@@ -115,6 +115,7 @@ const markedProcessorFactory = ({
 
   marked.use({
     extensions: [math],
+    breaks: true,
   });
 
   extensions.forEach((extension) => {
