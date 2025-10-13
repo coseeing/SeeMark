@@ -122,4 +122,21 @@ describe('markdownProcessor', () => {
       id: 'sample-id',
     });
   });
+
+  it('should handle list of math expressions, with list items separated by newline', () => {
+    const markdownContent = '* \\(a+b=c\\)\n\n* \\(c-b=a\\)';
+
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    // snapshot matching
+    expect(container).toMatchSnapshot();
+  });
 });

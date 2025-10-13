@@ -113,18 +113,9 @@ const markedProcessorFactory = ({
 
   const marked = new Marked();
 
-  const renderer = {
-    text(token) {
-      if (token.tokens?.length > 0) {
-        return this.parser.parseInline(token.tokens);
-      }
-      return token.text.replace(/\n/g, '<br />');
-    },
-  };
-
   marked.use({
     extensions: [math],
-    renderer,
+    breaks: true,
   });
 
   extensions.forEach((extension) => {
