@@ -155,6 +155,37 @@ describe('markdownProcessor', () => {
     });
   });
 
+  it('should process youtube embed', () => {
+    const markdownContent =
+      '@{YOUTUBE}[My Video Title](https://youtube.com/watch?v=abc123)';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const youtubeContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.YOUTUBE
+    );
+
+    expect(youtubeContainer).toBeTruthy();
+
+    const payloadString = youtubeContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+    expect(payload).toEqual({
+      title: 'My Video Title',
+      source: 'https://youtube.com/watch?v=abc123',
+    });
+  });
+
   it('should handle list of math expressions, with list items separated by newline', () => {
     const markdownContent = '* \\(a+b=c\\)\n\n* \\(c-b=a\\)';
 
