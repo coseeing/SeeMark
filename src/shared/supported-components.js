@@ -4,4 +4,6 @@ export const SUPPORTED_COMPONENT_TYPES = {
   INTERNAL_LINK_TITLE: 'internalLinkTitle',
   IMAGE: 'image',
   YOUTUBE: 'youtube',
+  CODEPEN: 'codepen',
+  GITHUB: 'github',
 };
