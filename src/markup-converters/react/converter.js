@@ -21,7 +21,7 @@ const convertMarkup = (
   components = defaultComponents,
   options = {}
 ) => {
-  const proccessedComponents = {
+  const processedComponents = {
     ...defaultComponents,
     ...components,
   };
@@ -36,7 +36,7 @@ const convertMarkup = (
         return;
       }
 
-      const Component = proccessedComponents[elementType];
+      const Component = processedComponents[elementType];
 
       if (!Component) {
         return;
