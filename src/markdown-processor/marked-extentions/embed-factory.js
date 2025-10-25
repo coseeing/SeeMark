@@ -2,7 +2,7 @@ import { buildHTMLMarkup } from './helpers';
 
 /**
  * Generic factory for creating embed extensions with syntax: @{TYPE}[title](source)
- * @param {string} type - The component type (e.g., 'youtube', 'codepen', 'github')
+ * @param {string} type - The component type (e.g., 'youtube', 'codepen')
  * @returns {Object} Marked extension object
  */
 const createEmbedExtension = (type) => {

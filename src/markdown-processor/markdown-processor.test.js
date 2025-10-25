@@ -217,37 +217,6 @@ describe('markdownProcessor', () => {
     });
   });
 
-  it('should process github embed', () => {
-    const markdownContent =
-      '@{GITHUB}[My Repository](https://github.com/username/repo)';
-    const options = {
-      latexDelimiter: 'bracket',
-      documentFormat: 'inline',
-      imageFiles: {},
-    };
-
-    const result = markdownProcessor(markdownContent, options);
-
-    const container = createDOMFromHTML(result);
-
-    const githubContainer = getElementByType(
-      container,
-      SUPPORTED_COMPONENT_TYPES.GITHUB
-    );
-
-    expect(githubContainer).toBeTruthy();
-
-    const payloadString = githubContainer.getAttribute(
-      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
-    );
-
-    const payload = JSON.parse(payloadString);
-    expect(payload).toEqual({
-      title: 'My Repository',
-      source: 'https://github.com/username/repo',
-    });
-  });
-
   it('should handle list of math expressions, with list items separated by newline', () => {
     const markdownContent = '* \\(a+b=c\\)\n\n* \\(c-b=a\\)';
 

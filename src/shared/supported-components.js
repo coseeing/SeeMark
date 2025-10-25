@@ -5,5 +5,4 @@ export const SUPPORTED_COMPONENT_TYPES = {
   IMAGE: 'image',
   YOUTUBE: 'youtube',
   CODEPEN: 'codepen',
-  GITHUB: 'github',
 };
