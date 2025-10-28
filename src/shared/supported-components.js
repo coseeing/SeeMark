@@ -5,4 +5,5 @@ export const SUPPORTED_COMPONENT_TYPES = {
   IMAGE: 'image',
   EXTERNAL_LINK_TAB: 'externalLinkTab',
   EXTERNAL_LINK_TITLE: 'externalLinkTitle',
+  EXTERNAL_LINK_TAB_TITLE: 'externalLinkTabTitle',
 };
