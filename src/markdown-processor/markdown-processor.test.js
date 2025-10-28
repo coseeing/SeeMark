@@ -224,6 +224,38 @@ describe('markdownProcessor', () => {
     });
   });
 
+  it('should process external link tab title', () => {
+    const markdownContent = '@[Open docs][[API Documentation]](https://api.example.com)';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const externalLinkTabTitleContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TAB_TITLE
+    );
+
+    expect(externalLinkTabTitleContainer).toBeTruthy();
+
+    const payloadString = externalLinkTabTitleContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      display: 'Open docs',
+      title: 'API Documentation',
+      target: 'https://api.example.com',
+    });
+  });
+
   it('should handle list of math expressions, with list items separated by newline', () => {
     const markdownContent = '* \\(a+b=c\\)\n\n* \\(c-b=a\\)';
 
