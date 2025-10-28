@@ -3,4 +3,5 @@ export const SUPPORTED_COMPONENT_TYPES = {
   INTERNAL_LINK: 'internalLink',
   INTERNAL_LINK_TITLE: 'internalLinkTitle',
   IMAGE: 'image',
+  EXTERNAL_LINK_TAB: 'externalLinkTab',
 };
