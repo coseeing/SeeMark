@@ -123,6 +123,38 @@ describe('markdownProcessor', () => {
     });
   });
 
+  it('should process internal link title', () => {
+    const markdownContent = '[Go to section][[Section Reference]]<section-123>';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const internalLinkTitleContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK_TITLE
+    );
+
+    expect(internalLinkTitleContainer).toBeTruthy();
+
+    const payloadString = internalLinkTitleContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      display: 'Go to section',
+      title: 'Section Reference',
+      id: 'section-123',
+    });
+  });
+
   it('should handle list of math expressions, with list items separated by newline', () => {
     const markdownContent = '* \\(a+b=c\\)\n\n* \\(c-b=a\\)';
 
