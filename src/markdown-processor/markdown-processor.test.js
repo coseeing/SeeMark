@@ -192,6 +192,38 @@ describe('markdownProcessor', () => {
     });
   });
 
+  it('should process external link title', () => {
+    const markdownContent = '[Visit our docs][[Documentation]](https://docs.example.com)';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const externalLinkTitleContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TITLE
+    );
+
+    expect(externalLinkTitleContainer).toBeTruthy();
+
+    const payloadString = externalLinkTitleContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      display: 'Visit our docs',
+      title: 'Documentation',
+      target: 'https://docs.example.com',
+    });
+  });
+
   it('should handle list of math expressions, with list items separated by newline', () => {
     const markdownContent = '* \\(a+b=c\\)\n\n* \\(c-b=a\\)';
 
