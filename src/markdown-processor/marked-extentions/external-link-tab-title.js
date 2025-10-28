@@ -1,7 +1,8 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 import { buildHTMLMarkup } from './helpers';
 
-const EXTERNAL_LINK_TAB_TITLE_REGEXP = /^@\[([^\]]+)\]\[\[([^\]]+)\]\]\(([^)]+)\)/;
+const EXTERNAL_LINK_TAB_TITLE_REGEXP =
+  /^@\[([^\]]+)\]\[\[([^\]]+)\]\]\(([^)]+)\)/;
 
 const markedExternalLinkTabTitle = () => {
   return {

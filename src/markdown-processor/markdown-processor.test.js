@@ -193,7 +193,8 @@ describe('markdownProcessor', () => {
   });
 
   it('should process external link title', () => {
-    const markdownContent = '[Visit our docs][[Documentation]](https://docs.example.com)';
+    const markdownContent =
+      '[Visit our docs][[Documentation]](https://docs.example.com)';
     const options = {
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
@@ -225,7 +226,8 @@ describe('markdownProcessor', () => {
   });
 
   it('should process external link tab title', () => {
-    const markdownContent = '@[Open docs][[API Documentation]](https://api.example.com)';
+    const markdownContent =
+      '@[Open docs][[API Documentation]](https://api.example.com)';
     const options = {
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
