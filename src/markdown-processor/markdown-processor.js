@@ -3,6 +3,7 @@ import markedProcessorFactory from './marked-wrapper/marked-wrapper';
 import alert from './marked-extentions/alert';
 import internalLink from './marked-extentions/internal-link';
 import image from './marked-extentions/image';
+import imageLink from './marked-extentions/image-link';
 
 const markdownProcessor = (markdownContent = '', options = {}) => {
   const asciimathDelimiter = 'graveaccent';
@@ -13,7 +14,7 @@ const markdownProcessor = (markdownContent = '', options = {}) => {
     documentFormat: options.documentFormat,
     imageFiles: options.imageFiles,
     shouldBuildImageObjectURL: options.shouldBuildImageObjectURL,
-    extensions: [alert, internalLink, image],
+    extensions: [alert, internalLink, image, imageLink],
   });
 
   return markdownProcessor(markdownContent);
