@@ -312,4 +312,39 @@ describe('markdownProcessor', () => {
       target: 'https://example.com/target',
     });
   });
+
+  it('should process image display', () => {
+    const markdownContent = `![alt text][[Display caption]](image-456)`;
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {
+        'image-456': 'https://example.com/image2.jpg',
+      },
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const imageDisplayContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.IMAGE_DISPLAY
+    );
+
+    expect(imageDisplayContainer).toBeTruthy();
+
+    const payloadString = imageDisplayContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      alt: 'alt text',
+      display: 'Display caption',
+      imageId: 'image-456',
+      src: 'https://example.com/image2.jpg',
+    });
+  });
 });
