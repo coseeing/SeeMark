@@ -21,11 +21,11 @@ const markedInternalLinkTitle = () => {
               raw: match[0],
               display: match[1],
               title: match[2],
-              id: match[3],
+              target: match[3],
               meta: {
                 display: match[1],
                 title: match[2],
-                id: match[3],
+                target: match[3],
               },
             };
           }

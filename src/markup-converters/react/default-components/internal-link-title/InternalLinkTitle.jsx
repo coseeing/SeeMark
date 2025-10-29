@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const InternalLinkTitle = ({ display = '', title = '', id = '' }) => {
+const InternalLinkTitle = ({ display = '', title = '', target = '' }) => {
   return (
-    <a href={`#${id}`} id={`${id}-source`} title={title} className="underline">
+    <a
+      href={`#${target}`}
+      id={`${target}-source`}
+      title={title}
+      className="underline"
+    >
       {display}
     </a>
   );
@@ -12,7 +17,7 @@ const InternalLinkTitle = ({ display = '', title = '', id = '' }) => {
 InternalLinkTitle.propTypes = {
   display: PropTypes.string,
   title: PropTypes.string,
-  id: PropTypes.string.isRequired,
+  target: PropTypes.string.isRequired,
 };
 
 export default InternalLinkTitle;

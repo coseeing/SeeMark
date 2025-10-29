@@ -151,7 +151,7 @@ describe('markdownProcessor', () => {
     expect(payload).toEqual({
       display: 'Go to section',
       title: 'Section Reference',
-      id: 'section-123',
+      target: 'section-123',
     });
   });
 
