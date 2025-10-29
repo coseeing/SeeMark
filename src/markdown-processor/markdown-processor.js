@@ -5,6 +5,7 @@ import internalLink from './marked-extentions/internal-link';
 import image from './marked-extentions/image';
 import imageLink from './marked-extentions/image-link';
 import imageDisplay from './marked-extentions/image-display';
+import imageDisplayLink from './marked-extentions/image-display-link';
 
 const markdownProcessor = (markdownContent = '', options = {}) => {
   const asciimathDelimiter = 'graveaccent';
@@ -15,7 +16,14 @@ const markdownProcessor = (markdownContent = '', options = {}) => {
     documentFormat: options.documentFormat,
     imageFiles: options.imageFiles,
     shouldBuildImageObjectURL: options.shouldBuildImageObjectURL,
-    extensions: [alert, internalLink, image, imageLink, imageDisplay],
+    extensions: [
+      alert,
+      internalLink,
+      image,
+      imageLink,
+      imageDisplay,
+      imageDisplayLink,
+    ],
   });
 
   return markdownProcessor(markdownContent);
