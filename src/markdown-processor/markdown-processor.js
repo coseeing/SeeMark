@@ -8,6 +8,7 @@ import internalLinkTitle from './marked-extentions/internal-link-title';
 import externalLinkTab from './marked-extentions/external-link-tab';
 import externalLinkTitle from './marked-extentions/external-link-title';
 import externalLinkTabTitle from './marked-extentions/external-link-tab-title';
+import imageLink from './marked-extentions/image-link';
 
 const markdownProcessor = (markdownContent = '', options = {}) => {
   const asciimathDelimiter = 'graveaccent';
@@ -27,6 +28,7 @@ const markdownProcessor = (markdownContent = '', options = {}) => {
       externalLinkTab,
       externalLinkTitle,
       externalLinkTabTitle,
+      imageLink,
     ],
   });
 
