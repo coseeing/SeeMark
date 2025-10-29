@@ -2,7 +2,8 @@ import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 
 import { buildHTMLMarkup } from './helpers';
 
-const IMAGE_DISPLAY_LINK_REGEXP = /^!\[([^\]]*)\]\[\[([^\]]+)\]\]\(([^)]+)\)\(\(([^)]+)\)\)/;
+const IMAGE_DISPLAY_LINK_REGEXP =
+  /^!\[([^\]]*)\]\[\[([^\]]+)\]\]\(([^)]+)\)\(\(([^)]+)\)\)/;
 
 const createBlobUrlManager = () => {
   const cache = new Map();
