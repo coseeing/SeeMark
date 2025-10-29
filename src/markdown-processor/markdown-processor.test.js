@@ -347,4 +347,40 @@ describe('markdownProcessor', () => {
       src: 'https://example.com/image2.jpg',
     });
   });
+
+  it('should process image display link', () => {
+    const markdownContent = `![alt text][[Display caption]](image-789)((https://example.com/details))`;
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {
+        'image-789': 'https://example.com/image3.jpg',
+      },
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const imageDisplayLinkContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.IMAGE_DISPLAY_LINK
+    );
+
+    expect(imageDisplayLinkContainer).toBeTruthy();
+
+    const payloadString = imageDisplayLinkContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      alt: 'alt text',
+      display: 'Display caption',
+      imageId: 'image-789',
+      src: 'https://example.com/image3.jpg',
+      target: 'https://example.com/details',
+    });
+  });
 });

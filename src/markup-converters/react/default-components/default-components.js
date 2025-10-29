@@ -9,6 +9,7 @@ import ExternalLinkTitle from './external-link-title/ExternalLinkTitle.jsx';
 import ExternalLinkTabTitle from './external-link-tab-title/ExternalLinkTabTitle.jsx';
 import ImageLink from './image-link/ImageLink.jsx';
 import ImageDisplay from './image-display/ImageDisplay.jsx';
+import ImageDisplayLink from './image-display-link/ImageDisplayLink.jsx';
 
 const defaultComponents = {
   [SUPPORTED_COMPONENT_TYPES.ALERT]: Alert,
@@ -20,6 +21,7 @@ const defaultComponents = {
   [SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TAB_TITLE]: ExternalLinkTabTitle,
   [SUPPORTED_COMPONENT_TYPES.IMAGE_LINK]: ImageLink,
   [SUPPORTED_COMPONENT_TYPES.IMAGE_DISPLAY]: ImageDisplay,
+  [SUPPORTED_COMPONENT_TYPES.IMAGE_DISPLAY_LINK]: ImageDisplayLink,
 };
 
 export default defaultComponents;
