@@ -20,11 +20,11 @@ const markedInternalLink = () => {
             return {
               type: SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK,
               raw: match[0],
-              text: match[1],
-              id: match[2],
+              display: match[1],
+              target: match[2],
               meta: {
-                text: match[1],
-                id: match[2],
+                display: match[1],
+                target: match[2],
               },
             };
           }

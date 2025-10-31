@@ -118,8 +118,8 @@ describe('markdownProcessor', () => {
     const payload = JSON.parse(payloadString);
 
     expect(payload).toEqual({
-      text: 'some text',
-      id: 'sample-id',
+      display: 'some text',
+      target: 'sample-id',
     });
   });
 
