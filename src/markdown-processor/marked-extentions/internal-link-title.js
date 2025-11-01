@@ -1,30 +1,31 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
-
 import { buildHTMLMarkup } from './helpers';
 
-const LINK_REGEXP = /^\[([^\]]+)\]<([^>]+)>/;
+const INTERNAL_LINK_TITLE_REGEXP = /^\[([^\]]+)\]\[\[([^\]]+)\]\]<([^>]+)>/;
 
-const markedInternalLink = () => {
+const markedInternalLinkTitle = () => {
   return {
     extensions: [
       {
-        name: SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK,
+        name: SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK_TITLE,
         level: 'inline',
         start(src) {
           return src.match(/\[/)?.index;
         },
         tokenizer(src) {
-          const match = src.match(LINK_REGEXP);
+          const match = src.match(INTERNAL_LINK_TITLE_REGEXP);
 
           if (match) {
             return {
-              type: SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK,
+              type: SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK_TITLE,
               raw: match[0],
               display: match[1],
-              target: match[2],
+              title: match[2],
+              target: match[3],
               meta: {
                 display: match[1],
-                target: match[2],
+                title: match[2],
+                target: match[3],
               },
             };
           }
@@ -33,7 +34,7 @@ const markedInternalLink = () => {
           const children = this.parser.parse(tokens);
 
           return buildHTMLMarkup(
-            SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK,
+            SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK_TITLE,
             meta,
             children
           );
@@ -43,4 +44,4 @@ const markedInternalLink = () => {
   };
 };
 
-export default markedInternalLink;
+export default markedInternalLinkTitle;

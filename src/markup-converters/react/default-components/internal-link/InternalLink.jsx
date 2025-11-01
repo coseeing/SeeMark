@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const InternalLink = ({ text = '', id = '' }) => {
+const InternalLink = ({ display = '', target = '' }) => {
   return (
-    <a href={`#${id}`} id={`${id}-source`} className="underline">
-      {text}
+    <a href={`#${target}`} id={`${target}-source`} className="underline">
+      {display}
     </a>
   );
 };
 
 InternalLink.propTypes = {
-  text: PropTypes.string,
-  id: PropTypes.string.isRequired,
+  display: PropTypes.string,
+  target: PropTypes.string.isRequired,
 };
 
 export default InternalLink;

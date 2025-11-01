@@ -118,8 +118,40 @@ describe('markdownProcessor', () => {
     const payload = JSON.parse(payloadString);
 
     expect(payload).toEqual({
-      text: 'some text',
-      id: 'sample-id',
+      display: 'some text',
+      target: 'sample-id',
+    });
+  });
+
+  it('should process internal link title', () => {
+    const markdownContent = '[Go to section][[Section Reference]]<section-123>';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const internalLinkTitleContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK_TITLE
+    );
+
+    expect(internalLinkTitleContainer).toBeTruthy();
+
+    const payloadString = internalLinkTitleContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      display: 'Go to section',
+      title: 'Section Reference',
+      target: 'section-123',
     });
   });
 
