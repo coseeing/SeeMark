@@ -1,6 +1,6 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 
-import { buildHTMLMarkup } from './helpers';
+import { buildHTMLMarkup, extractTokenMeta } from './helpers';
 
 const LINK_REGEXP = /^\[([^\]]+)\]<([^>]+)>/;
 
@@ -29,12 +29,14 @@ const markedInternalLink = () => {
             };
           }
         },
-        renderer({ meta, tokens = [] }) {
+        renderer(token) {
+          const { meta, tokens = [] } = token;
           const children = this.parser.parse(tokens);
+          const fullMeta = extractTokenMeta(token, meta);
 
           return buildHTMLMarkup(
             SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK,
-            meta,
+            fullMeta,
             children
           );
         },
