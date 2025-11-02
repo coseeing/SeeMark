@@ -3,6 +3,7 @@ import { Marked } from 'marked';
 import latex2mmlFactory from './tex-to-mml';
 import asciimath2mmlFactory from './ascii-math-to-mml';
 import mml2svg from './mml-to-svg';
+import { createPositionTracker } from './position-tracker';
 
 const LaTeX_delimiter_dict = {
   latex: {
@@ -113,9 +114,30 @@ const markedProcessorFactory = ({
 
   const marked = new Marked();
 
+<<<<<<< HEAD
   marked.use({
     extensions: [math],
     breaks: true,
+=======
+  const renderer = {
+    text(token) {
+      if (token.tokens?.length > 0) {
+        return this.parser.parseInline(token.tokens);
+      }
+      return token.text.replace(/\n/g, '<br />');
+    },
+  };
+
+  const positionTracker = createPositionTracker();
+
+  marked.use({
+    extensions: [math],
+    renderer,
+    hooks: {
+      preprocess: positionTracker.preprocess,
+    },
+    walkTokens: positionTracker.walkTokens,
+>>>>>>> 2fe2c3e (feat: integrate position tracker into Marked.js processor)
   });
 
   extensions.forEach((extension) => {
