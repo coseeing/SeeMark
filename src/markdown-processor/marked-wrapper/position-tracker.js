@@ -35,11 +35,16 @@ export function createPositionTracker() {
     processedTokens.add(token);
 
     if (sourceMarkdown) {
+      // For math tokens, use mathraw for position tracking
+      // because token.raw includes preceding text which doesn't match the source position
+      const rawToSearch =
+        token.type === 'math' && token.mathraw ? token.mathraw : token.raw;
+
       const occurrences = [];
       let searchIndex = 0;
 
       while (searchIndex < sourceMarkdown.length) {
-        const index = sourceMarkdown.indexOf(token.raw, searchIndex);
+        const index = sourceMarkdown.indexOf(rawToSearch, searchIndex);
         if (index === -1) break;
 
         occurrences.push(index);
@@ -52,12 +57,12 @@ export function createPositionTracker() {
       // 1. Multiple identical markdown patterns exist (e.g., [link]<id> and [link]<id>)
       // 2. Parent tokens have the same raw as child tokens (e.g., paragraph containing image)
       for (const start of occurrences) {
-        const positionKey = `${start}:${token.type}:${token.raw}`;
+        const positionKey = `${start}:${token.type}:${rawToSearch}`;
 
         if (!usedPositionKeys.has(positionKey)) {
           token.position = {
             start: start,
-            end: start + token.raw.length,
+            end: start + rawToSearch.length,
           };
           usedPositionKeys.add(positionKey);
           return;
