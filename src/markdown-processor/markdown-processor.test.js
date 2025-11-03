@@ -162,7 +162,7 @@ describe('markdownProcessor', () => {
   });
 
   it('should process external link tab', () => {
-    const markdownContent = '@[Click here](https://example.com)';
+    const markdownContent = '@[Documentation](https://docs.example.com)';
     const options = {
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
@@ -187,14 +187,14 @@ describe('markdownProcessor', () => {
     const payload = JSON.parse(payloadString);
 
     expect(payload).toEqual({
-      display: 'Click here',
-      target: 'https://example.com',
+      display: 'Documentation',
+      target: 'https://docs.example.com',
     });
   });
 
   it('should process external link title', () => {
     const markdownContent =
-      '[Visit our docs][[Documentation]](https://docs.example.com)';
+      '[Documentation][[Read the docs]](https://docs.example.com)';
     const options = {
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
@@ -219,15 +219,15 @@ describe('markdownProcessor', () => {
     const payload = JSON.parse(payloadString);
 
     expect(payload).toEqual({
-      display: 'Visit our docs',
-      title: 'Documentation',
+      display: 'Documentation',
+      title: 'Read the docs',
       target: 'https://docs.example.com',
     });
   });
 
   it('should process external link tab title', () => {
     const markdownContent =
-      '@[Open docs][[API Documentation]](https://api.example.com)';
+      '@[Documentation][[Read the docs]](https://docs.example.com)';
     const options = {
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
@@ -252,9 +252,9 @@ describe('markdownProcessor', () => {
     const payload = JSON.parse(payloadString);
 
     expect(payload).toEqual({
-      display: 'Open docs',
-      title: 'API Documentation',
-      target: 'https://api.example.com',
+      display: 'Documentation',
+      title: 'Read the docs',
+      target: 'https://docs.example.com',
     });
   });
 
