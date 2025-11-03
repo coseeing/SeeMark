@@ -155,6 +155,103 @@ describe('markdownProcessor', () => {
     });
   });
 
+  it('should process external link tab', () => {
+    const markdownContent = '@[Documentation](https://docs.example.com)';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const externalLinkContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TAB
+    );
+
+    expect(externalLinkContainer).toBeTruthy();
+
+    const payloadString = externalLinkContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      display: 'Documentation',
+      target: 'https://docs.example.com',
+    });
+  });
+
+  it('should process external link title', () => {
+    const markdownContent =
+      '[Documentation][[Read the docs]](https://docs.example.com)';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const externalLinkTitleContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TITLE
+    );
+
+    expect(externalLinkTitleContainer).toBeTruthy();
+
+    const payloadString = externalLinkTitleContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      display: 'Documentation',
+      title: 'Read the docs',
+      target: 'https://docs.example.com',
+    });
+  });
+
+  it('should process external link tab title', () => {
+    const markdownContent =
+      '@[Documentation][[Read the docs]](https://docs.example.com)';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const externalLinkTabTitleContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TAB_TITLE
+    );
+
+    expect(externalLinkTabTitleContainer).toBeTruthy();
+
+    const payloadString = externalLinkTabTitleContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      display: 'Documentation',
+      title: 'Read the docs',
+      target: 'https://docs.example.com',
+    });
+  });
+
   it('should handle list of math expressions, with list items separated by newline', () => {
     const markdownContent = '* \\(a+b=c\\)\n\n* \\(c-b=a\\)';
 
