@@ -12,29 +12,14 @@ const markedProcessorFactory = ({
 }) => {
   const marked = new Marked();
 
-<<<<<<< HEAD
-  marked.use({
-    extensions: [math],
-    breaks: true,
-=======
-  const renderer = {
-    text(token) {
-      if (token.tokens?.length > 0) {
-        return this.parser.parseInline(token.tokens);
-      }
-      return token.text.replace(/\n/g, '<br />');
-    },
-  };
-
   const positionTracker = createPositionTracker();
 
   marked.use({
-    renderer,
+    breaks: true,
     hooks: {
       preprocess: positionTracker.preprocess,
     },
     walkTokens: positionTracker.walkTokens,
->>>>>>> 2fe2c3e (feat: integrate position tracker into Marked.js processor)
   });
 
   extensions.forEach((extension) => {
