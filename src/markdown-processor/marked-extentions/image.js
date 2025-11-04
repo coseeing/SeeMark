@@ -1,6 +1,6 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 
-import { buildHTMLMarkup } from './helpers';
+import { buildHTMLMarkup, extractTokenMeta } from './helpers';
 
 const createBlobUrlManager = () => {
   const cache = new Map();
@@ -29,7 +29,7 @@ const markedImage = ({ imageFiles, shouldBuildImageObjectURL }) => {
           ? blobUrlManager(imageId, imageFile)
           : imageFile;
 
-        const meta = { alt, imageId, src };
+        const meta = extractTokenMeta(token, { alt, imageId, src });
 
         return buildHTMLMarkup(SUPPORTED_COMPONENT_TYPES.IMAGE, meta);
       } catch (error) {
@@ -37,7 +37,7 @@ const markedImage = ({ imageFiles, shouldBuildImageObjectURL }) => {
 
         const alt = token.text;
         const imageId = token.href;
-        const meta = { alt, imageId, src: imageId };
+        const meta = extractTokenMeta(token, { alt, imageId, src: imageId });
 
         return buildHTMLMarkup(SUPPORTED_COMPONENT_TYPES.IMAGE, meta);
       }
