@@ -3,4 +3,7 @@ export const SUPPORTED_COMPONENT_TYPES = {
   INTERNAL_LINK: 'internalLink',
   INTERNAL_LINK_TITLE: 'internalLinkTitle',
   IMAGE: 'image',
+  YOUTUBE: 'youtube',
+  CODEPEN: 'codepen',
+  IFRAME: 'iframe',
 };
