@@ -1,4 +1,8 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
 const YouTube = ({ title, source }) => {
+  // adapted from YouTube official embed
   return (
     <iframe
       width="560"
@@ -11,6 +15,11 @@ const YouTube = ({ title, source }) => {
       allowFullScreen
     />
   );
+};
+
+YouTube.propTypes = {
+  title: PropTypes.string,
+  source: PropTypes.string,
 };
 
 export default YouTube;

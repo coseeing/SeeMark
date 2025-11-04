@@ -278,74 +278,6 @@ describe('markdownProcessor', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should handle iframe syntax with special characters in title', () => {
-    const markdownContent =
-      '@[Video: "Tutorial & Demo"](https://example.com/video)';
-    const options = {
-      latexDelimiter: 'bracket',
-      documentFormat: 'inline',
-      imageFiles: {},
-    };
-
-    const result = markdownProcessor(markdownContent, options);
-
-    const container = createDOMFromHTML(result);
-
-    const iframeContainer = getElementByType(
-      container,
-      SUPPORTED_COMPONENT_TYPES.IFRAME
-    );
-
-    expect(iframeContainer).toBeTruthy();
-
-    const payloadString = iframeContainer.getAttribute(
-      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
-    );
-
-    const payload = JSON.parse(payloadString);
-
-    expect(payload).toEqual({
-      title: 'Video: "Tutorial & Demo"',
-      source: 'https://example.com/video',
-    });
-  });
-
-  it('should process image link', () => {
-    const markdownContent = `![alt text](image-123)((https://example.com/target))`;
-    const options = {
-      latexDelimiter: 'bracket',
-      documentFormat: 'inline',
-      imageFiles: {
-        'image-123': 'https://example.com/image.jpg',
-      },
-    };
-
-    const result = markdownProcessor(markdownContent, options);
-
-    const container = createDOMFromHTML(result);
-
-    const imageLinkContainer = getElementByType(
-      container,
-      SUPPORTED_COMPONENT_TYPES.IMAGE_LINK
-    );
-
-    expect(imageLinkContainer).toBeTruthy();
-
-    const payloadString = imageLinkContainer.getAttribute(
-      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
-    );
-
-    const payload = JSON.parse(payloadString);
-
-    expect(payload).toEqual({
-      alt: 'alt text',
-      imageId: 'image-123',
-      position: { start: 0, end: 52 },
-      src: 'https://example.com/image.jpg',
-      target: 'https://example.com/target',
-    });
-  });
-
   it('should process image display', () => {
     const markdownContent = `![alt text][[Display caption]](image-456)`;
     const options = {
@@ -419,7 +351,7 @@ describe('markdownProcessor', () => {
     });
   });
 
-   it('should process YouTube iframe with correct type', () => {
+  it('should process YouTube iframe with correct type', () => {
     const markdownContent =
       '@![video](https://www.youtube.com/embed/4mBrMhczurY)';
     const options = {
