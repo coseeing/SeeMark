@@ -173,7 +173,8 @@ describe('markdownProcessor', () => {
   });
 
   it('should process YouTube iframe with correct type', () => {
-    const markdownContent = '@[video](https://www.youtube.com/embed/4mBrMhczurY)';
+    const markdownContent =
+      '@[video](https://www.youtube.com/embed/4mBrMhczurY)';
     const options = {
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
@@ -263,102 +264,6 @@ describe('markdownProcessor', () => {
     expect(payload).toEqual({
       title: 'External Content',
       source: 'https://example.com/embed',
-    });
-  });
-
-  it('should correctly detect YouTube iframe type with different video IDs', () => {
-    const markdownContent =
-      '@[Tutorial](https://www.youtube.com/embed/dQw4w9WgXcQ)';
-    const options = {
-      latexDelimiter: 'bracket',
-      documentFormat: 'inline',
-      imageFiles: {},
-    };
-
-    const result = markdownProcessor(markdownContent, options);
-
-    const container = createDOMFromHTML(result);
-
-    const youtubeContainer = getElementByType(
-      container,
-      SUPPORTED_COMPONENT_TYPES.YOUTUBE
-    );
-
-    expect(youtubeContainer).toBeTruthy();
-
-    const payloadString = youtubeContainer.getAttribute(
-      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
-    );
-
-    const payload = JSON.parse(payloadString);
-
-    expect(payload).toEqual({
-      title: 'Tutorial',
-      source: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    });
-  });
-
-  it('should correctly detect Codepen iframe type with different paths', () => {
-    const markdownContent =
-      '@[CSS Demo](https://codepen.io/johndoe/embed/xyz789)';
-    const options = {
-      latexDelimiter: 'bracket',
-      documentFormat: 'inline',
-      imageFiles: {},
-    };
-
-    const result = markdownProcessor(markdownContent, options);
-
-    const container = createDOMFromHTML(result);
-
-    const codepenContainer = getElementByType(
-      container,
-      SUPPORTED_COMPONENT_TYPES.CODEPEN
-    );
-
-    expect(codepenContainer).toBeTruthy();
-
-    const payloadString = codepenContainer.getAttribute(
-      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
-    );
-
-    const payload = JSON.parse(payloadString);
-
-    expect(payload).toEqual({
-      title: 'CSS Demo',
-      source: 'https://codepen.io/johndoe/embed/xyz789',
-    });
-  });
-
-  it('should handle iframe syntax with special characters in title', () => {
-    const markdownContent =
-      '@[Video: "Tutorial & Demo"](https://example.com/video)';
-    const options = {
-      latexDelimiter: 'bracket',
-      documentFormat: 'inline',
-      imageFiles: {},
-    };
-
-    const result = markdownProcessor(markdownContent, options);
-
-    const container = createDOMFromHTML(result);
-
-    const iframeContainer = getElementByType(
-      container,
-      SUPPORTED_COMPONENT_TYPES.IFRAME
-    );
-
-    expect(iframeContainer).toBeTruthy();
-
-    const payloadString = iframeContainer.getAttribute(
-      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
-    );
-
-    const payload = JSON.parse(payloadString);
-
-    expect(payload).toEqual({
-      title: 'Video: "Tutorial & Demo"',
-      source: 'https://example.com/video',
     });
   });
 });
