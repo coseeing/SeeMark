@@ -1,4 +1,8 @@
-const Codepen = ({ title, source }) => {
+import React from 'react';
+import PropTypes from 'prop-types';
+
+const CodePen = ({ title, source }) => {
+  // adpated from CodePen official embed
   return (
     <iframe
       height="300"
@@ -14,4 +18,9 @@ const Codepen = ({ title, source }) => {
   );
 };
 
-export default Codepen;
+CodePen.propTypes = {
+  title: PropTypes.string,
+  source: PropTypes.string,
+};
+
+export default CodePen;
