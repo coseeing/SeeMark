@@ -7,6 +7,9 @@ import Image from './image/Image.jsx';
 import ExternalLinkTab from './external-link-tab/ExternalLinkTab.jsx';
 import ExternalLinkTitle from './external-link-title/ExternalLinkTitle.jsx';
 import ExternalLinkTabTitle from './external-link-tab-title/ExternalLinkTabTitle.jsx';
+import YouTube from './youtube/YouTube.jsx';
+import Codepen from './codepen/Codepen.jsx';
+import Iframe from './iframe/Iframe.jsx';
 
 const defaultComponents = {
   [SUPPORTED_COMPONENT_TYPES.ALERT]: Alert,
@@ -16,6 +19,9 @@ const defaultComponents = {
   [SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TAB]: ExternalLinkTab,
   [SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TITLE]: ExternalLinkTitle,
   [SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TAB_TITLE]: ExternalLinkTabTitle,
+  [SUPPORTED_COMPONENT_TYPES.YOUTUBE]: YouTube,
+  [SUPPORTED_COMPONENT_TYPES.CODEPEN]: Codepen,
+  [SUPPORTED_COMPONENT_TYPES.IFRAME]: Iframe,
 };
 
 export default defaultComponents;

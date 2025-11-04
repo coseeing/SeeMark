@@ -6,4 +6,7 @@ export const SUPPORTED_COMPONENT_TYPES = {
   EXTERNAL_LINK_TAB: 'externalLinkTab',
   EXTERNAL_LINK_TITLE: 'externalLinkTitle',
   EXTERNAL_LINK_TAB_TITLE: 'externalLinkTabTitle',
+  YOUTUBE: 'youtube',
+  CODEPEN: 'codepen',
+  IFRAME: 'iframe',
 };
