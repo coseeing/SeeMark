@@ -1,6 +1,6 @@
 {
   "name": "@coseeing/see-mark",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A markdown parser for a11y",
   "main": "./lib/see-mark.cjs",
   "files": [
