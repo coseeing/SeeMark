@@ -1,6 +1,5 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
-
-import { buildHTMLMarkup, extractTokenMeta } from './helpers';
+import { createRenderer } from './helpers';
 
 const createBlobUrlManager = () => {
   const cache = new Map();
@@ -19,8 +18,8 @@ const blobUrlManager = createBlobUrlManager();
 
 const markedImage = ({ imageFiles, shouldBuildImageObjectURL }) => {
   const renderer = {
-    image(token) {
-      try {
+    image: createRenderer(SUPPORTED_COMPONENT_TYPES.IMAGE, {
+      extractMeta(token) {
         const alt = token.text;
         const imageId = token.href;
         const imageFile = imageFiles[imageId];
@@ -29,19 +28,18 @@ const markedImage = ({ imageFiles, shouldBuildImageObjectURL }) => {
           ? blobUrlManager(imageId, imageFile)
           : imageFile;
 
-        const meta = extractTokenMeta(token, { alt, imageId, src });
-
-        return buildHTMLMarkup(SUPPORTED_COMPONENT_TYPES.IMAGE, meta);
-      } catch (error) {
+        return { alt, imageId, src };
+      },
+      parseChildren: false,
+      onError(error, token) {
         console.error('Error processing image:', error);
-
-        const alt = token.text;
-        const imageId = token.href;
-        const meta = extractTokenMeta(token, { alt, imageId, src: imageId });
-
-        return buildHTMLMarkup(SUPPORTED_COMPONENT_TYPES.IMAGE, meta);
-      }
-    },
+        return {
+          alt: token.text,
+          imageId: token.href,
+          src: token.href,
+        };
+      },
+    }),
   };
   return { renderer };
 };

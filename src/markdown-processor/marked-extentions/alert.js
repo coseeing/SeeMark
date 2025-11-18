@@ -1,6 +1,5 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
-
-import { buildHTMLMarkup, extractTokenMeta } from './helpers';
+import { createRenderer } from './helpers';
 
 /**
  * The default configuration for alert variants.
@@ -119,16 +118,7 @@ const markedAlert = () => {
       {
         name: SUPPORTED_COMPONENT_TYPES.ALERT,
         level: 'block',
-        renderer(token) {
-          const { meta, tokens = [] } = token;
-          const children = this.parser.parse(tokens);
-          const fullMeta = extractTokenMeta(token, meta);
-          return buildHTMLMarkup(
-            SUPPORTED_COMPONENT_TYPES.ALERT,
-            fullMeta,
-            children
-          );
-        },
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.ALERT),
       },
     ],
   };
