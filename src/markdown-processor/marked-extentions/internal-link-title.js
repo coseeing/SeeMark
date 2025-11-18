@@ -1,5 +1,5 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
-import { buildHTMLMarkup } from './helpers';
+import { createRenderer } from './helpers';
 
 const INTERNAL_LINK_TITLE_REGEXP = /^\[([^\]]+)\]\[\[([^\]]+)\]\]<([^>]+)>/;
 
@@ -30,15 +30,7 @@ const markedInternalLinkTitle = () => {
             };
           }
         },
-        renderer({ meta, tokens = [] }) {
-          const children = this.parser.parse(tokens);
-
-          return buildHTMLMarkup(
-            SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK_TITLE,
-            meta,
-            children
-          );
-        },
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK_TITLE),
       },
     ],
   };
