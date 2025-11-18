@@ -154,6 +154,10 @@ describe('markdownProcessor', () => {
       display: 'Go to section',
       title: 'Section Reference',
       target: 'section-123',
+      position: {
+        start: 0,
+        end: 49,
+      },
     });
   });
 
