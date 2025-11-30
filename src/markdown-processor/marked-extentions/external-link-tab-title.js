@@ -22,7 +22,8 @@ import { buildHTMLMarkup } from './helpers';
  * - match[2] = "Read the docs" (title)
  * - match[3] = "https://docs.example.com" (target)
  */
-const EXTERNAL_LINK_TAB_TITLE_REGEXP =
+// Regex exported for test
+export const EXTERNAL_LINK_TAB_TITLE_REGEXP =
   /^@\[([^\]]+)\]\[\[([^\]]+)\]\]\(([^)]+)\)/;
 
 const markedExternalLinkTabTitle = () => {

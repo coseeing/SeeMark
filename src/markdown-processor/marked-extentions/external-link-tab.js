@@ -18,7 +18,9 @@ import { buildHTMLMarkup } from './helpers';
  * - match[1] = "Documentation" (display)
  * - match[2] = "https://docs.example.com" (target)
  */
-const EXTERNAL_LINK_REGEXP = /^@\[([^\]]+)\]\(([^)]+)\)/;
+// Regex exported for test
+export const EXTERNAL_LINK_TAB_REGEXP = /^@\[([^\]]+)\]\(([^)]+)\)/;
+const EXTERNAL_LINK_REGEXP = EXTERNAL_LINK_TAB_REGEXP;
 
 const markedExternalLinkTab = () => {
   return {
