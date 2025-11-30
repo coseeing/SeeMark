@@ -1,6 +1,23 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 import { buildHTMLMarkup } from './helpers';
 
+/**
+ * Matches external link tab syntax: @[display](url)
+ *
+ * Pattern breakdown:
+ * - ^           : Must start at beginning (required by marked.js tokenizer since it checks from start of string)
+ * - @           : Literal @ symbol (distinguishes from standard markdown link `[display](target)`; also indicates opening in new tab)
+ * - \[          : Opening square bracket (escaped)
+ * - ([^\]]+)    : Capture group 1 - display text (one or more non-closing-bracket chars)
+ * - \]          : Closing square bracket (escaped)
+ * - \(          : Opening parenthesis (escaped)
+ * - ([^)]+)     : Capture group 2 - target URL (one or more non-closing-paren chars)
+ * - \)          : Closing parenthesis (escaped)
+ *
+ * Example match: @[Documentation](https://docs.example.com)
+ * - match[1] = "Documentation" (display)
+ * - match[2] = "https://docs.example.com" (target)
+ */
 const EXTERNAL_LINK_REGEXP = /^@\[([^\]]+)\]\(([^)]+)\)/;
 
 const markedExternalLinkTab = () => {
