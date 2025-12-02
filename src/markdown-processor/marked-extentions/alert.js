@@ -50,6 +50,8 @@ function extractLinkId(token) {
 }
 
 function createCleanedPatternToken(token) {
+  if (!token) return token;
+
   const alertTypes = ALERT_VARIANTS.map((v) => v.type.toUpperCase()).join('|');
   const combinedRegexp = new RegExp(
     `^\\[!(${alertTypes})\\](?:#[^\\s]+)?\\s*?\\n*`
@@ -57,9 +59,9 @@ function createCleanedPatternToken(token) {
 
   return {
     ...token,
-    raw: token.raw.replace(combinedRegexp, ''),
-    text: token.text.replace(combinedRegexp, ''),
-    tokens: token.tokens?.map?.((token) => createCleanedPatternToken(token)),
+    raw: token.raw?.replace(combinedRegexp, ''),
+    text: token.text?.replace(combinedRegexp, ''),
+    tokens: token.tokens?.map?.((t) => createCleanedPatternToken(t)),
   };
 }
 

@@ -26,7 +26,8 @@ const convertMarkup = (
     ...components,
   };
 
-  return parser(markup, {
+  const parserOptions = {
+    ...options,
     replace(domNode) {
       const elementType =
         domNode?.attribs?.[SEEMARK_ELEMENT_TYPE_DATA_ATTRIBUTE];
@@ -45,11 +46,13 @@ const convertMarkup = (
       const payloadString = domNode.attribs[SEE_MARK_PAYLOAD_DATA_ATTRIBUTES];
 
       const props = JSON.parse(payloadString);
-      const childrenNode = domToReact(domNode.children, options);
+      const childrenNode = domToReact(domNode.children, parserOptions);
 
       return createElement(Component, props, childrenNode);
     },
-  });
+  };
+
+  return parser(markup, parserOptions);
 };
 
 export default convertMarkup;
