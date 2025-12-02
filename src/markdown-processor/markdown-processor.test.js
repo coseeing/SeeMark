@@ -89,6 +89,7 @@ describe('markdownProcessor', () => {
       variant: 'warning',
       title: 'Warning',
       internalLinkId: null,
+      position: { start: 0, end: 90 },
     });
   });
 
@@ -120,6 +121,7 @@ describe('markdownProcessor', () => {
     expect(payload).toEqual({
       display: 'some text',
       target: 'sample-id',
+      position: { start: 0, end: 22 },
     });
   });
 
@@ -152,6 +154,10 @@ describe('markdownProcessor', () => {
       display: 'Go to section',
       title: 'Section Reference',
       target: 'section-123',
+      position: {
+        start: 0,
+        end: 49,
+      },
     });
   });
 

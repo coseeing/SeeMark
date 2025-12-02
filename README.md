@@ -60,6 +60,7 @@ const content = seeMarkReactParse(markdown);
 | internalLinkId | string    | ''            | The ID for internal linking.                        |
 | variant        | string    | ''            | The variant of the alert (e.g., 'info', 'warning'). |
 | title          | string    | ''            | The title of the alert.                             |
+| position       | object    | -             | Position info: `{ start: number, end: number }`     |
 
 #### internalLink
 
@@ -71,6 +72,7 @@ const content = seeMarkReactParse(markdown);
 | --------- | ------ | ------------- | ------------------------------------------ |
 | text      | string | ''            | The text to display for the link.          |
 | id        | string | ''            | The ID of the target element for the link. |
+| position  | object | -             | Position info: `{ start: number, end: number }` |
 
 #### image
 
@@ -83,3 +85,15 @@ const content = seeMarkReactParse(markdown);
 | src       | string | ''            | The source path of the image.       |
 | alt       | string | ''            | The alternative text for the image. |
 | imageId   | string | ''            | image ID                            |
+| position  | object | -             | Position info: `{ start: number, end: number }` |
+
+### Position Information
+
+All custom components receive a `position` prop that indicates the location of the component in the original markdown source:
+
+```typescript
+interface Position {
+  start: number;  // Character offset where the component starts
+  end: number;    // Character offset where the component ends
+}
+```
