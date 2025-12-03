@@ -1,5 +1,5 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
-import { buildHTMLMarkup } from './helpers';
+import { createRenderer } from './helpers';
 
 /**
  * Matches external link title syntax: [display][[title]](url)
@@ -52,15 +52,7 @@ const markedExternalLinkTitle = () => {
             };
           }
         },
-        renderer({ meta, tokens = [] }) {
-          const children = this.parser.parse(tokens);
-
-          return buildHTMLMarkup(
-            SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TITLE,
-            meta,
-            children
-          );
-        },
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TITLE),
       },
     ],
   };

@@ -188,6 +188,7 @@ describe('markdownProcessor', () => {
 
     expect(payload).toEqual({
       display: 'Documentation',
+      position: { start: 0, end: 42 },
       target: 'https://docs.example.com',
     });
   });
@@ -220,6 +221,7 @@ describe('markdownProcessor', () => {
 
     expect(payload).toEqual({
       display: 'Documentation',
+      position: { start: 0, end: 58 },
       title: 'Read the docs',
       target: 'https://docs.example.com',
     });
@@ -253,6 +255,7 @@ describe('markdownProcessor', () => {
 
     expect(payload).toEqual({
       display: 'Documentation',
+      position: { start: 0, end: 59 },
       title: 'Read the docs',
       target: 'https://docs.example.com',
     });

@@ -1,5 +1,5 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
-import { buildHTMLMarkup } from './helpers';
+import { createRenderer } from './helpers';
 
 /**
  * Matches external link tab syntax: @[display](url)
@@ -47,15 +47,7 @@ const markedExternalLinkTab = () => {
             };
           }
         },
-        renderer({ meta, tokens = [] }) {
-          const children = this.parser.parse(tokens);
-
-          return buildHTMLMarkup(
-            SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TAB,
-            meta,
-            children
-          );
-        },
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TAB),
       },
     ],
   };
