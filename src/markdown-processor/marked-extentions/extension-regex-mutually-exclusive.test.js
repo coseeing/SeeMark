@@ -11,6 +11,7 @@
 import { EXTERNAL_LINK_TAB_TITLE_REGEXP } from './external-link-tab-title.js';
 import { EXTERNAL_LINK_TAB_REGEXP } from './external-link-tab.js';
 import { EXTERNAL_LINK_TITLE_REGEXP } from './external-link-title.js';
+import { IFRAME_REGEXP } from './iframe.js';
 
 const patterns = [
   {
@@ -25,14 +26,19 @@ const patterns = [
     name: 'EXTERNAL_LINK_TITLE',
     regex: EXTERNAL_LINK_TITLE_REGEXP,
   },
+  {
+    name: 'IFRAME',
+    regex: IFRAME_REGEXP,
+  },
 ];
 
 describe('Extension regex', () => {
   it('should be mutually exclusive', () => {
     const testInputs = [
-      '@[Display][[Title]](url)',
-      '@[Display](url)',
-      '[Display][[Title]](url)',
+      '@[Display][[Title]](url)', // should only match EXTERNAL_LINK_TAB_TITLE
+      '@[Display](url)', // should only match EXTERNAL_LINK_TAB
+      '[Display][[Title]](url)', // should only match EXTERNAL_LINK_TITLE
+      '@![Title](https://www.youtube.com/embed/video)', // should only match IFRAME
     ];
 
     const clashMatrix = testInputs.map((input) => {
