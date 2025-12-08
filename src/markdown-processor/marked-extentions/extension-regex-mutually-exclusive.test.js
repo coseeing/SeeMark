@@ -16,6 +16,7 @@ import { INTERNAL_LINK_REGEXP } from './internal-link.js';
 import { IMAGE_DISPLAY_LINK_REGEXP } from './image-display-link.js';
 import { IMAGE_DISPLAY_REGEXP } from './image-display.js';
 import { IMAGE_LINK_REGEXP } from './image-link.js';
+import { IFRAME_REGEXP } from './iframe.js';
 
 const patterns = [
   {
@@ -49,6 +50,10 @@ const patterns = [
   {
     name: 'IMAGE_LINK',
     regex: IMAGE_LINK_REGEXP,
+  },
+  {
+    name: 'IFRAME',
+    regex: IFRAME_REGEXP,
   },
 ];
 
@@ -88,6 +93,10 @@ describe('Extension regex', () => {
       {
         input: '![alt](imageId)((target))',
         expectedMatches: ['IMAGE_LINK'],
+      },
+      {
+        input: '@[Title](https://www.youtube.com/embed/video)',
+        expectedMatches: ['IFRAME'],
       },
     ];
 

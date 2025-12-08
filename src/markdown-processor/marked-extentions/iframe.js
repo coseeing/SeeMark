@@ -18,7 +18,8 @@ import { buildHTMLMarkup } from './helpers';
  * - match[1] = "YouTube Video" (title)
  * - match[2] = "https://www.youtube.com/embed/dQw4w9WgXcQ" (source)
  */
-const IFRAME_REGEXP = /^@\[([^\]]+)\]\(([^)]+)\)/;
+// Regex exported for test
+export const IFRAME_REGEXP = /^@\[([^\]]+)\]\(([^)]+)\)/;
 
 const YOUTUBE_REGEXP = /^https:\/\/www\.youtube\.com\/embed\/.*/;
 const CODEPEN_REGEXP = /^https:\/\/codepen\.io\/.*\/embed\/.*/;
