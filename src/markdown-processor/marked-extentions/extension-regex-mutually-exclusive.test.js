@@ -11,6 +11,7 @@
 import { EXTERNAL_LINK_TAB_TITLE_REGEXP } from './external-link-tab-title.js';
 import { EXTERNAL_LINK_TAB_REGEXP } from './external-link-tab.js';
 import { EXTERNAL_LINK_TITLE_REGEXP } from './external-link-title.js';
+import { IFRAME_REGEXP } from './iframe.js';
 
 const patterns = [
   {
@@ -25,6 +26,10 @@ const patterns = [
     name: 'EXTERNAL_LINK_TITLE',
     regex: EXTERNAL_LINK_TITLE_REGEXP,
   },
+  {
+    name: 'IFRAME',
+    regex: IFRAME_REGEXP,
+  },
 ];
 
 describe('Extension regex', () => {
@@ -33,6 +38,7 @@ describe('Extension regex', () => {
       '@[Display][[Title]](url)',
       '@[Display](url)',
       '[Display][[Title]](url)',
+      '@[Title](https://www.youtube.com/embed/video)',
     ];
 
     const clashMatrix = testInputs.map((input) => {
