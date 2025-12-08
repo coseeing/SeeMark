@@ -95,7 +95,7 @@ describe('Extension regex', () => {
         expectedMatches: ['IMAGE_LINK'],
       },
       {
-        input: '@[Title](https://www.youtube.com/embed/video)',
+        input: '@![Title](https://www.youtube.com/embed/video)',
         expectedMatches: ['IFRAME'],
       },
     ];
