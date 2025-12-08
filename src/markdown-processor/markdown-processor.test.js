@@ -280,7 +280,7 @@ describe('markdownProcessor', () => {
 
   it('should process YouTube iframe with correct type', () => {
     const markdownContent =
-      '@[video](https://www.youtube.com/embed/4mBrMhczurY)';
+      '@![video](https://www.youtube.com/embed/4mBrMhczurY)';
     const options = {
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
@@ -306,7 +306,7 @@ describe('markdownProcessor', () => {
 
     expect(payload).toEqual({
       position: {
-        end: 51,
+        end: 52,
         start: 0,
       },
       title: 'video',
@@ -316,7 +316,7 @@ describe('markdownProcessor', () => {
 
   it('should process Codepen iframe with correct type', () => {
     const markdownContent =
-      '@[My Pen](https://codepen.io/username/embed/abc123)';
+      '@![My Pen](https://codepen.io/username/embed/abc123)';
     const options = {
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
@@ -342,7 +342,7 @@ describe('markdownProcessor', () => {
 
     expect(payload).toEqual({
       position: {
-        end: 51,
+        end: 52,
         start: 0,
       },
       title: 'My Pen',
@@ -351,7 +351,7 @@ describe('markdownProcessor', () => {
   });
 
   it('should process generic iframe with correct type', () => {
-    const markdownContent = '@[External Content](https://example.com/embed)';
+    const markdownContent = '@![External Content](https://example.com/embed)';
     const options = {
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
@@ -377,7 +377,7 @@ describe('markdownProcessor', () => {
 
     expect(payload).toEqual({
       position: {
-        end: 46,
+        end: 47,
         start: 0,
       },
       title: 'External Content',

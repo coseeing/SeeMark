@@ -35,10 +35,10 @@ const patterns = [
 describe('Extension regex', () => {
   it('should be mutually exclusive', () => {
     const testInputs = [
-      '@[Display][[Title]](url)',
-      '@[Display](url)',
-      '[Display][[Title]](url)',
-      '@[Title](https://www.youtube.com/embed/video)',
+      '@[Display][[Title]](url)', // should only match EXTERNAL_LINK_TAB_TITLE
+      '@[Display](url)', // should only match EXTERNAL_LINK_TAB
+      '[Display][[Title]](url)', // should only match EXTERNAL_LINK_TITLE
+      '@![Title](https://www.youtube.com/embed/video)', // should only match IFRAME
     ];
 
     const clashMatrix = testInputs.map((input) => {
