@@ -1,5 +1,5 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
-import { buildHTMLMarkup } from './helpers';
+import { createRenderer } from './helpers';
 
 /**
  * Matches iframe syntax: @[title](source)
@@ -35,12 +35,6 @@ const determineIframeType = (source) => {
 };
 
 const markedIframe = () => {
-  // Shared renderer function for all iframe types
-  const sharedRenderer = function ({ type, meta, tokens = [] }) {
-    const children = this.parser.parse(tokens);
-    return buildHTMLMarkup(type, meta, children);
-  };
-
   return {
     extensions: [
       // Main extension that tokenizes the iframe syntax
@@ -70,19 +64,19 @@ const markedIframe = () => {
             };
           }
         },
-        renderer: sharedRenderer,
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.IFRAME),
       },
       // YouTube renderer extension
       {
         name: SUPPORTED_COMPONENT_TYPES.YOUTUBE,
         level: 'inline',
-        renderer: sharedRenderer,
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.YOUTUBE),
       },
       // Codepen renderer extension
       {
         name: SUPPORTED_COMPONENT_TYPES.CODEPEN,
         level: 'inline',
-        renderer: sharedRenderer,
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.CODEPEN),
       },
     ],
   };

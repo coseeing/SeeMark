@@ -305,6 +305,10 @@ describe('markdownProcessor', () => {
     const payload = JSON.parse(payloadString);
 
     expect(payload).toEqual({
+      position: {
+        end: 51,
+        start: 0,
+      },
       title: 'video',
       source: 'https://www.youtube.com/embed/4mBrMhczurY',
     });
@@ -337,6 +341,10 @@ describe('markdownProcessor', () => {
     const payload = JSON.parse(payloadString);
 
     expect(payload).toEqual({
+      position: {
+        end: 51,
+        start: 0,
+      },
       title: 'My Pen',
       source: 'https://codepen.io/username/embed/abc123',
     });
@@ -368,6 +376,10 @@ describe('markdownProcessor', () => {
     const payload = JSON.parse(payloadString);
 
     expect(payload).toEqual({
+      position: {
+        end: 46,
+        start: 0,
+      },
       title: 'External Content',
       source: 'https://example.com/embed',
     });
