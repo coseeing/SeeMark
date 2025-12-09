@@ -31,6 +31,11 @@ const markdownProcessor = (markdownContent = '', options = {}) => {
       externalLinkTitle,
       externalLinkTabTitle,
       imageLink,
+      // imageDisplay & imageDisplayLink have similar syntax, so order matters
+      // imageDisplayLink must come after imageDisplay to avoid conflicts
+      // marked processes content in the reverse order of extensions:
+      // https://github.com/markedjs/marked/blob/v15.0.11/src/Instance.ts#L113
+      // this should be used as last resort, prefer avoid conflicting syntaxes if possible.
       imageDisplay,
       imageDisplayLink,
     ],
