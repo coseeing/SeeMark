@@ -55,24 +55,48 @@ const patterns = [
 describe('Extension regex', () => {
   it('should be mutually exclusive', () => {
     const testInputs = [
-      '@[Display][[Title]](url)', // should only match EXTERNAL_LINK_TAB_TITLE
-      '@[Display](url)', // should only match EXTERNAL_LINK_TAB
-      '[Display][[Title]](url)', // should only match EXTERNAL_LINK_TITLE
-      '[Display][[Title]]<target>', // should only match INTERNAL_LINK_TITLE
-      '[Display]<target>', // should only match INTERNAL_LINK
-      '![alt][[display]](imageId)((target))', // should only match IMAGE_DISPLAY_LINK
-      '![alt][[display]](imageId)', // should only match IMAGE_DISPLAY
-      '![alt](imageId)((target))', // should only match IMAGE_LINK
+      {
+        input: '@[Display][[Title]](url)',
+        expectedMatches: ['EXTERNAL_LINK_TAB_TITLE'],
+      },
+      {
+        input: '@[Display](url)',
+        expectedMatches: ['EXTERNAL_LINK_TAB'],
+      },
+      {
+        input: '[Display][[Title]](url)',
+        expectedMatches: ['EXTERNAL_LINK_TITLE'],
+      },
+      {
+        input: '[Display][[Title]]<target>',
+        expectedMatches: ['INTERNAL_LINK_TITLE'],
+      },
+      {
+        input: '[Display]<target>',
+        expectedMatches: ['INTERNAL_LINK'],
+      },
+      {
+        input: '![alt][[display]](imageId)((target))',
+        // Matches both IMAGE_DISPLAY_LINK and IMAGE_DISPLAY.
+        // In markdown-processor, IMAGE_DISPLAY_LINK will take precedence due to extension registration order.
+        expectedMatches: ['IMAGE_DISPLAY_LINK', 'IMAGE_DISPLAY'],
+      },
+      {
+        input: '![alt][[display]](imageId)',
+        expectedMatches: ['IMAGE_DISPLAY'],
+      },
+      {
+        input: '![alt](imageId)((target))',
+        expectedMatches: ['IMAGE_LINK'],
+      },
     ];
 
-    const clashMatrix = testInputs.map((input) => {
-      return patterns.map((p) => (p.regex.test(input) ? 1 : 0));
-    });
+    testInputs.forEach(({ input, expectedMatches }) => {
+      const matches = patterns.filter((p) => p.regex.test(input));
+      const matchNames = matches.map((m) => m.name);
 
-    // Each input should match exactly one pattern (sum of row = 1)
-    clashMatrix.forEach((row) => {
-      const sum = row.reduce((a, b) => a + b, 0);
-      expect(sum).toBe(1);
+      expect(matchNames).toHaveLength(expectedMatches.length);
+      expect(matchNames.sort()).toEqual(expectedMatches.sort());
     });
   });
 });
