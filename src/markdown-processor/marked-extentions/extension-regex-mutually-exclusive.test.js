@@ -13,6 +13,9 @@ import { EXTERNAL_LINK_TAB_REGEXP } from './external-link-tab.js';
 import { EXTERNAL_LINK_TITLE_REGEXP } from './external-link-title.js';
 import { INTERNAL_LINK_TITLE_REGEXP } from './internal-link-title.js';
 import { INTERNAL_LINK_REGEXP } from './internal-link.js';
+import { IMAGE_DISPLAY_LINK_REGEXP } from './image-display-link.js';
+import { IMAGE_DISPLAY_REGEXP } from './image-display.js';
+import { IMAGE_LINK_REGEXP } from './image-link.js';
 
 const patterns = [
   {
@@ -35,6 +38,18 @@ const patterns = [
     name: 'INTERNAL_LINK',
     regex: INTERNAL_LINK_REGEXP,
   },
+  {
+    name: 'IMAGE_DISPLAY_LINK',
+    regex: IMAGE_DISPLAY_LINK_REGEXP,
+  },
+  {
+    name: 'IMAGE_DISPLAY',
+    regex: IMAGE_DISPLAY_REGEXP,
+  },
+  {
+    name: 'IMAGE_LINK',
+    regex: IMAGE_LINK_REGEXP,
+  },
 ];
 
 describe('Extension regex', () => {
@@ -45,6 +60,9 @@ describe('Extension regex', () => {
       '[Display][[Title]](url)', // should only match EXTERNAL_LINK_TITLE
       '[Display][[Title]]<target>', // should only match INTERNAL_LINK_TITLE
       '[Display]<target>', // should only match INTERNAL_LINK
+      '![alt][[display]](imageId)((target))', // should only match IMAGE_DISPLAY_LINK
+      '![alt][[display]](imageId)', // should only match IMAGE_DISPLAY
+      '![alt](imageId)((target))', // should only match IMAGE_LINK
     ];
 
     const clashMatrix = testInputs.map((input) => {
