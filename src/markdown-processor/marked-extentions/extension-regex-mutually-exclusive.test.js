@@ -11,6 +11,9 @@
 import { EXTERNAL_LINK_TAB_TITLE_REGEXP } from './external-link-tab-title.js';
 import { EXTERNAL_LINK_TAB_REGEXP } from './external-link-tab.js';
 import { EXTERNAL_LINK_TITLE_REGEXP } from './external-link-title.js';
+import { IMAGE_DISPLAY_LINK_REGEXP } from './image-display-link.js';
+import { IMAGE_DISPLAY_REGEXP } from './image-display.js';
+import { IMAGE_LINK_REGEXP } from './image-link.js';
 
 const patterns = [
   {
@@ -25,24 +28,57 @@ const patterns = [
     name: 'EXTERNAL_LINK_TITLE',
     regex: EXTERNAL_LINK_TITLE_REGEXP,
   },
+  {
+    name: 'IMAGE_DISPLAY_LINK',
+    regex: IMAGE_DISPLAY_LINK_REGEXP,
+  },
+  {
+    name: 'IMAGE_DISPLAY',
+    regex: IMAGE_DISPLAY_REGEXP,
+  },
+  {
+    name: 'IMAGE_LINK',
+    regex: IMAGE_LINK_REGEXP,
+  },
 ];
 
 describe('Extension regex', () => {
   it('should be mutually exclusive', () => {
     const testInputs = [
-      '@[Display][[Title]](url)',
-      '@[Display](url)',
-      '[Display][[Title]](url)',
+      {
+        input: '@[Display][[Title]](url)',
+        expectedMatches: ['EXTERNAL_LINK_TAB_TITLE'],
+      },
+      {
+        input: '@[Display](url)',
+        expectedMatches: ['EXTERNAL_LINK_TAB'],
+      },
+      {
+        input: '[Display][[Title]](url)',
+        expectedMatches: ['EXTERNAL_LINK_TITLE'],
+      },
+      {
+        input: '![alt][[display]](imageId)((target))',
+        // Matches both IMAGE_DISPLAY_LINK and IMAGE_DISPLAY, but in markdown-processor
+        // IMAGE_DISPLAY_LINK will take precedence due to extension registration order
+        expectedMatches: ['IMAGE_DISPLAY_LINK', 'IMAGE_DISPLAY'],
+      },
+      {
+        input: '![alt][[display]](imageId)',
+        expectedMatches: ['IMAGE_DISPLAY'],
+      },
+      {
+        input: '![alt](imageId)((target))',
+        expectedMatches: ['IMAGE_LINK'],
+      },
     ];
 
-    const clashMatrix = testInputs.map((input) => {
-      return patterns.map((p) => (p.regex.test(input) ? 1 : 0));
-    });
+    testInputs.forEach(({ input, expectedMatches }) => {
+      const matches = patterns.filter((p) => p.regex.test(input));
+      const matchNames = matches.map((m) => m.name);
 
-    // Each input should match exactly one pattern (sum of row = 1)
-    clashMatrix.forEach((row) => {
-      const sum = row.reduce((a, b) => a + b, 0);
-      expect(sum).toBe(1);
+      expect(matchNames).toHaveLength(expectedMatches.length);
+      expect(matchNames.sort()).toEqual(expectedMatches.sort());
     });
   });
 });

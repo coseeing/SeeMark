@@ -8,6 +8,9 @@ import internalLinkTitle from './marked-extentions/internal-link-title';
 import externalLinkTab from './marked-extentions/external-link-tab';
 import externalLinkTitle from './marked-extentions/external-link-title';
 import externalLinkTabTitle from './marked-extentions/external-link-tab-title';
+import imageLink from './marked-extentions/image-link';
+import imageDisplay from './marked-extentions/image-display';
+import imageDisplayLink from './marked-extentions/image-display-link';
 
 const markdownProcessor = (markdownContent = '', options = {}) => {
   const asciimathDelimiter = 'graveaccent';
@@ -27,6 +30,14 @@ const markdownProcessor = (markdownContent = '', options = {}) => {
       externalLinkTab,
       externalLinkTitle,
       externalLinkTabTitle,
+      imageLink,
+      // imageDisplay & imageDisplayLink have similar syntax, so order matters
+      // imageDisplayLink must come after imageDisplay to avoid conflicts
+      // marked processes content in the reverse order of extensions:
+      // https://github.com/markedjs/marked/blob/v15.0.11/src/Instance.ts#L113
+      // this should be used as last resort, prefer avoid conflicting syntaxes if possible.
+      imageDisplay,
+      imageDisplayLink,
     ],
   });
 
