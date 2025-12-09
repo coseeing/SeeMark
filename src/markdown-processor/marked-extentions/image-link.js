@@ -1,6 +1,6 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 
-import { buildHTMLMarkup } from './helpers';
+import { createRenderer } from './helpers';
 
 /**
  * Matches image with link syntax: ![alt](imageId)((target))
@@ -96,15 +96,9 @@ const markedImageLink = ({ imageFiles, shouldBuildImageObjectURL }) => {
             }
           }
         },
-        renderer({ meta, tokens = [] }) {
-          const children = this.parser.parse(tokens);
-
-          return buildHTMLMarkup(
-            SUPPORTED_COMPONENT_TYPES.IMAGE_LINK,
-            meta,
-            children
-          );
-        },
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.IMAGE_LINK, {
+          parseChildren: false,
+        }),
       },
     ],
   };
