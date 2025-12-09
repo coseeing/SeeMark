@@ -2,6 +2,27 @@ import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 
 import { buildHTMLMarkup } from './helpers';
 
+/**
+ * Matches image with display text syntax: ![alt][[display]](imageId)
+ *
+ * Pattern breakdown:
+ * - ^           : Must start at beginning (required by marked.js tokenizer since it checks from start of string)
+ * - !           : Exclamation mark (distinguishes from link syntax)
+ * - \[          : Opening square bracket (escaped)
+ * - ([^\]]*)    : Capture group 1 - alt text (zero or more non-closing-bracket chars)
+ * - \]          : Closing square bracket (escaped)
+ * - \[\[        : Opening double square brackets (escaped)
+ * - ([^\]]+)    : Capture group 2 - display text (one or more non-closing-bracket chars)
+ * - \]\]        : Closing double square brackets (escaped)
+ * - \(          : Opening parenthesis (escaped)
+ * - ([^)]+)     : Capture group 3 - image ID (one or more non-closing-paren chars)
+ * - \)          : Closing parenthesis (escaped)
+ *
+ * Example match: ![Company logo][[Our brand identity]](logo-2024)
+ * - match[1] = "Company logo" (alt)
+ * - match[2] = "Our brand identity" (display)
+ * - match[3] = "logo-2024" (imageId)
+ */
 // Regex exported for test
 export const IMAGE_DISPLAY_REGEXP = /^!\[([^\]]*)\]\[\[([^\]]+)\]\]\(([^)]+)\)/;
 
