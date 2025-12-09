@@ -22,7 +22,8 @@ import { createRenderer } from './helpers';
  * - match[3] = "article-123" (target)
  */
 // Regex exported for test
-export const INTERNAL_LINK_TITLE_REGEXP = /^\[([^\]]+)\]\[\[([^\]]+)\]\]<([^>]+)>/;
+export const INTERNAL_LINK_TITLE_REGEXP =
+  /^\[([^\]]+)\]\[\[([^\]]+)\]\]<([^>]+)>/;
 
 const markedInternalLinkTitle = () => {
   return {
