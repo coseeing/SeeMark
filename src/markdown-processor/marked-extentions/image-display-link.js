@@ -106,12 +106,9 @@ const markedImageDisplayLink = ({ imageFiles, shouldBuildImageObjectURL }) => {
             }
           }
         },
-        renderer: createRenderer(
-          SUPPORTED_COMPONENT_TYPES.IMAGE_DISPLAY_LINK,
-          {
-            parseChildren: false,
-          }
-        ),
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.IMAGE_DISPLAY_LINK, {
+          parseChildren: false,
+        }),
       },
     ],
   };
