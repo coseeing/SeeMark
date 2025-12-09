@@ -1,7 +1,7 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 import { createRenderer } from './helpers';
 
-const LINK_REGEXP = /^\[([^\]]+)\]<([^>]+)>/;
+export const INTERNAL_LINK_REGEXP = /^\[([^\]]+)\]<([^>]+)>/;
 
 const markedInternalLink = () => {
   return {
@@ -13,7 +13,7 @@ const markedInternalLink = () => {
           return src.match(/\[/)?.index;
         },
         tokenizer(src) {
-          const match = src.match(LINK_REGEXP);
+          const match = src.match(INTERNAL_LINK_REGEXP);
 
           if (match) {
             return {
