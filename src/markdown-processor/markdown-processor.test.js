@@ -386,4 +386,111 @@ describe('markdownProcessor', () => {
       target: 'https://example.com/details',
     });
   });
+
+  it('should process YouTube iframe with correct type', () => {
+    const markdownContent =
+      '@![video](https://www.youtube.com/embed/4mBrMhczurY)';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const youtubeContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.YOUTUBE
+    );
+
+    expect(youtubeContainer).toBeTruthy();
+
+    const payloadString = youtubeContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      position: {
+        end: 52,
+        start: 0,
+      },
+      title: 'video',
+      source: 'https://www.youtube.com/embed/4mBrMhczurY',
+    });
+  });
+
+  it('should process Codepen iframe with correct type', () => {
+    const markdownContent =
+      '@![My Pen](https://codepen.io/username/embed/abc123)';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const codepenContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.CODEPEN
+    );
+
+    expect(codepenContainer).toBeTruthy();
+
+    const payloadString = codepenContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      position: {
+        end: 52,
+        start: 0,
+      },
+      title: 'My Pen',
+      source: 'https://codepen.io/username/embed/abc123',
+    });
+  });
+
+  it('should process generic iframe with correct type', () => {
+    const markdownContent = '@![External Content](https://example.com/embed)';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const iframeContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.IFRAME
+    );
+
+    expect(iframeContainer).toBeTruthy();
+
+    const payloadString = iframeContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      position: {
+        end: 47,
+        start: 0,
+      },
+      title: 'External Content',
+      source: 'https://example.com/embed',
+    });
+  });
 });

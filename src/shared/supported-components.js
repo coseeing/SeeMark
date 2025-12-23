@@ -9,4 +9,7 @@ export const SUPPORTED_COMPONENT_TYPES = {
   IMAGE_LINK: 'imageLink',
   IMAGE_DISPLAY: 'imageDisplay',
   IMAGE_DISPLAY_LINK: 'imageDisplayLink',
+  YOUTUBE: 'youtube',
+  CODEPEN: 'codepen',
+  IFRAME: 'iframe',
 };

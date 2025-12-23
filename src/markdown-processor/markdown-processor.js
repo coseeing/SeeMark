@@ -11,6 +11,7 @@ import externalLinkTabTitle from './marked-extentions/external-link-tab-title';
 import imageLink from './marked-extentions/image-link';
 import imageDisplay from './marked-extentions/image-display';
 import imageDisplayLink from './marked-extentions/image-display-link';
+import iframe from './marked-extentions/iframe';
 
 const markdownProcessor = (markdownContent = '', options = {}) => {
   const asciimathDelimiter = 'graveaccent';
@@ -38,6 +39,7 @@ const markdownProcessor = (markdownContent = '', options = {}) => {
       // this should be used as last resort, prefer avoid conflicting syntaxes if possible.
       imageDisplay,
       imageDisplayLink,
+      iframe,
     ],
   });
 
