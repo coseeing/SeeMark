@@ -2,6 +2,7 @@ import markedProcessorFactory from './marked-wrapper/marked-wrapper';
 
 import math from './marked-extentions/math';
 import alert from './marked-extentions/alert';
+import heading from './marked-extentions/heading';
 import internalLink from './marked-extentions/internal-link';
 import image from './marked-extentions/image';
 import internalLinkTitle from './marked-extentions/internal-link-title';
@@ -25,6 +26,7 @@ const markdownProcessor = (markdownContent = '', options = {}) => {
     extensions: [
       math,
       alert,
+      heading,
       internalLink,
       internalLinkTitle,
       image,
