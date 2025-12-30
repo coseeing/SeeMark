@@ -1,5 +1,4 @@
 import '@testing-library/jest-dom';
-import { getByRole } from '@testing-library/dom';
 
 import createDOMFromHTML from '../testing-helpers/create-dom-from-html';
 import { getElementByType } from '../testing-helpers/custom-query';
@@ -21,12 +20,13 @@ describe('markdownProcessor', () => {
 
     const container = createDOMFromHTML(result);
 
-    const heading = getByRole(container, 'heading', {
-      level: 1,
-      name: 'Hello World',
-    });
+    const heading = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.HEADING
+    );
 
     expect(heading).toBeTruthy();
+    expect(heading.textContent).toBe('Hello World');
   });
 
   it('should handle math expressions with brackets', () => {
