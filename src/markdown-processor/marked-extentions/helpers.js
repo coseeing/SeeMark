@@ -18,6 +18,14 @@ export const extractTokenMeta = (token, customMeta = {}) => {
   };
 };
 
+/**
+ * Builds HTML markup with SeeMark data attributes for custom components.
+ *
+ * @param {string} type - The component type identifier (from SUPPORTED_COMPONENT_TYPES)
+ * @param {Object} meta - Metadata to include in payload (passed to React component as props)
+ * @param {string} children - Inner HTML content
+ * @returns {string} HTML string
+ */
 export const buildHTMLMarkup = (type = '', meta = {}, children = '') => {
   const payload = JSON.stringify(meta);
 
