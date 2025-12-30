@@ -64,19 +64,25 @@ const markedIframe = () => {
             };
           }
         },
-        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.IFRAME),
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.IFRAME, {
+          parseChildren: false,
+        }),
       },
       // YouTube renderer extension
       {
         name: SUPPORTED_COMPONENT_TYPES.YOUTUBE,
         level: 'inline',
-        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.YOUTUBE),
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.YOUTUBE, {
+          parseChildren: false,
+        }),
       },
       // Codepen renderer extension
       {
         name: SUPPORTED_COMPONENT_TYPES.CODEPEN,
         level: 'inline',
-        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.CODEPEN),
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.CODEPEN, {
+          parseChildren: false,
+        }),
       },
     ],
   };
