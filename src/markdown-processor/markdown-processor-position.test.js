@@ -929,3 +929,238 @@ describe('markdownProcessor - edge cases', () => {
     expect(extracted).toBe(markdownContent);
   });
 });
+
+describe('markdownProcessor - position tracking for all component types', () => {
+  const options = {
+    latexDelimiter: 'bracket',
+    documentFormat: 'inline',
+    imageFiles: { 'img-id': 'path/to/image.png' },
+  };
+
+  /**
+   * Helper to verify position for a component
+   */
+  const verifyPosition = (container, componentType) => {
+    const element = getElementByType(container, componentType);
+    expect(element).not.toBeNull();
+
+    const payload = JSON.parse(
+      element.getAttribute(SEE_MARK_PAYLOAD_DATA_ATTRIBUTES)
+    );
+
+    expect(payload.position).toBeDefined();
+    expect(payload.position.start).toBeGreaterThanOrEqual(0);
+    expect(payload.position.end).toBeGreaterThan(payload.position.start);
+
+    return payload;
+  };
+
+  // Link types
+  it('should include position info in internal link with title payload', () => {
+    const markdownContent = `[Display][[Title]]<target>`;
+    const result = markdownProcessor(markdownContent, options);
+    const container = createDOMFromHTML(result);
+
+    const payload = verifyPosition(
+      container,
+      SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK_TITLE,
+      markdownContent
+    );
+
+    const extracted = markdownContent.substring(
+      payload.position.start,
+      payload.position.end
+    );
+    expect(extracted).toBe('[Display][[Title]]<target>');
+  });
+
+  it('should include position info in external link tab payload', () => {
+    const markdownContent = `@[Display](https://example.com)`;
+    const result = markdownProcessor(markdownContent, options);
+    const container = createDOMFromHTML(result);
+
+    const payload = verifyPosition(
+      container,
+      SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TAB,
+      markdownContent
+    );
+
+    const extracted = markdownContent.substring(
+      payload.position.start,
+      payload.position.end
+    );
+    expect(extracted).toBe('@[Display](https://example.com)');
+  });
+
+  it('should include position info in external link tab with title payload', () => {
+    const markdownContent = `@[Display][[Title]](https://example.com)`;
+    const result = markdownProcessor(markdownContent, options);
+    const container = createDOMFromHTML(result);
+
+    const payload = verifyPosition(
+      container,
+      SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TAB_TITLE,
+      markdownContent
+    );
+
+    const extracted = markdownContent.substring(
+      payload.position.start,
+      payload.position.end
+    );
+    expect(extracted).toBe('@[Display][[Title]](https://example.com)');
+  });
+
+  it('should include position info in external link with title payload', () => {
+    const markdownContent = `[Display][[Title]](https://example.com)`;
+    const result = markdownProcessor(markdownContent, options);
+    const container = createDOMFromHTML(result);
+
+    const payload = verifyPosition(
+      container,
+      SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TITLE,
+      markdownContent
+    );
+
+    const extracted = markdownContent.substring(
+      payload.position.start,
+      payload.position.end
+    );
+    expect(extracted).toBe('[Display][[Title]](https://example.com)');
+  });
+
+  // Image types
+  it('should include position info in image link payload', () => {
+    const markdownContent = `![alt](img-id)((https://example.com))`;
+    const result = markdownProcessor(markdownContent, options);
+    const container = createDOMFromHTML(result);
+
+    const payload = verifyPosition(
+      container,
+      SUPPORTED_COMPONENT_TYPES.IMAGE_LINK,
+      markdownContent
+    );
+
+    const extracted = markdownContent.substring(
+      payload.position.start,
+      payload.position.end
+    );
+    expect(extracted).toBe('![alt](img-id)((https://example.com))');
+  });
+
+  it('should include position info in image display payload', () => {
+    const markdownContent = `![alt][[caption]](img-id)`;
+    const result = markdownProcessor(markdownContent, options);
+    const container = createDOMFromHTML(result);
+
+    const payload = verifyPosition(
+      container,
+      SUPPORTED_COMPONENT_TYPES.IMAGE_DISPLAY,
+      markdownContent
+    );
+
+    const extracted = markdownContent.substring(
+      payload.position.start,
+      payload.position.end
+    );
+    expect(extracted).toBe('![alt][[caption]](img-id)');
+  });
+
+  it('should include position info in image display link payload', () => {
+    const markdownContent = `![alt][[caption]](img-id)((https://example.com))`;
+    const result = markdownProcessor(markdownContent, options);
+    const container = createDOMFromHTML(result);
+
+    const payload = verifyPosition(
+      container,
+      SUPPORTED_COMPONENT_TYPES.IMAGE_DISPLAY_LINK,
+      markdownContent
+    );
+
+    const extracted = markdownContent.substring(
+      payload.position.start,
+      payload.position.end
+    );
+    expect(extracted).toBe('![alt][[caption]](img-id)((https://example.com))');
+  });
+
+  // Embed types
+  it('should include position info in iframe payload', () => {
+    const markdownContent = `@![title](https://example.com/embed)`;
+    const result = markdownProcessor(markdownContent, options);
+    const container = createDOMFromHTML(result);
+
+    const payload = verifyPosition(
+      container,
+      SUPPORTED_COMPONENT_TYPES.IFRAME,
+      markdownContent
+    );
+
+    const extracted = markdownContent.substring(
+      payload.position.start,
+      payload.position.end
+    );
+    expect(extracted).toBe('@![title](https://example.com/embed)');
+  });
+
+  it('should include position info in youtube payload', () => {
+    const markdownContent = `@![video title](https://www.youtube.com/embed/abc123)`;
+    const result = markdownProcessor(markdownContent, options);
+    const container = createDOMFromHTML(result);
+
+    const payload = verifyPosition(
+      container,
+      SUPPORTED_COMPONENT_TYPES.YOUTUBE,
+      markdownContent
+    );
+
+    const extracted = markdownContent.substring(
+      payload.position.start,
+      payload.position.end
+    );
+    expect(extracted).toBe(
+      '@![video title](https://www.youtube.com/embed/abc123)'
+    );
+  });
+
+  it('should include position info in codepen payload', () => {
+    const markdownContent = `@![pen title](https://codepen.io/user/embed/abc123)`;
+    const result = markdownProcessor(markdownContent, options);
+    const container = createDOMFromHTML(result);
+
+    const payload = verifyPosition(
+      container,
+      SUPPORTED_COMPONENT_TYPES.CODEPEN,
+      markdownContent
+    );
+
+    const extracted = markdownContent.substring(
+      payload.position.start,
+      payload.position.end
+    );
+    expect(extracted).toBe(
+      '@![pen title](https://codepen.io/user/embed/abc123)'
+    );
+  });
+
+  // Heading
+  it('should include position info in heading payload', () => {
+    const markdownContent = `# Heading text`;
+    const result = markdownProcessor(markdownContent, {
+      ...options,
+      documentFormat: 'block',
+    });
+    const container = createDOMFromHTML(result);
+
+    const payload = verifyPosition(
+      container,
+      SUPPORTED_COMPONENT_TYPES.HEADING,
+      markdownContent
+    );
+
+    const extracted = markdownContent.substring(
+      payload.position.start,
+      payload.position.end
+    );
+    expect(extracted).toBe('# Heading text');
+  });
+});
