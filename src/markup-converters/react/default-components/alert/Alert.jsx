@@ -20,4 +20,5 @@ Alert.propTypes = {
   internalLinkId: PropTypes.string,
   variant: PropTypes.string,
   title: PropTypes.string,
+  position: PropTypes.shape({ start: PropTypes.number, end: PropTypes.number }),
 };
