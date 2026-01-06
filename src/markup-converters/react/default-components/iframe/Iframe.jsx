@@ -8,6 +8,7 @@ const Iframe = ({ title, source }) => {
 Iframe.propTypes = {
   title: PropTypes.string,
   source: PropTypes.string,
+  position: PropTypes.shape({ start: PropTypes.number, end: PropTypes.number }),
 };
 
 export default Iframe;

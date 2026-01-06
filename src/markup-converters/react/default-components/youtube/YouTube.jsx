@@ -20,6 +20,7 @@ const YouTube = ({ title, source }) => {
 YouTube.propTypes = {
   title: PropTypes.string,
   source: PropTypes.string,
+  position: PropTypes.shape({ start: PropTypes.number, end: PropTypes.number }),
 };
 
 export default YouTube;

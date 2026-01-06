@@ -9,6 +9,7 @@ Image.propTypes = {
   alt: PropTypes.string,
   imageId: PropTypes.string,
   src: PropTypes.string,
+  position: PropTypes.shape({ start: PropTypes.number, end: PropTypes.number }),
 };
 
 export default Image;
