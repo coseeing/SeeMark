@@ -24,12 +24,20 @@ export const extractTokenMeta = (token, customMeta = {}) => {
  * @param {string} type - The component type identifier (from SUPPORTED_COMPONENT_TYPES)
  * @param {Object} meta - Metadata to include in payload (passed to React component as props)
  * @param {string} children - Inner HTML content
+ * @param {Object} options - Optional configuration
+ * @param {boolean} options.inline - Use <span> instead of <div> for inline elements (default: false)
  * @returns {string} HTML string
  */
-export const buildHTMLMarkup = (type = '', meta = {}, children = '') => {
+export const buildHTMLMarkup = (
+  type = '',
+  meta = {},
+  children = '',
+  { inline = false } = {}
+) => {
   const payload = JSON.stringify(meta);
+  const tag = inline ? 'span' : 'div';
 
-  return `<div ${SEE_MARK_PAYLOAD_DATA_ATTRIBUTES}='${payload}' ${SEEMARK_ELEMENT_TYPE_DATA_ATTRIBUTE}="${type}">${children}</div>`;
+  return `<${tag} ${SEE_MARK_PAYLOAD_DATA_ATTRIBUTES}='${payload}' ${SEEMARK_ELEMENT_TYPE_DATA_ATTRIBUTE}="${type}">${children}</${tag}>`;
 };
 
 /**
@@ -42,7 +50,7 @@ export const buildHTMLMarkup = (type = '', meta = {}, children = '') => {
  * 4. Build HTML markup wrapper with data attributes
  *
  * Supports both simple usage (no options) and advanced customization (with options).
- * Do NOT use for special cases like math extension that render inline HTML without wrapper.
+ * Use { inline: true } for inline-level extensions to generate <span> instead of <div>.
  *
  * @param {string} componentType - The component type identifier (from SUPPORTED_COMPONENT_TYPES)
  * @param {Object} options - Optional configuration for custom rendering behavior
@@ -52,9 +60,14 @@ export const buildHTMLMarkup = (type = '', meta = {}, children = '') => {
  *   If not provided, uses token.meta.
  * @param {boolean} options.parseChildren - Whether to parse child tokens (default: true).
  *   Set to false for extensions without children (e.g., image).
+ * @param {boolean} options.prependInlineTokens - Parse token.tokens as inline and prepend
+ *   before the markup (default: false). Used by math extension for preceding text.
+ *   When true, parseChildren should be false to avoid double parsing.
  * @param {Function} options.onError - Optional error handler.
  *   Receives (error, token) and should return fallback metadata object.
  *   If not provided, errors will propagate.
+ * @param {boolean} options.inline - Use <span> instead of <div> for inline elements (default: false).
+ *   Set to true for inline-level extensions (e.g., math, internal-link).
  * @returns {Function} A renderer function that can be used in a Marked extension
  *
  * @example
@@ -87,7 +100,13 @@ export const buildHTMLMarkup = (type = '', meta = {}, children = '') => {
  * };
  */
 export const createRenderer = (componentType, options = {}) => {
-  const { extractMeta = null, parseChildren = true, onError = null } = options;
+  const {
+    extractMeta = null,
+    parseChildren = true,
+    prependInlineTokens = false,
+    onError = null,
+    inline = false,
+  } = options;
 
   return function (token) {
     try {
@@ -102,12 +121,22 @@ export const createRenderer = (componentType, options = {}) => {
       const children = parseChildren ? this.parser.parse(tokens) : '';
 
       // Build HTML markup wrapper
-      return buildHTMLMarkup(componentType, fullMeta, children);
+      const markup = buildHTMLMarkup(componentType, fullMeta, children, {
+        inline,
+      });
+
+      // Prepend inline tokens if needed (used by math extension for preceding text)
+      if (prependInlineTokens) {
+        const precedingText = this.parser.parseInline(tokens);
+        return precedingText + markup;
+      }
+
+      return markup;
     } catch (error) {
       if (onError) {
         const fallbackMeta = onError(error, token);
         const fullMeta = extractTokenMeta(token, fallbackMeta);
-        return buildHTMLMarkup(componentType, fullMeta, '');
+        return buildHTMLMarkup(componentType, fullMeta, '', { inline });
       }
       throw error;
     }
