@@ -1,6 +1,8 @@
 import latex2mmlFactory from '../marked-wrapper/tex-to-mml';
 import asciimath2mmlFactory from '../marked-wrapper/ascii-math-to-mml';
 import mml2svg from '../marked-wrapper/mml-to-svg';
+import { createRenderer } from './helpers';
+import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 
 const LaTeX_delimiter_dict = {
   latex: {
@@ -103,19 +105,24 @@ const markedMath = ({ latexDelimiter, asciimathDelimiter, documentFormat }) => {
             };
           }
         },
-        renderer(token) {
-          let mathMl;
-          if (token.typed === 'asciimath') {
-            mathMl = asciimath2mml(token.math);
-          } else {
-            mathMl = latex2mml(token.math);
-          }
-          return `${this.parser.parseInline(
-            token.tokens
-          )}<span class="sr-only">${mathMl}</span><span aria-hidden="true">${mml2svg(
-            mathMl
-          )}</span>`;
-        },
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.MATH, {
+          extractMeta(token) {
+            const mathMl =
+              token.typed === 'asciimath'
+                ? asciimath2mml(token.math)
+                : latex2mml(token.math);
+            const svg = mml2svg(mathMl);
+            return {
+              math: token.math,
+              typed: token.typed,
+              mathMl,
+              svg,
+            };
+          },
+          parseChildren: false,
+          prependInlineTokens: true,
+          inline: true,
+        }),
       },
     ],
   };
