@@ -13,4 +13,5 @@ export const SUPPORTED_COMPONENT_TYPES = {
   YOUTUBE: 'youtube',
   CODEPEN: 'codepen',
   IFRAME: 'iframe',
+  MATH: 'math',
 };
