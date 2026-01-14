@@ -14,6 +14,7 @@ import ImageDisplayLink from './image-display-link/ImageDisplayLink.jsx';
 import YouTube from './youtube/YouTube.jsx';
 import CodePen from './codepen/CodePen.jsx';
 import Iframe from './iframe/Iframe.jsx';
+import Math from './math/Math.jsx';
 
 const defaultComponents = {
   [SUPPORTED_COMPONENT_TYPES.ALERT]: Alert,
@@ -30,6 +31,7 @@ const defaultComponents = {
   [SUPPORTED_COMPONENT_TYPES.YOUTUBE]: YouTube,
   [SUPPORTED_COMPONENT_TYPES.CODEPEN]: CodePen,
   [SUPPORTED_COMPONENT_TYPES.IFRAME]: Iframe,
+  [SUPPORTED_COMPONENT_TYPES.MATH]: Math,
 };
 
 export default defaultComponents;
