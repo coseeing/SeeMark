@@ -66,7 +66,7 @@ const markedImageDisplayLink = ({ imageFiles, shouldBuildImageObjectURL }) => {
 
             try {
               const imageFile = imageFiles[imageId];
-              const src = shouldBuildImageObjectURL
+              const source = shouldBuildImageObjectURL
                 ? blobUrlManager(imageId, imageFile)
                 : imageFile;
 
@@ -81,7 +81,7 @@ const markedImageDisplayLink = ({ imageFiles, shouldBuildImageObjectURL }) => {
                   alt,
                   display,
                   imageId,
-                  src,
+                  source,
                   target,
                 },
               };
@@ -99,7 +99,7 @@ const markedImageDisplayLink = ({ imageFiles, shouldBuildImageObjectURL }) => {
                   alt,
                   display,
                   imageId,
-                  src: imageId,
+                  source: imageId,
                   target,
                 },
               };

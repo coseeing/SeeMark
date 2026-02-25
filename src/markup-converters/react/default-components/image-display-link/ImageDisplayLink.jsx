@@ -5,13 +5,13 @@ const ImageDisplayLink = ({
   alt = '',
   display = '',
   imageId = '',
-  src = '',
+  source = '',
   target = '',
 }) => {
   return (
     <a href={target}>
       <figure>
-        <img src={src} alt={alt} data-seemark-image-id={imageId} />
+        <img src={source} alt={alt} data-seemark-image-id={imageId} />
         <figcaption>{display}</figcaption>
       </figure>
     </a>
@@ -22,7 +22,7 @@ ImageDisplayLink.propTypes = {
   alt: PropTypes.string,
   display: PropTypes.string,
   imageId: PropTypes.string,
-  src: PropTypes.string,
+  source: PropTypes.string,
   target: PropTypes.string.isRequired,
   position: PropTypes.shape({ start: PropTypes.number, end: PropTypes.number }),
 };

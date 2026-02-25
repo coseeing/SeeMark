@@ -60,7 +60,7 @@ const markedImageDisplay = ({ imageFiles, shouldBuildImageObjectURL }) => {
 
             try {
               const imageFile = imageFiles[imageId];
-              const src = shouldBuildImageObjectURL
+              const source = shouldBuildImageObjectURL
                 ? blobUrlManager(imageId, imageFile)
                 : imageFile;
 
@@ -74,7 +74,7 @@ const markedImageDisplay = ({ imageFiles, shouldBuildImageObjectURL }) => {
                   alt,
                   display,
                   imageId,
-                  src,
+                  source,
                 },
               };
             } catch (error) {
@@ -90,7 +90,7 @@ const markedImageDisplay = ({ imageFiles, shouldBuildImageObjectURL }) => {
                   alt,
                   display,
                   imageId,
-                  src: imageId,
+                  source: imageId,
                 },
               };
             }

@@ -309,7 +309,7 @@ describe('markdownProcessor', () => {
       alt: 'alt text',
       imageId: 'image-123',
       position: { start: 0, end: 52 },
-      src: 'https://example.com/image.jpg',
+      source: 'https://example.com/image.jpg',
       target: 'https://example.com/target',
     });
   });
@@ -346,7 +346,7 @@ describe('markdownProcessor', () => {
       display: 'Display caption',
       imageId: 'image-456',
       position: { start: 0, end: 41 },
-      src: 'https://example.com/image2.jpg',
+      source: 'https://example.com/image2.jpg',
     });
   });
 
@@ -382,7 +382,7 @@ describe('markdownProcessor', () => {
       display: 'Display caption',
       imageId: 'image-789',
       position: { start: 0, end: 72 },
-      src: 'https://example.com/image3.jpg',
+      source: 'https://example.com/image3.jpg',
       target: 'https://example.com/details',
     });
   });
