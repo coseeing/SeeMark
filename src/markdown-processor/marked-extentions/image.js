@@ -24,11 +24,11 @@ const markedImage = ({ imageFiles, shouldBuildImageObjectURL }) => {
         const imageId = token.href;
         const imageFile = imageFiles[imageId];
 
-        const src = shouldBuildImageObjectURL
+        const source = shouldBuildImageObjectURL
           ? blobUrlManager(imageId, imageFile)
           : imageFile;
 
-        return { alt, imageId, src };
+        return { alt, imageId, source };
       },
       parseChildren: false,
       onError(error, token) {
@@ -36,7 +36,7 @@ const markedImage = ({ imageFiles, shouldBuildImageObjectURL }) => {
         return {
           alt: token.text,
           imageId: token.href,
-          src: token.href,
+          source: token.href,
         };
       },
     }),
