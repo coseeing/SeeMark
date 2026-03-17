@@ -21,11 +21,20 @@ import { createRenderer } from './helpers';
 // Regex exported for test
 export const IFRAME_REGEXP = /^@!\[([^\]]+)\]\(([^)]+)\)/;
 
-const YOUTUBE_REGEXP = /^https:\/\/www\.youtube\.com\/embed\/.*/;
+const YOUTUBE_EMBED_REGEXP = /^https:\/\/www\.youtube\.com\/embed\/.*/;
+const YOUTUBE_WATCH_REGEXP = /^https:\/\/www\.youtube\.com\/watch\?v=([^&]+)/;
 const CODEPEN_REGEXP = /^https:\/\/codepen\.io\/.*\/embed\/.*/;
 
+const normalizeYoutubeSource = (source) => {
+  const match = source.match(YOUTUBE_WATCH_REGEXP);
+  if (match) {
+    return `https://www.youtube.com/embed/${match[1]}`;
+  }
+  return source;
+};
+
 const determineIframeType = (source) => {
-  if (YOUTUBE_REGEXP.test(source)) {
+  if (YOUTUBE_EMBED_REGEXP.test(source) || YOUTUBE_WATCH_REGEXP.test(source)) {
     return SUPPORTED_COMPONENT_TYPES.YOUTUBE;
   }
   if (CODEPEN_REGEXP.test(source)) {
@@ -49,8 +58,12 @@ const markedIframe = () => {
 
           if (match) {
             const title = match[1];
-            const source = match[2];
-            const type = determineIframeType(source);
+            const rawSource = match[2];
+            const type = determineIframeType(rawSource);
+            const source =
+              type === SUPPORTED_COMPONENT_TYPES.YOUTUBE
+                ? normalizeYoutubeSource(rawSource)
+                : rawSource;
 
             return {
               type,
