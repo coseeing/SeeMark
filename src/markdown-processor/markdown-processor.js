@@ -1,6 +1,7 @@
 import markedProcessorFactory from './marked-wrapper/marked-wrapper';
 
 import math from './marked-extentions/math';
+import nemeth from './marked-extentions/nemeth';
 import alert from './marked-extentions/alert';
 import heading from './marked-extentions/heading';
 import internalLink from './marked-extentions/internal-link';
@@ -25,6 +26,7 @@ const markdownProcessor = (markdownContent = '', options = {}) => {
     shouldBuildImageObjectURL: options.shouldBuildImageObjectURL,
     extensions: [
       math,
+      nemeth,
       alert,
       heading,
       internalLink,
