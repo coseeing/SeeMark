@@ -61,6 +61,36 @@ describe('markdownProcessor', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should handle nemeth braille math expressions', () => {
+    const markdownContent = '@⠁⠘⠆@';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
+
+    expect(mathEl).toBeTruthy();
+
+    const payload = JSON.parse(
+      mathEl.getAttribute(SEE_MARK_PAYLOAD_DATA_ATTRIBUTES)
+    );
+
+    expect(payload.typed).toBe('nemeth');
+    expect(payload.latex).toBe('a^2');
+    expect(payload.math).toBe('⠁⠘⠆');
+    expect(payload.mathMl).toBeTruthy();
+    expect(payload.svg).toBeTruthy();
+
+    // snapshot matching
+    expect(container).toMatchSnapshot();
+  });
+
   it('should process alert', () => {
     const markdownContent = `> [!WARNING]\n> Critical content demanding immediate user attention due to potential risks.`;
     const options = {
