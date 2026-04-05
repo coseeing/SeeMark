@@ -19,7 +19,8 @@ const Math = ({ mathMl = '', svg = '' }) => {
 
 Math.propTypes = {
   math: PropTypes.string,
-  typed: PropTypes.oneOf(['latex', 'asciimath']),
+  typed: PropTypes.oneOf(['latex', 'asciimath', 'nemeth']),
+  latex: PropTypes.string,
   mathMl: PropTypes.string,
   svg: PropTypes.string,
   position: PropTypes.shape({ start: PropTypes.number, end: PropTypes.number }),
