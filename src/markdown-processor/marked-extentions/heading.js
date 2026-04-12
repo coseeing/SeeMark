@@ -32,7 +32,7 @@ export function slugify(text) {
  * @param {Map<string, number>} usedIds - Map tracking used IDs and their counts
  * @returns {string} A unique ID
  */
-function getUniqueId(baseId, usedIds) {
+export function getUniqueId(baseId, usedIds) {
   if (!usedIds.has(baseId)) {
     usedIds.set(baseId, 0);
     return baseId;
