@@ -54,7 +54,10 @@ const markedExternalLinkTabTitle = () => {
           }
         },
         renderer: createRenderer(
-          SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TAB_TITLE
+          SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TAB_TITLE,
+          {
+            inline: true,
+          }
         ),
       },
     ],

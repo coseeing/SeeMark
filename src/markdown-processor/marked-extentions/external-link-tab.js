@@ -47,7 +47,9 @@ const markedExternalLinkTab = () => {
             };
           }
         },
-        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TAB),
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.EXTERNAL_LINK_TAB, {
+          inline: true,
+        }),
       },
     ],
   };

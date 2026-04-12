@@ -45,7 +45,9 @@ const markedInternalLink = () => {
             };
           }
         },
-        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK),
+        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK, {
+          inline: true,
+        }),
       },
     ],
   };
