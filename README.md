@@ -97,3 +97,38 @@ interface Position {
   end: number;    // Character offset where the component ends
 }
 ```
+
+## Table of Contents
+
+### Usage
+
+```js
+import { createTableOfContents } from '@coseeing/see-mark';
+
+const markdown = `
+## Introduction
+### Getting Started
+## Advanced Usage
+### Configuration
+`;
+
+const toc = createTableOfContents(markdown);
+// [
+//   { level: 2, id: 'introduction',   text: 'Introduction' },
+//   { level: 3, id: 'getting-started', text: 'Getting Started' },
+//   { level: 2, id: 'advanced-usage',  text: 'Advanced Usage' },
+//   { level: 3, id: 'configuration',   text: 'Configuration' },
+// ]
+```
+
+`createTableOfContents` parses a markdown string and returns a flat array of all h1–h6 headings in document order. The `id` of each entry is generated with the same slugify logic used by the seemark's markdown parser, so IDs are guaranteed to match the `id` prop on rendered heading components.
+
+### Return value
+
+Each entry in the returned array has the following shape:
+
+| Field | Type   | Description                                                  |
+| ----- | ------ | ------------------------------------------------------------ |
+| level | number | Heading level (1–6)                                          |
+| id    | string | URL-friendly slug, unique within the document               |
+| text  | string | Plain heading text with inline markdown syntax stripped      |
