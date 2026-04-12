@@ -1,5 +1,4 @@
-import { marked } from 'marked';
-
+import { createMarkdownProcessor } from '../markdown-processor/markdown-processor';
 import {
   slugify,
   getUniqueId,
@@ -15,7 +14,9 @@ import {
 function extractPlainText(inlineTokens = []) {
   return inlineTokens
     .map((token) =>
-      token.tokens ? extractPlainText(token.tokens) : (token.text ?? '')
+      token.tokens
+        ? extractPlainText(token.tokens)
+        : (token.text ?? token.display ?? '')
     )
     .join('');
 }
@@ -28,6 +29,11 @@ function extractPlainText(inlineTokens = []) {
  * components.
  *
  * @param {string} markdown - Raw markdown string
+ * @param {object} [options]
+ * @param {string} [options.latexDelimiter] - LaTeX delimiter style ('bracket', 'dollar', 'latex').
+ *   Must match the value used by the markdown renderer so that math tokens
+ *   inside headings are recognised and their text is correctly extracted.
+ *   Defaults to 'bracket'.
  * @returns {{ level: number, id: string, text: string }[]}
  *
  * @example
@@ -37,8 +43,11 @@ function extractPlainText(inlineTokens = []) {
  * //   { level: 3, id: 'world', text: 'World' },
  * // ]
  */
-const createTableOfContents = (markdown) => {
-  const tokens = marked.lexer(markdown);
+const createTableOfContents = (markdown, options = {}) => {
+  const { lexer } = createMarkdownProcessor({
+    latexDelimiter: options.latexDelimiter ?? 'bracket',
+  });
+  const tokens = lexer(markdown);
   const usedIds = new Map();
 
   return tokens

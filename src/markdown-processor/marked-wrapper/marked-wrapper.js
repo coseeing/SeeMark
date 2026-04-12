@@ -34,7 +34,10 @@ const markedProcessorFactory = ({
     );
   });
 
-  return (raw) => marked.parse(raw);
+  return {
+    parse: (raw) => marked.parse(raw),
+    lexer: (raw) => marked.lexer(raw),
+  };
 };
 
 export default markedProcessorFactory;
