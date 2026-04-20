@@ -15,10 +15,10 @@ import imageDisplay from './marked-extentions/image-display';
 import imageDisplayLink from './marked-extentions/image-display-link';
 import iframe from './marked-extentions/iframe';
 
-const markdownProcessor = (markdownContent = '', options = {}) => {
+export const createMarkdownProcessor = (options = {}) => {
   const asciimathDelimiter = 'graveaccent';
 
-  const markdownProcessor = markedProcessorFactory({
+  return markedProcessorFactory({
     latexDelimiter: options.latexDelimiter,
     asciimathDelimiter,
     documentFormat: options.documentFormat,
@@ -46,8 +46,9 @@ const markdownProcessor = (markdownContent = '', options = {}) => {
       iframe,
     ],
   });
-
-  return markdownProcessor(markdownContent);
 };
+
+const markdownProcessor = (markdownContent = '', options = {}) =>
+  createMarkdownProcessor(options).parse(markdownContent);
 
 export default markdownProcessor;
