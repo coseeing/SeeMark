@@ -52,7 +52,12 @@ const markedInternalLinkTitle = () => {
             };
           }
         },
-        renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK_TITLE),
+        renderer: createRenderer(
+          SUPPORTED_COMPONENT_TYPES.INTERNAL_LINK_TITLE,
+          {
+            inline: true,
+          }
+        ),
       },
     ],
   };
