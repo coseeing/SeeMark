@@ -1,6 +1,6 @@
 {
   "name": "@coseeing/see-mark",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "description": "A markdown parser for a11y",
   "main": "./lib/see-mark.cjs",
   "files": [
@@ -41,7 +41,7 @@
     "rollup": "^4.40.1"
   },
   "dependencies": {
-    "@coseeing/nemeth2latex": "^0.1.0",
+    "@coseeing/nemeth2latex": "^0.2.0",
     "html-react-parser": "^5.2.5",
     "marked": "^15.0.11",
     "mathjax-full": "^3.2.2"
