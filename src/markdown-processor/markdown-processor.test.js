@@ -308,6 +308,51 @@ describe('markdownProcessor', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should handle asciimath expressions when latexOnly is false', () => {
+    const markdownContent = '`x^2`';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+      latexOnly: false,
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
+
+    expect(mathEl).toBeTruthy();
+
+    const payload = JSON.parse(
+      mathEl.getAttribute(SEE_MARK_PAYLOAD_DATA_ATTRIBUTES)
+    );
+
+    expect(payload.typed).toBe('asciimath');
+    expect(payload.math).toBe('x^2');
+    expect(payload.mathMl).toBeTruthy();
+    expect(payload.svg).toBeTruthy();
+  });
+
+  it('should not process asciimath expressions when latexOnly is true', () => {
+    const markdownContent = '`x^2`';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+      latexOnly: true,
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
+
+    expect(mathEl).toBeNull();
+  });
+
   it('should process image link', () => {
     const markdownContent = `![alt text](image-123)((https://example.com/target))`;
     const options = {
