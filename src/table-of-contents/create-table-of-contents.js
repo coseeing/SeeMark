@@ -34,6 +34,7 @@ function extractPlainText(inlineTokens = []) {
  *   Must match the value used by the markdown renderer so that math tokens
  *   inside headings are recognised and their text is correctly extracted.
  *   Defaults to 'bracket'.
+ * @param {boolean} [options.includeMathExtensions=true] - Whether to enable math extensions. Defaults to true.
  * @returns {{ level: number, id: string, text: string }[]}
  *
  * @example
@@ -46,6 +47,7 @@ function extractPlainText(inlineTokens = []) {
 const createTableOfContents = (markdown, options = {}) => {
   const { lexer } = createMarkdownProcessor({
     latexDelimiter: options.latexDelimiter ?? 'bracket',
+    includeMathExtensions: options.includeMathExtensions ?? true,
   });
   const tokens = lexer(markdown);
   const usedIds = new Map();

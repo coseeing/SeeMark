@@ -17,7 +17,6 @@ import iframe from './marked-extentions/iframe';
 
 export const createMarkdownProcessor = (options = {}) => {
   const asciimathDelimiter = 'graveaccent';
-
   return markedProcessorFactory({
     latexDelimiter: options.latexDelimiter,
     asciimathDelimiter,
@@ -25,8 +24,7 @@ export const createMarkdownProcessor = (options = {}) => {
     imageFiles: options.imageFiles,
     shouldBuildImageObjectURL: options.shouldBuildImageObjectURL,
     extensions: [
-      math,
-      nemeth,
+      ...(options.includeMathExtensions !== false ? [math, nemeth] : []),
       alert,
       heading,
       internalLink,
