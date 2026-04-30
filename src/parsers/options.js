@@ -3,6 +3,7 @@ const DEFAULT_OPTINOS = {
   documentFormat: 'inline',
   imageFiles: null,
   shouldBuildImageObjectURL: false,
+  latexOnly: false,
 };
 
 export const createMarkdownParserOptions = (options = DEFAULT_OPTINOS) => {

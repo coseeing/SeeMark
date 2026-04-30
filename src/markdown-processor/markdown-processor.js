@@ -24,6 +24,7 @@ export const createMarkdownProcessor = (options = {}) => {
     documentFormat: options.documentFormat,
     imageFiles: options.imageFiles,
     shouldBuildImageObjectURL: options.shouldBuildImageObjectURL,
+    latexOnly: options.latexOnly,
     extensions: [
       math,
       nemeth,

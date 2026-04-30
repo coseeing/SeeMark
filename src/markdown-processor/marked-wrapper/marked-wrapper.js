@@ -8,6 +8,7 @@ const markedProcessorFactory = ({
   documentFormat,
   imageFiles = {},
   shouldBuildImageObjectURL = false,
+  latexOnly = false,
   extensions = [],
 }) => {
   const marked = new Marked();
@@ -30,6 +31,7 @@ const markedProcessorFactory = ({
         documentFormat,
         imageFiles,
         shouldBuildImageObjectURL,
+        latexOnly,
       })
     );
   });

@@ -49,29 +49,42 @@ const AsciiMath_delimiter_dict = {
  * @param {string} options.latexDelimiter - LaTeX delimiter style ('bracket', 'dollar', 'latex')
  * @param {string} options.asciimathDelimiter - AsciiMath delimiter style ('graveaccent', 'asciimath')
  * @param {string} options.documentFormat - Document format for MathML display ('inline' or 'block')
+ * @param {boolean} [options.latexOnly=false] - When true, disables AsciiMath support
  * @returns {Object} Marked extension object with math tokenizer and renderer
  */
-const markedMath = ({ latexDelimiter, asciimathDelimiter, documentFormat }) => {
-  const asciimath2mml = asciimath2mmlFactory({
-    htmlMathDisplay: documentFormat,
-  });
+const markedMath = ({
+  latexDelimiter,
+  asciimathDelimiter,
+  documentFormat,
+  latexOnly = false,
+}) => {
   const latex2mml = latex2mmlFactory({ htmlMathDisplay: documentFormat });
+  const asciimath2mml = latexOnly
+    ? null
+    : asciimath2mmlFactory({ htmlMathDisplay: documentFormat });
 
   const LaTeX_delimiter = LaTeX_delimiter_dict[latexDelimiter];
-  const AsciiMath_delimiter = AsciiMath_delimiter_dict[asciimathDelimiter];
 
   const latex_restring = `(?<=[^\\\\]?)${LaTeX_delimiter.start}(.*?[^\\\\])?${LaTeX_delimiter.end}`;
-  const asciimath_restring = `(?<=[^\\\\]?)${AsciiMath_delimiter.start}(.*?[^\\\\])?${AsciiMath_delimiter.end}`;
-  const reTexMath = new RegExp(
-    `(.*?)(${latex_restring}|${asciimath_restring})`,
-    's'
-  );
-
   const latex_start_restring = `(?<=[^\\\\]?)${LaTeX_delimiter.start}`;
-  const asciimath_start_restring = `(?<=[^\\\\]?)${AsciiMath_delimiter.start}`;
-  const reTexMath_start = new RegExp(
-    `${latex_start_restring}|${asciimath_start_restring}`
-  );
+
+  let reTexMath, reTexMath_start;
+
+  if (latexOnly) {
+    reTexMath = new RegExp(`(.*?)(${latex_restring})`, 's');
+    reTexMath_start = new RegExp(latex_start_restring);
+  } else {
+    const AsciiMath_delimiter = AsciiMath_delimiter_dict[asciimathDelimiter];
+    const asciimath_restring = `(?<=[^\\\\]?)${AsciiMath_delimiter.start}(.*?[^\\\\])?${AsciiMath_delimiter.end}`;
+    const asciimath_start_restring = `(?<=[^\\\\]?)${AsciiMath_delimiter.start}`;
+    reTexMath = new RegExp(
+      `(.*?)(${latex_restring}|${asciimath_restring})`,
+      's'
+    );
+    reTexMath_start = new RegExp(
+      `${latex_start_restring}|${asciimath_start_restring}`
+    );
+  }
 
   return {
     extensions: [
@@ -86,13 +99,17 @@ const markedMath = ({ latexDelimiter, asciimathDelimiter, documentFormat }) => {
           const match = reTexMath.exec(src);
           if (match) {
             const math = match[3] || match[4];
-            const AsciiMath_delimiter_raw_start =
-              AsciiMath_delimiter.start.replace(/\\\\\\/g, '\\');
             let typed;
-            if (match[2].startsWith(AsciiMath_delimiter_raw_start)) {
-              typed = 'asciimath';
-            } else {
+            if (latexOnly) {
               typed = 'latex';
+            } else {
+              const AsciiMath_delimiter =
+                AsciiMath_delimiter_dict[asciimathDelimiter];
+              const AsciiMath_delimiter_raw_start =
+                AsciiMath_delimiter.start.replace(/\\\\\\/g, '\\');
+              typed = match[2].startsWith(AsciiMath_delimiter_raw_start)
+                ? 'asciimath'
+                : 'latex';
             }
             return {
               type: 'math',
