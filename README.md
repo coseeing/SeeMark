@@ -40,8 +40,10 @@ const content = seeMarkReactParse(markdown);
 
 | Option Name               | Type    | Default Value  | Description                                                        |
 | ------------------------- | ------- | -------------- | ------------------------------------------------------------------ |
-| latexDelimiter            | string  | 'bracket'      | The delimiter for LaTeX expressions. Options: 'bracket', 'dollar'. |
+| enableLatex               | boolean | true           | When false, LaTeX expressions are not parsed as math.              |
+| enableAsciimath           | boolean | true           | When false, AsciiMath expressions are not parsed as math.          |
 | enableNemeth              | boolean | true           | When false, the Nemeth braille math extension is disabled and `@…@` syntax is not parsed. |
+| latexDelimiter            | string  | 'bracket'      | The delimiter for LaTeX expressions. Options: 'bracket', 'dollar'. |
 | documentFormat            | string  | 'inline'       | The format of the document. Options: 'inline', 'block'.            |
 | imageFiles                | object  | { [ID]: File } | A map of image IDs to File objects for image rendering.            |
 | shouldBuildImageObjectURL | boolean | false          | should build image object URL.                                     |
@@ -126,10 +128,12 @@ const toc = createTableOfContents(markdown);
 
 ### Options
 
-| Option Name    | Type    | Default Value | Description                                                                                      |
-| -------------- | ------- | ------------- | ------------------------------------------------------------------------------------------------ |
+| Option Name    | Type    | Default Value | Description                                                                                 |
+| -------------- | ------- | ------------- | ------------------------------------------------------------------------------------------- |
+| enableLatex    | boolean | true          | When false, LaTeX expressions are not parsed as math.                                       |
+| enableAsciimath | boolean | true         | When false, AsciiMath expressions are not parsed as math.                                   |
+| enableNemeth   | boolean | true          | When false, the Nemeth braille math extension is disabled and `@…@` syntax is not parsed.  |
 | latexDelimiter | string  | 'bracket'     | The delimiter for LaTeX expressions. Options: 'bracket', 'dollar'. Must match the renderer. |
-| enableNemeth   | boolean | true          | When false, the Nemeth braille math extension is disabled and `@…@` syntax is not parsed.   |
 
 ### Return value
 

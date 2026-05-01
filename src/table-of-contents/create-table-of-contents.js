@@ -45,8 +45,10 @@ function extractPlainText(inlineTokens = []) {
  */
 const createTableOfContents = (markdown, options = {}) => {
   const { lexer } = createMarkdownProcessor({
-    latexDelimiter: options.latexDelimiter ?? 'bracket',
+    enableLatex: options.enableLatex !== false,
+    enableAsciimath: options.enableAsciimath !== false,
     enableNemeth: options.enableNemeth !== false,
+    latexDelimiter: options.latexDelimiter ?? 'bracket',
   });
   const tokens = lexer(markdown);
   const usedIds = new Map();

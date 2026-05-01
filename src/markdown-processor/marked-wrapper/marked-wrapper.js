@@ -3,6 +3,8 @@ import { Marked } from 'marked';
 import { createPositionTracker } from './position-tracker';
 
 const markedProcessorFactory = ({
+  enableLatex = true,
+  enableAsciimath = true,
   latexDelimiter,
   asciimathDelimiter,
   documentFormat,
@@ -25,6 +27,8 @@ const markedProcessorFactory = ({
   extensions.forEach((extension) => {
     marked.use(
       extension({
+        enableLatex,
+        enableAsciimath,
         latexDelimiter,
         asciimathDelimiter,
         documentFormat,

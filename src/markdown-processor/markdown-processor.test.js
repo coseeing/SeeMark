@@ -94,10 +94,10 @@ describe('markdownProcessor', () => {
   it('should not parse nemeth braille when enableNemeth is false', () => {
     const markdownContent = '@⠁⠘⠆@';
     const options = {
+      enableNemeth: false,
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
       imageFiles: {},
-      enableNemeth: false,
     };
 
     const result = markdownProcessor(markdownContent, options);
@@ -324,6 +324,85 @@ describe('markdownProcessor', () => {
 
     // snapshot matching
     expect(container).toMatchSnapshot();
+  });
+
+  it('should not parse latex when enableLatex is false', () => {
+    const markdownContent = '\\(a+b=c\\)';
+    const options = {
+      enableLatex: false,
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
+
+    expect(mathEl).toBeNull();
+  });
+
+  it('should not parse asciimath when enableAsciimath is false', () => {
+    const markdownContent = '`a+b=c`';
+    const options = {
+      enableAsciimath: false,
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
+
+    expect(mathEl).toBeNull();
+  });
+
+  it('should still parse latex when enableAsciimath is false', () => {
+    const markdownContent = '\\(a+b=c\\)';
+    const options = {
+      enableAsciimath: false,
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
+
+    expect(mathEl).toBeTruthy();
+
+    const payload = JSON.parse(
+      mathEl.getAttribute(SEE_MARK_PAYLOAD_DATA_ATTRIBUTES)
+    );
+
+    expect(payload.typed).toBe('latex');
+  });
+
+  it('should not parse any math when both enableLatex and enableAsciimath are false', () => {
+    const markdownContent = '\\(a+b=c\\) `a+b=c`';
+    const options = {
+      enableLatex: false,
+      enableAsciimath: false,
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
+
+    expect(mathEl).toBeNull();
   });
 
   it('should process image link', () => {

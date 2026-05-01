@@ -17,6 +17,9 @@ import iframe from './marked-extentions/iframe';
 
 export const createMarkdownProcessor = (options = {}) => {
   const asciimathDelimiter = 'graveaccent';
+
+  const enableLatex = options.enableLatex !== false;
+  const enableAsciimath = options.enableAsciimath !== false;
   const enableNemeth = options.enableNemeth !== false;
 
   return markedProcessorFactory({
@@ -25,8 +28,10 @@ export const createMarkdownProcessor = (options = {}) => {
     documentFormat: options.documentFormat,
     imageFiles: options.imageFiles,
     shouldBuildImageObjectURL: options.shouldBuildImageObjectURL,
+    enableLatex,
+    enableAsciimath,
     extensions: [
-      math,
+      ...(enableLatex || enableAsciimath ? [math] : []),
       ...(enableNemeth ? [nemeth] : []),
       alert,
       heading,

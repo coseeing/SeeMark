@@ -1,9 +1,11 @@
 const DEFAULT_OPTINOS = {
+  enableLatex: true,
+  enableAsciimath: true,
+  enableNemeth: true,
   latexDelimiter: 'bracket',
   documentFormat: 'inline',
   imageFiles: null,
   shouldBuildImageObjectURL: false,
-  enableNemeth: true,
 };
 
 export const createMarkdownParserOptions = (options = DEFAULT_OPTINOS) => {
