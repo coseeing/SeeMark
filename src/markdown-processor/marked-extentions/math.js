@@ -51,7 +51,17 @@ const AsciiMath_delimiter_dict = {
  * @param {string} options.documentFormat - Document format for MathML display ('inline' or 'block')
  * @returns {Object} Marked extension object with math tokenizer and renderer
  */
-const markedMath = ({ latexDelimiter, asciimathDelimiter, documentFormat }) => {
+const markedMath = ({
+  enableLatex = true,
+  enableAsciimath = true,
+  latexDelimiter,
+  asciimathDelimiter,
+  documentFormat,
+}) => {
+  if (!enableLatex && !enableAsciimath) {
+    return { extensions: [] };
+  }
+
   const asciimath2mml = asciimath2mmlFactory({
     htmlMathDisplay: documentFormat,
   });
@@ -62,16 +72,21 @@ const markedMath = ({ latexDelimiter, asciimathDelimiter, documentFormat }) => {
 
   const latex_restring = `(?<=[^\\\\]?)${LaTeX_delimiter.start}(.*?[^\\\\])?${LaTeX_delimiter.end}`;
   const asciimath_restring = `(?<=[^\\\\]?)${AsciiMath_delimiter.start}(.*?[^\\\\])?${AsciiMath_delimiter.end}`;
-  const reTexMath = new RegExp(
-    `(.*?)(${latex_restring}|${asciimath_restring})`,
-    's'
-  );
 
   const latex_start_restring = `(?<=[^\\\\]?)${LaTeX_delimiter.start}`;
   const asciimath_start_restring = `(?<=[^\\\\]?)${AsciiMath_delimiter.start}`;
-  const reTexMath_start = new RegExp(
-    `${latex_start_restring}|${asciimath_start_restring}`
-  );
+
+  const matchPatterns = [
+    ...(enableLatex ? [latex_restring] : []),
+    ...(enableAsciimath ? [asciimath_restring] : []),
+  ];
+  const startPatterns = [
+    ...(enableLatex ? [latex_start_restring] : []),
+    ...(enableAsciimath ? [asciimath_start_restring] : []),
+  ];
+
+  const reTexMath = new RegExp(`(.*?)(${matchPatterns.join('|')})`, 's');
+  const reTexMath_start = new RegExp(startPatterns.join('|'));
 
   return {
     extensions: [
