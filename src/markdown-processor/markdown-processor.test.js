@@ -91,6 +91,24 @@ describe('markdownProcessor', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should not parse nemeth braille when enableNemeth is false', () => {
+    const markdownContent = '@⠁⠘⠆@';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+      enableNemeth: false,
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
+
+    expect(mathEl).toBeNull();
+  });
+
   it('should process alert', () => {
     const markdownContent = `> [!WARNING]\n> Critical content demanding immediate user attention due to potential risks.`;
     const options = {
