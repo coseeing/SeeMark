@@ -77,12 +77,10 @@ describe('createTableOfContents', () => {
     expect(result[0].id).toBe('hello-world');
   });
 
-  // FIXME: backtick code spans conflict with the graveaccent AsciiMath delimiter.
-  // With seemark's math extension registered, `npm install` is tokenised as a
-  // math token instead of a native code span, so text extraction drops the
-  // expression.
-  it.skip('should strip code span markdown from text field', () => {
-    const result = createTableOfContents('## Use `npm install`');
+  it('should strip code span markdown from text field', () => {
+    const result = createTableOfContents('## Use `npm install`', {
+      asciimathDelimiter: 'asciimath', // backtick code spans conflict with the graveaccent AsciiMath delimiter
+    });
 
     expect(result[0].text).toBe('Use npm install');
     expect(result[0].id).toBe('use-npm-install');
