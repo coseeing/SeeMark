@@ -44,6 +44,7 @@ const content = seeMarkReactParse(markdown);
 | enableAsciimath           | boolean | true           | When false, AsciiMath expressions are not parsed as math.          |
 | enableNemeth              | boolean | true           | When false, the Nemeth braille math extension is disabled and `@…@` syntax is not parsed. |
 | latexDelimiter            | string  | 'bracket'      | The delimiter for LaTeX expressions. Options: 'bracket', 'dollar'. |
+| asciimathDelimiter        | string  | 'graveaccent'  | The delimiter for AsciiMath expressions. Options: 'graveaccent', 'asciimath'. |
 | documentFormat            | string  | 'inline'       | The format of the document. Options: 'inline', 'block'.            |
 | imageFiles                | object  | { [ID]: File } | A map of image IDs to File objects for image rendering.            |
 | shouldBuildImageObjectURL | boolean | false          | should build image object URL.                                     |
@@ -134,6 +135,7 @@ const toc = createTableOfContents(markdown);
 | enableAsciimath | boolean | true         | When false, AsciiMath expressions are not parsed as math.                                   |
 | enableNemeth   | boolean | true          | When false, the Nemeth braille math extension is disabled and `@…@` syntax is not parsed.  |
 | latexDelimiter | string  | 'bracket'     | The delimiter for LaTeX expressions. Options: 'bracket', 'dollar'. Must match the renderer. |
+| asciimathDelimiter | string  | 'graveaccent' | The delimiter for AsciiMath expressions. Options: 'graveaccent', 'asciimath'. Must match the renderer. |
 
 ### Return value
 

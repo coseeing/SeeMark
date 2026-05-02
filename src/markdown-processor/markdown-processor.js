@@ -16,7 +16,7 @@ import imageDisplayLink from './marked-extentions/image-display-link';
 import iframe from './marked-extentions/iframe';
 
 export const createMarkdownProcessor = (options = {}) => {
-  const asciimathDelimiter = 'graveaccent';
+  const asciimathDelimiter = options.asciimathDelimiter || 'graveaccent';
 
   const enableLatex = options.enableLatex !== false;
   const enableAsciimath = options.enableAsciimath !== false;
