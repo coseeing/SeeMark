@@ -20,7 +20,10 @@ const markedNemeth = ({ documentFormat }) => {
           // or literal \n followed by braille char
           const result1 = src.match(/@(?=[\u2800-\u28FF])/);
           const result2 = src.match(/\\n(?=[\u2800-\u28FF])/);
-          return Math.min(result1?.index ?? Infinity, result2?.index ?? Infinity);
+          return Math.min(
+            result1?.index ?? Infinity,
+            result2?.index ?? Infinity
+          );
         },
         tokenizer(src) {
           const match = src.match(reNemeth);
