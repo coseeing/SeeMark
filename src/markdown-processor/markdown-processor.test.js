@@ -91,6 +91,33 @@ describe('markdownProcessor', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should handle nemeth braille math expressions with backslash-n delimiter', () => {
+    const markdownContent = '\\n⠁⠘⠆\\n';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
+
+    expect(mathEl).toBeTruthy();
+
+    const payload = JSON.parse(
+      mathEl.getAttribute(SEE_MARK_PAYLOAD_DATA_ATTRIBUTES)
+    );
+
+    expect(payload.typed).toBe('nemeth');
+    expect(payload.latex).toBe('a^2');
+    expect(payload.math).toBe('⠁⠘⠆');
+    expect(payload.mathMl).toBeTruthy();
+    expect(payload.svg).toBeTruthy();
+  });
+
   it('should not parse nemeth braille when enableNemeth is false', () => {
     const markdownContent = '@⠁⠘⠆@';
     const options = {

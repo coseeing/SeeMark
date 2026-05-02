@@ -42,7 +42,7 @@ const content = seeMarkReactParse(markdown);
 | ------------------------- | ------- | -------------- | ------------------------------------------------------------------ |
 | enableLatex               | boolean | true           | When false, LaTeX expressions are not parsed as math.              |
 | enableAsciimath           | boolean | true           | When false, AsciiMath expressions are not parsed as math.          |
-| enableNemeth              | boolean | true           | When false, the Nemeth braille math extension is disabled and `@…@` syntax is not parsed. |
+| enableNemeth              | boolean | true           | When false, the Nemeth braille math extension is disabled and `@…@` / `\n…\n` syntax is not parsed. |
 | latexDelimiter            | string  | 'bracket'      | The delimiter for LaTeX expressions. Options: 'bracket', 'dollar'. |
 | asciimathDelimiter        | string  | 'graveaccent'  | The delimiter for AsciiMath expressions. Options: 'graveaccent', 'asciimath'. |
 | documentFormat            | string  | 'inline'       | The format of the document. Options: 'inline', 'block'.            |
