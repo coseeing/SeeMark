@@ -61,6 +61,59 @@ describe('markdownProcessor', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should handle asciimath expressions with graveaccent delimiter', () => {
+    const markdownContent = '`a+b=c`';
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
+
+    expect(mathEl).toBeTruthy();
+
+    const payload = JSON.parse(
+      mathEl.getAttribute(SEE_MARK_PAYLOAD_DATA_ATTRIBUTES)
+    );
+
+    expect(payload.typed).toBe('asciimath');
+    expect(payload.math).toBe('a+b=c');
+    expect(payload.mathMl).toBeTruthy();
+    expect(payload.svg).toBeTruthy();
+  });
+
+  it('should handle asciimath expressions with asciimath delimiter', () => {
+    const markdownContent = '\\aa+b=c\\a';
+    const options = {
+      asciimathDelimiter: 'asciimath',
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
+
+    expect(mathEl).toBeTruthy();
+
+    const payload = JSON.parse(
+      mathEl.getAttribute(SEE_MARK_PAYLOAD_DATA_ATTRIBUTES)
+    );
+
+    expect(payload.typed).toBe('asciimath');
+    expect(payload.math).toBe('a+b=c');
+    expect(payload.mathMl).toBeTruthy();
+    expect(payload.svg).toBeTruthy();
+  });
+
   it('should handle nemeth braille math expressions', () => {
     const markdownContent = '@⠁⠘⠆@';
     const options = {
