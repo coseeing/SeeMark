@@ -4,10 +4,11 @@ import mml2svg from '../marked-wrapper/mml-to-svg';
 import { createRenderer } from './helpers';
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 
-// ^@<braille U+2800-U+28FF>@ or ^\n<braille>\n (literal backslash+n)
-const reNemeth = /^(?:@([\u2800-\u28FF]+)@|\\n([\u2800-\u28FF]+)\\n)/;
+const reNemethAt = /^@([\u2800-\u28FF]+)@/;
+const reNemethN = /^\\n([\u2800-\u28FF]+)\\n/;
 
-const markedNemeth = ({ documentFormat }) => {
+const markedNemeth = ({ documentFormat, nemethDelimiter = 'at' }) => {
+  const reNemeth = nemethDelimiter === 'nemeth' ? reNemethN : reNemethAt;
   const latex2mml = latex2mmlFactory({ htmlMathDisplay: documentFormat });
 
   return {
@@ -16,14 +17,14 @@ const markedNemeth = ({ documentFormat }) => {
         name: 'nemeth',
         level: 'inline',
         start(src) {
+          if (nemethDelimiter === 'nemeth') {
+            // literal \n followed by braille char
+            const result = src.match(/\\n(?=[\u2800-\u28FF])/);
+            return result?.index ?? Infinity;
+          }
           // @ followed by braille char (disambiguates from @[ and @!)
-          // or literal \n followed by braille char
-          const result1 = src.match(/@(?=[\u2800-\u28FF])/);
-          const result2 = src.match(/\\n(?=[\u2800-\u28FF])/);
-          return Math.min(
-            result1?.index ?? Infinity,
-            result2?.index ?? Infinity
-          );
+          const result = src.match(/@(?=[\u2800-\u28FF])/);
+          return result?.index ?? Infinity;
         },
         tokenizer(src) {
           const match = src.match(reNemeth);
@@ -31,7 +32,7 @@ const markedNemeth = ({ documentFormat }) => {
             return {
               type: 'nemeth',
               raw: match[0],
-              math: match[1] ?? match[2],
+              math: match[1],
             };
           }
         },

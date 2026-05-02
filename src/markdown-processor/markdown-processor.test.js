@@ -148,6 +148,7 @@ describe('markdownProcessor', () => {
     const markdownContent = '\\n⠁⠘⠆\\n';
     const options = {
       latexDelimiter: 'bracket',
+      nemethDelimiter: 'nemeth',
       documentFormat: 'inline',
       imageFiles: {},
     };
