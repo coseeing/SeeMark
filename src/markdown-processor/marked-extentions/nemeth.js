@@ -4,7 +4,9 @@ import mml2svg from '../marked-wrapper/mml-to-svg';
 import { createRenderer } from './helpers';
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 
+// ^@<braille U+2800-U+28FF>@
 const reNemethAt = /^@([\u2800-\u28FF]+)@/;
+// ^\n<braille U+2800-U+28FF>\n (literal backslash+n)
 const reNemethN = /^\\n([\u2800-\u28FF]+)\\n/;
 
 const markedNemeth = ({ documentFormat, nemethDelimiter = 'at' }) => {
