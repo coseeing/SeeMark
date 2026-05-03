@@ -43,9 +43,9 @@ const content = seeMarkReactParse(markdown);
 | enableLatex               | boolean | true           | When false, LaTeX expressions are not parsed as math.              |
 | enableAsciimath           | boolean | true           | When false, AsciiMath expressions are not parsed as math.          |
 | enableNemeth              | boolean | true           | When false, the Nemeth braille math extension is disabled.         |
-| latexDelimiter            | string  | 'bracket'      | The delimiter for LaTeX expressions. Options: 'bracket', 'dollar'. |
-| asciimathDelimiter        | string  | 'graveaccent'  | The delimiter for AsciiMath expressions. Options: 'graveaccent', 'asciimath'. |
-| nemethDelimiter           | string  | 'at'           | The delimiter for Nemeth braille expressions. Options: 'at' (`@…@`), 'nemeth' (`\n…\n`). |
+| latexDelimiter            | string  | 'bracket'      | The delimiter for LaTeX expressions. Options: 'bracket' (`\(...\)`), 'dollar' (`$...$`), 'latex' (`\l...\l`). |
+| asciimathDelimiter        | string  | 'graveaccent'  | The delimiter for AsciiMath expressions. Options: 'graveaccent' (`` `...` ``), 'asciimath' (`\ax^2 + y^2 = r^2\a`). |
+| nemethDelimiter           | string  | 'at'           | The delimiter for Nemeth braille expressions. Options: 'at' (`@...@`), 'nemeth' (`\n...\n`). |
 | documentFormat            | string  | 'inline'       | The format of the document. Options: 'inline', 'block'.            |
 | imageFiles                | object  | { [ID]: File } | A map of image IDs to File objects for image rendering.            |
 | shouldBuildImageObjectURL | boolean | false          | should build image object URL.                                     |
@@ -135,9 +135,9 @@ const toc = createTableOfContents(markdown);
 | enableLatex    | boolean | true          | When false, LaTeX expressions are not parsed as math.                                       |
 | enableAsciimath | boolean | true         | When false, AsciiMath expressions are not parsed as math.                                   |
 | enableNemeth   | boolean | true          | When false, the Nemeth braille math extension is disabled.                                  |
-| latexDelimiter | string  | 'bracket'     | The delimiter for LaTeX expressions. Options: 'bracket', 'dollar'. Must match the renderer. |
-| asciimathDelimiter | string  | 'graveaccent' | The delimiter for AsciiMath expressions. Options: 'graveaccent', 'asciimath'. Must match the renderer. |
-| nemethDelimiter | string  | 'at'          | The delimiter for Nemeth braille expressions. Options: 'at' (`@…@`), 'nemeth' (`\n…\n`). Must match the renderer. |
+| latexDelimiter | string  | 'bracket'     | The delimiter for LaTeX expressions. Options: 'bracket' (`\(...\)`), 'dollar' (`$...$`), 'latex' (`\l...\l`). Must match the renderer. |
+| asciimathDelimiter | string  | 'graveaccent' | The delimiter for Nemeth braille expressions. Options: 'at' (`@...@`), 'nemeth' (`\n...\n`). Must match the renderer. |
+| nemethDelimiter | string  | 'at'          | The delimiter for Nemeth braille expressions. Options: 'at' (`@...@`), 'nemeth' (`\n...\n`). Must match the renderer. |
 
 ### Return value
 
