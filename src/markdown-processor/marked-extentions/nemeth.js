@@ -5,9 +5,12 @@ import { createRenderer } from './helpers';
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 
 // ^@<braille U+2800-U+28FF>@
-const reNemeth = /^@([\u2800-\u28FF]+)@/;
+const reNemethAt = /^@([\u2800-\u28FF]+)@/;
+// ^\n<braille U+2800-U+28FF>\n (literal backslash+n)
+const reNemethN = /^\\n([\u2800-\u28FF]+)\\n/;
 
-const markedNemeth = ({ documentFormat }) => {
+const markedNemeth = ({ documentFormat, nemethDelimiter = 'at' }) => {
+  const reNemeth = nemethDelimiter === 'nemeth' ? reNemethN : reNemethAt;
   const latex2mml = latex2mmlFactory({ htmlMathDisplay: documentFormat });
 
   return {
@@ -16,6 +19,11 @@ const markedNemeth = ({ documentFormat }) => {
         name: 'nemeth',
         level: 'inline',
         start(src) {
+          if (nemethDelimiter === 'nemeth') {
+            // literal \n followed by braille char
+            const result = src.match(/\\n(?=[\u2800-\u28FF])/);
+            return result?.index ?? Infinity;
+          }
           // @ followed by braille char (disambiguates from @[ and @!)
           const result = src.match(/@(?=[\u2800-\u28FF])/);
           return result?.index ?? Infinity;
