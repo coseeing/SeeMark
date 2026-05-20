@@ -22,11 +22,14 @@ const markedImage = ({ imageFiles, shouldBuildImageObjectURL }) => {
       extractMeta(token) {
         const alt = token.text;
         const imageId = token.href;
-        const imageFile = imageFiles[imageId];
+        const isUrl = /^https?:/i.test(imageId);
+        const imageFile = isUrl ? null : imageFiles[imageId];
 
-        const source = shouldBuildImageObjectURL
-          ? blobUrlManager(imageId, imageFile)
-          : imageFile;
+        const source = isUrl
+          ? imageId
+          : shouldBuildImageObjectURL
+            ? blobUrlManager(imageId, imageFile)
+            : imageFile;
 
         return { alt, imageId, source };
       },

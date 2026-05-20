@@ -486,6 +486,39 @@ describe('markdownProcessor', () => {
     expect(mathEl).toBeNull();
   });
 
+  it('should process image with URL as imageId', () => {
+    const markdownContent = `![alt text](https://example.com/image.jpg)`;
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const imageContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.IMAGE
+    );
+
+    expect(imageContainer).toBeTruthy();
+
+    const payloadString = imageContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      alt: 'alt text',
+      imageId: 'https://example.com/image.jpg',
+      position: { start: 0, end: 42 },
+      source: 'https://example.com/image.jpg',
+    });
+  });
+
   it('should process image link', () => {
     const markdownContent = `![alt text](image-123)((https://example.com/target))`;
     const options = {
@@ -517,6 +550,40 @@ describe('markdownProcessor', () => {
       alt: 'alt text',
       imageId: 'image-123',
       position: { start: 0, end: 52 },
+      source: 'https://example.com/image.jpg',
+      target: 'https://example.com/target',
+    });
+  });
+
+  it('should process image link with URL as imageId', () => {
+    const markdownContent = `![alt text](https://example.com/image.jpg)((https://example.com/target))`;
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const imageLinkContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.IMAGE_LINK
+    );
+
+    expect(imageLinkContainer).toBeTruthy();
+
+    const payloadString = imageLinkContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      alt: 'alt text',
+      imageId: 'https://example.com/image.jpg',
+      position: { start: 0, end: 72 },
       source: 'https://example.com/image.jpg',
       target: 'https://example.com/target',
     });
@@ -558,6 +625,40 @@ describe('markdownProcessor', () => {
     });
   });
 
+  it('should process image display with URL as imageId', () => {
+    const markdownContent = `![alt text][[Display caption]](https://example.com/image.jpg)`;
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const imageDisplayContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.IMAGE_DISPLAY
+    );
+
+    expect(imageDisplayContainer).toBeTruthy();
+
+    const payloadString = imageDisplayContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      alt: 'alt text',
+      display: 'Display caption',
+      imageId: 'https://example.com/image.jpg',
+      position: { start: 0, end: 61 },
+      source: 'https://example.com/image.jpg',
+    });
+  });
+
   it('should process image display link', () => {
     const markdownContent = `![alt text][[Display caption]](image-789)((https://example.com/details))`;
     const options = {
@@ -591,6 +692,41 @@ describe('markdownProcessor', () => {
       imageId: 'image-789',
       position: { start: 0, end: 72 },
       source: 'https://example.com/image3.jpg',
+      target: 'https://example.com/details',
+    });
+  });
+
+  it('should process image display link with URL as imageId', () => {
+    const markdownContent = `![alt text][[Display caption]](https://example.com/image.jpg)((https://example.com/details))`;
+    const options = {
+      latexDelimiter: 'bracket',
+      documentFormat: 'inline',
+      imageFiles: {},
+    };
+
+    const result = markdownProcessor(markdownContent, options);
+
+    const container = createDOMFromHTML(result);
+
+    const imageDisplayLinkContainer = getElementByType(
+      container,
+      SUPPORTED_COMPONENT_TYPES.IMAGE_DISPLAY_LINK
+    );
+
+    expect(imageDisplayLinkContainer).toBeTruthy();
+
+    const payloadString = imageDisplayLinkContainer.getAttribute(
+      SEE_MARK_PAYLOAD_DATA_ATTRIBUTES
+    );
+
+    const payload = JSON.parse(payloadString);
+
+    expect(payload).toEqual({
+      alt: 'alt text',
+      display: 'Display caption',
+      imageId: 'https://example.com/image.jpg',
+      position: { start: 0, end: 92 },
+      source: 'https://example.com/image.jpg',
       target: 'https://example.com/details',
     });
   });

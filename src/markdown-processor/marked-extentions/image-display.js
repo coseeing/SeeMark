@@ -59,10 +59,13 @@ const markedImageDisplay = ({ imageFiles, shouldBuildImageObjectURL }) => {
             const imageId = match[3];
 
             try {
-              const imageFile = imageFiles[imageId];
-              const source = shouldBuildImageObjectURL
-                ? blobUrlManager(imageId, imageFile)
-                : imageFile;
+              const isUrl = /^https?:/i.test(imageId);
+              const imageFile = isUrl ? null : imageFiles[imageId];
+              const source = isUrl
+                ? imageId
+                : shouldBuildImageObjectURL
+                  ? blobUrlManager(imageId, imageFile)
+                  : imageFile;
 
               return {
                 type: SUPPORTED_COMPONENT_TYPES.IMAGE_DISPLAY,
