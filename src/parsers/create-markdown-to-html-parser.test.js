@@ -194,6 +194,36 @@ describe('renderToHtml', () => {
       expect(html).toMatch(/<math[\s\S]*<\/math>/);
       expect(html).toMatch(/<svg[\s\S]*<\/svg>/);
     });
+
+    it('strips on* event-handler attributes from raw passthrough HTML', () => {
+      // <img onerror> inserted via innerHTML would FIRE — must be stripped.
+      const html = renderToHtml('<img src=x onerror=alert(2)>');
+      expect(html).not.toMatch(/onerror/i);
+      expect(html).toContain('<img');
+    });
+
+    it('runs safeUrl over href/src on raw passthrough HTML', () => {
+      const html = renderToHtml('<a href="javascript:alert(1)">x</a>');
+      expect(html).not.toContain('javascript:');
+      expect(html).toContain('href="#"');
+    });
+
+    it('drops raw <script> and <style> passthrough tags entirely', () => {
+      const html = renderToHtml(
+        'a <script>alert(1)</script> b <style>*{}</style> c'
+      );
+      expect(html).not.toContain('<script');
+      expect(html).not.toContain('<style');
+      // surrounding text preserved
+      expect(html).toContain('a ');
+      expect(html).toContain(' c');
+    });
+
+    it('preserves safe raw inline HTML (strong, br)', () => {
+      const html = renderToHtml('正常 <strong>粗體</strong> 與 <br> 換行');
+      expect(html).toContain('<strong>粗體</strong>');
+      expect(html).toMatch(/<br\s*\/?>/);
+    });
   });
 
   describe('Stage 1 attribute escape robustness', () => {

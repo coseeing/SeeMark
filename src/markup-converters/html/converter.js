@@ -5,7 +5,7 @@ import {
   SEE_MARK_PAYLOAD_DATA_ATTRIBUTES,
 } from '../../shared/common-markup';
 
-import { escapeHtml, escapeAttr } from './escape';
+import { escapeHtml, escapeAttr, safeUrl } from './escape';
 import defaultComponents from './default-components/default-components';
 
 const VOID_TAGS = new Set([
@@ -25,10 +25,36 @@ const VOID_TAGS = new Set([
   'wbr',
 ]);
 
+// Raw HTML in the markdown source (e.g., <script>, <img onerror=...>) passes
+// through Stage 1 verbatim. Since the HTML adapter's output is assigned to
+// innerHTML (or jQuery .html(), document.write, etc.) by the consumer, we must
+// neutralize the dangerous parts here — otherwise the adapter would be strictly
+// more dangerous than the React adapter (which drops on* handlers and never
+// executes vDOM scripts). This is "safe by default"; the optional sanitize hook
+// covers stricter needs.
+
+// Tags that should never be re-emitted from untrusted passthrough markup.
+const DROPPED_TAGS = new Set(['script', 'style']);
+
+// Attributes carrying URLs; their values run through safeUrl on passthrough.
+const URL_ATTRS = new Set([
+  'href',
+  'src',
+  'xlink:href',
+  'action',
+  'formaction',
+  'poster',
+  'srcset',
+]);
+
 const serializeAttrs = (attribs) => {
   if (!attribs) return '';
   return Object.entries(attribs)
-    .map(([k, v]) => ` ${k}="${escapeAttr(v)}"`)
+    .filter(([k]) => !/^on/i.test(k)) // strip event-handler attributes
+    .map(([k, v]) => {
+      const value = URL_ATTRS.has(k.toLowerCase()) ? safeUrl(v) : escapeAttr(v);
+      return ` ${k}="${value}"`;
+    })
     .join('');
 };
 
@@ -63,6 +89,8 @@ const convertMarkup = (markup = '', components = {}, options = {}) => {
           // so the placeholder is at least visible rather than silently dropped.
         }
       }
+      // Drop dangerous raw passthrough tags entirely.
+      if (DROPPED_TAGS.has(node.name)) return '';
       const innerHtml = (node.children || []).map(walk).join('');
       return renderElement(node.name, node.attribs, innerHtml);
     }
