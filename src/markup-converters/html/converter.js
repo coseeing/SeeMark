@@ -70,15 +70,18 @@ const DROPPED_ATTRS = new Set([
   'background',
 ]);
 
-const isUnsafeAttr = (name) =>
-  /^on/i.test(name) || DROPPED_ATTRS.has(name.toLowerCase());
+// An attribute is unsafe if it is an event handler (on*) or one of the
+// navigation/refresh vectors in DROPPED_ATTRS. `lower` is the lower-cased name.
+const isUnsafeAttrName = (lower) =>
+  lower.startsWith('on') || DROPPED_ATTRS.has(lower);
 
 const serializeAttrs = (attribs) => {
   if (!attribs) return '';
   return Object.entries(attribs)
-    .filter(([k]) => !isUnsafeAttr(k))
     .map(([k, v]) => {
-      const value = URL_ATTRS.has(k.toLowerCase()) ? safeUrl(v) : escapeAttr(v);
+      const lower = k.toLowerCase();
+      if (isUnsafeAttrName(lower)) return '';
+      const value = URL_ATTRS.has(lower) ? safeUrl(v) : escapeAttr(v);
       return ` ${k}="${value}"`;
     })
     .join('');

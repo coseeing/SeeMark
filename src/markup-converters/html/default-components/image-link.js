@@ -1,12 +1,8 @@
-import { escapeAttr, safeUrl } from '../escape';
+import { safeUrl } from '../escape';
 
-const imageLink = ({
-  alt = '',
-  imageId = '',
-  source = '',
-  target = '',
-} = {}) => {
-  return `<a href="${safeUrl(target)}"><img src="${safeUrl(source)}" alt="${escapeAttr(alt)}" data-seemark-image-id="${escapeAttr(imageId)}"></a>`;
-};
+import image from './image';
+
+const imageLink = (props = {}) =>
+  `<a href="${safeUrl(props.target)}">${image(props)}</a>`;
 
 export default imageLink;
