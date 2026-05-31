@@ -20,6 +20,16 @@ export const escapeAttr = escapeHtml;
 // Match URL scheme (letter-led, followed by ":") at the start of the string.
 const SCHEME_PATTERN = /^([a-z][a-z0-9+.-]*):/i;
 
+// Browsers ignore ASCII tab/newline/CR (and other C0 controls / DEL) inside
+// URLs, so `java\tscript:alert(1)` is parsed as `javascript:`. We strip them
+// before scheme detection so the allowlist check sees what the browser sees —
+// otherwise an embedded control char breaks the scheme regex and the value is
+// wrongly treated as a safe relative URL.
+const CONTROL_CHARS = new RegExp(
+  `[${String.fromCharCode(0)}-${String.fromCharCode(31)}${String.fromCharCode(127)}]`,
+  'g'
+);
+
 // Whitelist of safe schemes. Schemes outside this set (e.g., javascript:,
 // data:, vbscript:, file:) are rejected. URLs without a scheme are treated as
 // relative and accepted.
@@ -35,7 +45,7 @@ const SAFE_SCHEMES = new Set([
 
 export const safeUrl = (value) => {
   if (value === undefined || value === null) return '#';
-  const trimmed = String(value).trim();
+  const trimmed = String(value).replace(CONTROL_CHARS, '').trim();
   if (trimmed === '') return '#';
   const match = trimmed.match(SCHEME_PATTERN);
   if (match) {

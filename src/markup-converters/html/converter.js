@@ -34,7 +34,20 @@ const VOID_TAGS = new Set([
 // covers stricter needs.
 
 // Tags that should never be re-emitted from untrusted passthrough markup.
-const DROPPED_TAGS = new Set(['script', 'style']);
+// (Component placeholders are dispatched before this check, and component
+// output — e.g. the youtube/iframe components' <iframe> — is not re-walked, so
+// dropping `iframe` here only affects user-authored raw <iframe>, not embeds.)
+const DROPPED_TAGS = new Set([
+  'script',
+  'style',
+  'iframe',
+  'object',
+  'embed',
+  'meta',
+  'base',
+  'form',
+  'link',
+]);
 
 // Attributes carrying URLs; their values run through safeUrl on passthrough.
 const URL_ATTRS = new Set([
@@ -42,15 +55,28 @@ const URL_ATTRS = new Set([
   'src',
   'xlink:href',
   'action',
-  'formaction',
   'poster',
   'srcset',
 ]);
 
+// Attributes that enable script execution / navigation hijacking even when the
+// value is HTML-escaped (srcdoc is re-parsed as HTML; http-equiv can refresh;
+// formaction/ping/background trigger requests). Dropped from passthrough.
+const DROPPED_ATTRS = new Set([
+  'srcdoc',
+  'formaction',
+  'http-equiv',
+  'ping',
+  'background',
+]);
+
+const isUnsafeAttr = (name) =>
+  /^on/i.test(name) || DROPPED_ATTRS.has(name.toLowerCase());
+
 const serializeAttrs = (attribs) => {
   if (!attribs) return '';
   return Object.entries(attribs)
-    .filter(([k]) => !/^on/i.test(k)) // strip event-handler attributes
+    .filter(([k]) => !isUnsafeAttr(k))
     .map(([k, v]) => {
       const value = URL_ATTRS.has(k.toLowerCase()) ? safeUrl(v) : escapeAttr(v);
       return ` ${k}="${value}"`;

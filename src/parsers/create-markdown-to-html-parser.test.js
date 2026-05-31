@@ -238,4 +238,78 @@ describe('renderToHtml', () => {
       expect(region.textContent).toContain("I'm sure this works.");
     });
   });
+
+  describe('XSS — control-character scheme bypass (safeUrl)', () => {
+    it('rejects javascript: with embedded tab/newline/CR', () => {
+      expect(safeUrl('java\tscript:alert(1)')).toBe('#');
+      expect(safeUrl('java\nscript:alert(1)')).toBe('#');
+      expect(safeUrl('java\rscript:alert(1)')).toBe('#');
+      expect(safeUrl('javascript:alert(1)')).toBe('#');
+    });
+
+    it('still accepts legitimate URLs', () => {
+      expect(safeUrl('https://example.com')).toBe('https://example.com');
+      expect(safeUrl('/rel/path')).toBe('/rel/path');
+    });
+  });
+
+  describe('XSS — dangerous passthrough tags & attributes', () => {
+    it('drops user raw <iframe> (and its srcdoc) entirely', () => {
+      const html = renderToHtml(
+        '<iframe srcdoc="<script>alert(1)</script>"></iframe>'
+      );
+      expect(html).not.toMatch(/<iframe/i);
+      expect(html).not.toMatch(/srcdoc/i);
+    });
+
+    it('drops object/embed/form/meta/base/link passthrough tags', () => {
+      for (const tag of ['object', 'embed', 'form', 'meta', 'base', 'link']) {
+        const html = renderToHtml(`<${tag}></${tag}>`);
+        expect(html).not.toContain(`<${tag}`);
+      }
+    });
+
+    it('strips srcdoc/formaction/http-equiv/ping/background attributes', () => {
+      const html = renderToHtml(
+        '<a href="/x" ping="https://evil" formaction="javascript:alert(1)">x</a>'
+      );
+      expect(html).not.toMatch(/ping=/i);
+      expect(html).not.toMatch(/formaction=/i);
+    });
+
+    it('keeps the youtube component iframe (component output is not dropped)', () => {
+      const html = renderToHtml(
+        '@![Vid](https://www.youtube.com/embed/abc123)'
+      );
+      // DROPPED_TAGS only affects walked passthrough nodes, not component output.
+      expect(html).toMatch(/<iframe/i);
+      expect(html).toContain('youtube.com/embed');
+    });
+  });
+
+  describe('XSS — forged data-seemark payload via raw HTML (math)', () => {
+    it('neutralizes a forged math placeholder smuggled through raw HTML', () => {
+      const forged =
+        '<span data-seemark-element-type="math" data-seemark-payload=\'{"svg":"<img src=x onerror=alert(1)>"}\'></span>';
+      const html = renderToHtml(forged);
+      // Stage 1 strips the data-seemark-* attrs → no component dispatch →
+      // the malicious svg never reaches the (raw-HTML-emitting) math component.
+      expect(html).not.toMatch(/onerror/i);
+      expect(html).not.toMatch(/<img/i);
+      expect(html).not.toContain('data-seemark-element-type');
+      expect(html).not.toContain('data-seemark-payload');
+    });
+
+    it('still renders a genuine math expression', () => {
+      const html = renderToHtml('\\(a^2\\)', {
+        options: {
+          latexDelimiter: 'bracket',
+          documentFormat: 'inline',
+          imageFiles: {},
+        },
+      });
+      expect(html).toMatch(/<math[\s\S]*<\/math>/);
+      expect(html).toMatch(/<svg[\s\S]*<\/svg>/);
+    });
+  });
 });
