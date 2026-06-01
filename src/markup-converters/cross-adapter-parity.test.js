@@ -4,6 +4,8 @@ import { render, cleanup } from '@testing-library/react';
 import createMarkdownToReactParser from '../parsers/create-markdown-to-react-parser';
 import renderToHtml from '../parsers/create-markdown-to-html-parser';
 
+import { fullSyntaxMarkdown } from './html/full-syntax-fixture';
+
 // Parity between the React adapter and the HTML adapter: for the same markdown,
 // both must produce the same *semantic* DOM (tag names, semantic attributes,
 // text). Formatting differences (self-closing tags, attribute order,
@@ -88,6 +90,7 @@ describe('cross-adapter parity (React vs HTML)', () => {
     ['latex math', 'eq \\(a^2 + b^2 = c^2\\) done'],
     ['asciimath', 'frac `a/b` done'],
     ['mixed paragraph', '# Title\n\nSee [ref]<r1> and ![img](pic-id).'],
+    ['full syntax document', fullSyntaxMarkdown],
   ];
 
   it.each(cases)(
