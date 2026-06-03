@@ -19,6 +19,26 @@ export const extractTokenMeta = (token, customMeta = {}) => {
 };
 
 /**
+ * Escapes a string for safe inclusion in an HTML attribute value.
+ *
+ * The payload is embedded in a single-quoted attribute, so any character that
+ * is significant to the HTML parser (including the single quote used as the
+ * delimiter) must be encoded. The read side parses the attribute with
+ * html-react-parser, which decodes these entities before JSON.parse, so the
+ * round trip is transparent.
+ *
+ * @param {string} value - The raw attribute value
+ * @returns {string} The HTML-entity-escaped value
+ */
+const escapeHTMLAttribute = (value) =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/'/g, '&#39;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+/**
  * Builds HTML markup with SeeMark data attributes for custom components.
  *
  * @param {string} type - The component type identifier (from SUPPORTED_COMPONENT_TYPES)
@@ -34,7 +54,7 @@ export const buildHTMLMarkup = (
   children = '',
   { inline = false } = {}
 ) => {
-  const payload = JSON.stringify(meta);
+  const payload = escapeHTMLAttribute(JSON.stringify(meta));
   const tag = inline ? 'span' : 'div';
 
   return `<${tag} ${SEE_MARK_PAYLOAD_DATA_ATTRIBUTES}='${payload}' ${SEEMARK_ELEMENT_TYPE_DATA_ATTRIBUTE}="${type}">${children}</${tag}>`;
