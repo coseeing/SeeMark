@@ -4,10 +4,10 @@ import { renderToHtml } from '../../parsers/create-markdown-to-html-parser';
 
 import { fullSyntaxMarkdown } from './full-syntax-fixture';
 
-// Automated version of the manual end-to-end smoke test: render the full-syntax
-// document through the HTML adapter and assert the structure of every supported
-// component. renderToHtml's output is deterministic (MathJax runs in Node at
-// Stage 1), so no real browser is needed — jsdom is enough.
+// Render the full-syntax document through the HTML adapter and assert the
+// structure of every supported component. renderToHtml's output is
+// deterministic (MathJax runs in Node at Stage 1), so no real browser is
+// needed — jsdom is enough.
 
 // Parse the adapter's HTML string into a queryable DOM without raw innerHTML.
 const parse = (html) => {

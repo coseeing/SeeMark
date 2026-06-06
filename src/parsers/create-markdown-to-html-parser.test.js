@@ -172,7 +172,7 @@ describe('renderToHtml', () => {
       expect(safeUrl('#anchor')).toBe('#anchor');
     });
 
-    it('escapeAttr encodes single quote (the Stage 1 attribute-escape concern)', () => {
+    it('escapeAttr encodes single quote', () => {
       expect(escapeAttr("I'm sure")).toBe('I&#39;m sure');
     });
   });
@@ -231,9 +231,8 @@ describe('renderToHtml', () => {
 
   describe('Stage 1 attribute escape robustness', () => {
     it('handles single-quote in content without breaking the Stage 1 attribute', () => {
-      // Before the helpers.js escape fix, the single quote in alert content
-      // would terminate the payload attribute prematurely, causing the
-      // alert region to lose its content (or the parse to fail entirely).
+      // A single quote in the content must not terminate the single-quoted
+      // Stage 1 payload attribute (regression guard for the payload escaping).
       const html = renderToHtml(`> [!NOTE]\n> I'm sure this works.`);
       const container = mount(html);
       const region = container.querySelector('[role="region"]');
