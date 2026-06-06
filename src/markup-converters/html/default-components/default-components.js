@@ -16,8 +16,7 @@ import codepen from './codepen';
 import iframe from './iframe';
 import math from './math';
 
-// Mirrors the React adapter's default-components (same SUPPORTED_COMPONENT_TYPES
-// keys). Each is a pure (props, childrenHtml) => htmlString function.
+// Each default component is a pure (props, childrenHtml) => htmlString function.
 const defaultComponents = {
   [SUPPORTED_COMPONENT_TYPES.ALERT]: alert,
   [SUPPORTED_COMPONENT_TYPES.HEADING]: heading,
