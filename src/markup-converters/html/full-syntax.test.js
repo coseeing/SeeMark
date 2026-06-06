@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import renderToHtml from '../../parsers/create-markdown-to-html-parser';
+import { renderToHtml } from '../../parsers/create-markdown-to-html-parser';
 
 import { fullSyntaxMarkdown } from './full-syntax-fixture';
 

@@ -2,15 +2,25 @@ import '@testing-library/jest-dom';
 import { render, cleanup } from '@testing-library/react';
 
 import createMarkdownToReactParser from '../parsers/create-markdown-to-react-parser';
-import renderToHtml from '../parsers/create-markdown-to-html-parser';
+import { renderToHtml } from '../parsers/create-markdown-to-html-parser';
+import { SUPPORTED_COMPONENT_TYPES } from '../shared/supported-components';
 
 import { fullSyntaxMarkdown } from './html/full-syntax-fixture';
 
-// Parity between the React adapter and the HTML adapter: for the same markdown,
-// both must produce the same *semantic* DOM (tag names, semantic attributes,
-// text). Formatting differences (self-closing tags, attribute order,
-// className vs class, style spacing, empty-string vs omitted attributes) are
-// normalized away — both outputs are parsed by the SAME DOM parser first.
+// CONTRACT TEST — the formal drift guard between the React and HTML adapters.
+//
+// The HTML default components are hand-written mirrors of the React ones (a
+// deliberate trade-off: it keeps /html framework-free instead of depending on
+// react-dom/server). The cost is long-term drift risk, and this suite is the
+// enforcement: for the same markdown, both adapters must produce the same
+// *semantic* DOM (tag names, semantic attributes, text). Formatting
+// differences (self-closing tags, attribute order, className vs class, style
+// spacing, empty-string vs omitted attributes) are normalized away — both
+// outputs are parsed by the SAME DOM parser first.
+//
+// Every type in SUPPORTED_COMPONENT_TYPES must be exercised by at least one
+// case (each case declares which types it `covers`; a coverage test below
+// enforces the union). Adding component #16 without a parity case fails CI.
 
 const OPTIONS = {
   latexDelimiter: 'bracket',
@@ -71,26 +81,61 @@ const parity = (markdown) => {
 describe('cross-adapter parity (React vs HTML)', () => {
   afterEach(() => cleanup());
 
+  // [name, markdown, covers] — `covers` declares which component types the
+  // case exercises; the coverage test below enforces the full set.
   const cases = [
-    ['heading', '# Hello World'],
-    ['alert', '> [!WARNING]\n> A warning message.'],
-    ['alert with backlink', '> [!NOTE]#anchor1\n> noted.'],
-    ['internal link', '[Go]<sec-1>'],
-    ['internal link title', '[Go][[a tooltip]]<sec-1>'],
-    ['image', '![cat](pic-id)'],
-    ['image link', '![cat](pic-id)((https://example.com))'],
-    ['image display', '![cat][[A cat]](pic-id)'],
-    ['image display link', '![cat][[A cat]](pic-id)((https://example.com))'],
-    ['external link tab', '@[Vercel](https://vercel.com)'],
-    ['external link title', '[Vercel][[Homepage]](https://vercel.com)'],
-    ['external link tab title', '@[Vercel][[Homepage]](https://vercel.com)'],
-    ['iframe', '@![Demo](https://example.com/embed)'],
-    ['youtube', '@![Vid](https://www.youtube.com/embed/abc123)'],
-    ['codepen', '@![Pen](https://codepen.io/user/embed/xyz)'],
-    ['latex math', 'eq \\(a^2 + b^2 = c^2\\) done'],
-    ['asciimath', 'frac `a/b` done'],
-    ['mixed paragraph', '# Title\n\nSee [ref]<r1> and ![img](pic-id).'],
-    ['full syntax document', fullSyntaxMarkdown],
+    ['heading', '# Hello World', ['heading']],
+    ['alert', '> [!WARNING]\n> A warning message.', ['alert']],
+    ['alert with backlink', '> [!NOTE]#anchor1\n> noted.', ['alert']],
+    ['internal link', '[Go]<sec-1>', ['internalLink']],
+    ['internal link title', '[Go][[a tooltip]]<sec-1>', ['internalLinkTitle']],
+    ['image', '![cat](pic-id)', ['image']],
+    ['image link', '![cat](pic-id)((https://example.com))', ['imageLink']],
+    ['image display', '![cat][[A cat]](pic-id)', ['imageDisplay']],
+    [
+      'image display link',
+      '![cat][[A cat]](pic-id)((https://example.com))',
+      ['imageDisplayLink'],
+    ],
+    ['external link tab', '@[Vercel](https://vercel.com)', ['externalLinkTab']],
+    [
+      'external link title',
+      '[Vercel][[Homepage]](https://vercel.com)',
+      ['externalLinkTitle'],
+    ],
+    [
+      'external link tab title',
+      '@[Vercel][[Homepage]](https://vercel.com)',
+      ['externalLinkTabTitle'],
+    ],
+    ['iframe', '@![Demo](https://example.com/embed)', ['iframe']],
+    ['youtube', '@![Vid](https://www.youtube.com/embed/abc123)', ['youtube']],
+    ['codepen', '@![Pen](https://codepen.io/user/embed/xyz)', ['codepen']],
+    ['latex math', 'eq \\(a^2 + b^2 = c^2\\) done', ['math']],
+    ['asciimath', 'frac `a/b` done', ['math']],
+    [
+      'mixed paragraph',
+      '# Title\n\nSee [ref]<r1> and ![img](pic-id).',
+      ['heading', 'internalLink', 'image'],
+    ],
+    [
+      'full syntax document',
+      fullSyntaxMarkdown,
+      [
+        'heading',
+        'image',
+        'imageLink',
+        'imageDisplay',
+        'imageDisplayLink',
+        'externalLinkTab',
+        'externalLinkTitle',
+        'externalLinkTabTitle',
+        'youtube',
+        'codepen',
+        'iframe',
+        'math',
+      ],
+    ],
   ];
 
   it.each(cases)(
@@ -100,4 +145,11 @@ describe('cross-adapter parity (React vs HTML)', () => {
       expect(htmlSig).toBe(reactSig);
     }
   );
+
+  it('covers every type in SUPPORTED_COMPONENT_TYPES with at least one case', () => {
+    const covered = new Set(cases.flatMap(([, , covers = []]) => covers));
+    for (const type of Object.values(SUPPORTED_COMPONENT_TYPES)) {
+      expect([...covered]).toContain(type);
+    }
+  });
 });

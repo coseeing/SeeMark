@@ -1,7 +1,10 @@
 import '@testing-library/jest-dom';
 import { jest } from '@jest/globals';
 
-import renderToHtml from './create-markdown-to-html-parser';
+import createMarkdownToHtmlParser, {
+  renderToHtml,
+} from './create-markdown-to-html-parser';
+import convertMarkup from '../markup-converters/html/converter';
 import {
   escapeHtml,
   escapeAttr,
@@ -311,5 +314,50 @@ describe('renderToHtml', () => {
       expect(html).toMatch(/<math[\s\S]*<\/math>/);
       expect(html).toMatch(/<svg[\s\S]*<\/svg>/);
     });
+  });
+});
+
+describe('createMarkdownToHtmlParser (factory)', () => {
+  it('fixes the config once and renders many times, matching renderToHtml', () => {
+    const config = {
+      options: {
+        latexDelimiter: 'bracket',
+        documentFormat: 'inline',
+        imageFiles: {},
+      },
+    };
+    const parse = createMarkdownToHtmlParser(config);
+    expect(parse('# One')).toBe(renderToHtml('# One', config));
+    expect(parse('**two**')).toBe(renderToHtml('**two**', config));
+  });
+
+  it('works without a config, like renderToHtml', () => {
+    const parse = createMarkdownToHtmlParser();
+    expect(parse('# Hi')).toBe(renderToHtml('# Hi'));
+  });
+});
+
+describe('Stage 1/Stage 2 contract — broken placeholders fail loudly', () => {
+  it('throws a descriptive error on an unparseable payload', () => {
+    // Unreachable from real markdown (Stage 1 escapes payloads and strips
+    // forged data-seemark-* attrs) — an unparseable payload means a SeeMark
+    // bug, so it must throw rather than fall back to a plain element that
+    // leaks data-seemark-* attributes into the output.
+    const broken =
+      '<span data-seemark-element-type="alert" data-seemark-payload="{not json}"></span>';
+    expect(() => convertMarkup(broken)).toThrow(
+      /unparseable data-seemark-payload for component "alert"/
+    );
+  });
+
+  it('propagates exceptions thrown by custom components', () => {
+    const markup =
+      '<span data-seemark-element-type="alert" data-seemark-payload=\'{"title":"x"}\'></span>';
+    const boom = () => {
+      throw new Error('component bug');
+    };
+    expect(() => convertMarkup(markup, { alert: boom })).toThrow(
+      'component bug'
+    );
   });
 });
