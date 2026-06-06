@@ -31,22 +31,10 @@ export default [
     external: [/node_modules/],
   },
   {
-    input: 'src/see-mark-html.js',
+    input: 'src/entries/html.js',
     output: [
       {
         file: 'lib/see-mark-html.cjs',
-        format: 'cjs',
-        sourcemap: true,
-      },
-    ],
-    plugins: sharedPlugins,
-    external: [/node_modules/],
-  },
-  {
-    input: 'src/see-mark-html-utils.js',
-    output: [
-      {
-        file: 'lib/see-mark-html-utils.cjs',
         format: 'cjs',
         sourcemap: true,
       },

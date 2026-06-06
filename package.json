@@ -9,9 +9,6 @@
     },
     "./html": {
       "default": "./lib/see-mark-html.cjs"
-    },
-    "./html/utils": {
-      "default": "./lib/see-mark-html-utils.cjs"
     }
   },
   "files": [
