@@ -9,11 +9,7 @@ import createMarkdownToHtmlParser, {
 } from '../parsers/create-markdown-to-html-parser';
 import createTableOfContents from '../table-of-contents/create-table-of-contents';
 
-export {
-  escapeHtml,
-  escapeAttr,
-  safeUrl,
-} from '../markup-converters/html/escape';
+export { escapeHtml, escapeAttr } from '../markup-converters/html/escape';
 
 export {
   latexDelimiterConvertor,

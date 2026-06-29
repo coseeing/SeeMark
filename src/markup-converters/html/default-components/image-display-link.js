@@ -1,8 +1,8 @@
-import { escapeHtml, safeUrl } from '../escape';
+import { escapeHtml, escapeAttr } from '../escape';
 
 import image from './image';
 
 const imageDisplayLink = ({ display = '', ...props } = {}) =>
-  `<a href="${safeUrl(props.target)}"><figure>${image(props)}<figcaption>${escapeHtml(display)}</figcaption></figure></a>`;
+  `<a href="${escapeAttr(props.target)}"><figure>${image(props)}<figcaption>${escapeHtml(display)}</figcaption></figure></a>`;
 
 export default imageDisplayLink;

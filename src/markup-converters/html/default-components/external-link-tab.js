@@ -1,7 +1,7 @@
-import { escapeHtml, safeUrl } from '../escape';
+import { escapeHtml, escapeAttr } from '../escape';
 
 const externalLinkTab = ({ display = '', target = '' } = {}) => {
-  return `<a href="${safeUrl(target)}" target="_blank" rel="noopener noreferrer">${escapeHtml(display)}</a>`;
+  return `<a href="${escapeAttr(target)}" target="_blank" rel="noopener noreferrer">${escapeHtml(display)}</a>`;
 };
 
 export default externalLinkTab;

@@ -5,8 +5,7 @@ import {
   SEE_MARK_PAYLOAD_DATA_ATTRIBUTES,
 } from '../../shared/common-markup';
 
-import { escapeHtml } from './escape';
-import { DROPPED_TAGS, serializeAttrs } from './raw-html-policy';
+import { escapeHtml, escapeAttr } from './escape';
 import defaultComponents from './default-components/default-components';
 
 const VOID_TAGS = new Set([
@@ -25,6 +24,17 @@ const VOID_TAGS = new Set([
   'track',
   'wbr',
 ]);
+
+// Re-serialize a passthrough element's attributes. Values are attribute-escaped
+// for correctness (so a quote/angle-bracket in a value cannot break out of the
+// attribute), but nothing is dropped or scheme-filtered: the HTML adapter is
+// not a sanitizer. Untrusted input belongs in the `sanitize` hook (DOMPurify).
+const serializeAttrs = (attribs) => {
+  if (!attribs) return '';
+  return Object.entries(attribs)
+    .map(([k, v]) => ` ${k}="${escapeAttr(v)}"`)
+    .join('');
+};
 
 const renderElement = (name, attribs, innerHtml) => {
   const attrs = serializeAttrs(attribs);
@@ -71,8 +81,6 @@ const convertMarkup = (markup = '', components = {}, options = {}) => {
         // consumer bug that must surface, not degrade into a plain element.
         return Component(props, childrenHtml);
       }
-      // Drop dangerous raw passthrough tags entirely.
-      if (DROPPED_TAGS.has(node.name)) return '';
       const innerHtml = (node.children || []).map(walk).join('');
       return renderElement(node.name, node.attribs, innerHtml);
     }

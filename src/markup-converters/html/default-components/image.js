@@ -1,7 +1,7 @@
-import { escapeAttr, safeUrl } from '../escape';
+import { escapeAttr } from '../escape';
 
 const image = ({ alt = '', imageId = '', source = '' } = {}) => {
-  return `<img src="${safeUrl(source)}" alt="${escapeAttr(alt)}" data-seemark-image-id="${escapeAttr(imageId)}">`;
+  return `<img src="${escapeAttr(source)}" alt="${escapeAttr(alt)}" data-seemark-image-id="${escapeAttr(imageId)}">`;
 };
 
 export default image;

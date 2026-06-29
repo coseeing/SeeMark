@@ -5,11 +5,7 @@ import createMarkdownToHtmlParser, {
   renderToHtml,
 } from './create-markdown-to-html-parser';
 import convertMarkup from '../markup-converters/html/converter';
-import {
-  escapeHtml,
-  escapeAttr,
-  safeUrl,
-} from '../markup-converters/html/escape';
+import { escapeHtml, escapeAttr } from '../markup-converters/html/escape';
 
 const mount = (html) => {
   const container = document.createElement('div');
@@ -160,66 +156,59 @@ describe('renderToHtml', () => {
       expect(escapeHtml(`"x'y"`)).toBe('&quot;x&#39;y&quot;');
     });
 
-    it('safeUrl whitelists http/https/mailto/tel/relative; rejects javascript:', () => {
-      expect(safeUrl('javascript:alert(1)')).toBe('#');
-      expect(safeUrl('vbscript:foo')).toBe('#');
-      expect(safeUrl('data:text/html,<x>')).toBe('#');
-      expect(safeUrl('https://example.com')).toBe('https://example.com');
-      expect(safeUrl('http://example.com')).toBe('http://example.com');
-      expect(safeUrl('/relative/path')).toBe('/relative/path');
-      expect(safeUrl('mailto:x@y.com')).toBe('mailto:x@y.com');
-      expect(safeUrl('tel:+1234')).toBe('tel:+1234');
-      expect(safeUrl('#anchor')).toBe('#anchor');
-    });
-
     it('escapeAttr encodes single quote', () => {
       expect(escapeAttr("I'm sure")).toBe('I&#39;m sure');
     });
   });
 
-  describe('XSS protection', () => {
-    it('rejects javascript: URLs in image source via default Image', () => {
+  describe('raw HTML passthrough — escaped, not sanitized', () => {
+    // The HTML adapter is not a sanitizer (see README threat model). Raw HTML in
+    // the markdown source is re-serialized verbatim and attribute values are
+    // escaped for correctness, but URLs are not scheme-filtered and no tags or
+    // attributes are dropped. Untrusted input belongs in the `sanitize` hook.
+
+    it('passes a javascript: image source through unchanged', () => {
       const html = renderToHtml('![bad](evil)', {
         options: { imageFiles: { evil: 'javascript:alert(1)' } },
       });
       const container = mount(html);
-      expect(container.querySelector('img').getAttribute('src')).toBe('#');
+      expect(container.querySelector('img').getAttribute('src')).toBe(
+        'javascript:alert(1)'
+      );
     });
 
-    it('passes through math mathMl/svg without escaping (trusted MathJax output)', () => {
-      const html = renderToHtml('\\(x\\)', {
-        options: {
-          latexDelimiter: 'bracket',
-          documentFormat: 'inline',
-          imageFiles: {},
-        },
-      });
-      expect(html).toMatch(/<math[\s\S]*<\/math>/);
-      expect(html).toMatch(/<svg[\s\S]*<\/svg>/);
+    it('passes a javascript: link href through unchanged', () => {
+      const html = renderToHtml('<a href="javascript:alert(1)">x</a>');
+      expect(html).toContain('href="javascript:alert(1)"');
     });
 
-    it('strips on* event-handler attributes from raw passthrough HTML', () => {
-      // <img onerror> inserted via innerHTML would FIRE — must be stripped.
+    it('keeps on* event-handler attributes (not stripped)', () => {
       const html = renderToHtml('<img src=x onerror=alert(2)>');
-      expect(html).not.toMatch(/onerror/i);
+      expect(html).toMatch(/onerror/i);
       expect(html).toContain('<img');
     });
 
-    it('runs safeUrl over href/src on raw passthrough HTML', () => {
-      const html = renderToHtml('<a href="javascript:alert(1)">x</a>');
-      expect(html).not.toContain('javascript:');
-      expect(html).toContain('href="#"');
-    });
-
-    it('drops raw <script> and <style> passthrough tags entirely', () => {
+    it('keeps raw <script>/<iframe>/<object> passthrough tags', () => {
       const html = renderToHtml(
-        'a <script>alert(1)</script> b <style>*{}</style> c'
+        'a <script>alert(1)</script> <iframe></iframe> <object></object> c'
       );
-      expect(html).not.toContain('<script');
-      expect(html).not.toContain('<style');
-      // surrounding text preserved
+      expect(html).toContain('<script');
+      expect(html).toContain('<iframe');
+      expect(html).toContain('<object');
       expect(html).toContain('a ');
       expect(html).toContain(' c');
+    });
+
+    it('escapes attribute values so a value cannot break out into a new attribute', () => {
+      // Correctness, not sanitization: an embedded quote must stay inside the
+      // attribute value rather than open a sibling (event-handler) attribute.
+      const html = renderToHtml(
+        '<a href="/x&quot; onmouseover=&quot;alert(1)">x</a>'
+      );
+      const container = mount(html);
+      expect(container.querySelector('a').hasAttribute('onmouseover')).toBe(
+        false
+      );
     });
 
     it('preserves safe raw inline HTML (strong, br)', () => {
@@ -241,49 +230,23 @@ describe('renderToHtml', () => {
     });
   });
 
-  describe('XSS — control-character scheme bypass (safeUrl)', () => {
-    it('rejects javascript: with embedded tab/newline/CR', () => {
-      expect(safeUrl('java\tscript:alert(1)')).toBe('#');
-      expect(safeUrl('java\nscript:alert(1)')).toBe('#');
-      expect(safeUrl('java\rscript:alert(1)')).toBe('#');
-      expect(safeUrl('javascript:alert(1)')).toBe('#');
+  describe('trusted output & contract integrity (still enforced)', () => {
+    it('emits math mathMl/svg unescaped (trusted MathJax output)', () => {
+      const html = renderToHtml('\\(x\\)', {
+        options: {
+          latexDelimiter: 'bracket',
+          documentFormat: 'inline',
+          imageFiles: {},
+        },
+      });
+      expect(html).toMatch(/<math[\s\S]*<\/math>/);
+      expect(html).toMatch(/<svg[\s\S]*<\/svg>/);
     });
 
-    it('still accepts legitimate URLs', () => {
-      expect(safeUrl('https://example.com')).toBe('https://example.com');
-      expect(safeUrl('/rel/path')).toBe('/rel/path');
-    });
-  });
-
-  describe('XSS — dangerous passthrough tags & attributes', () => {
-    it('drops user raw <iframe> (and its srcdoc) entirely', () => {
-      const html = renderToHtml(
-        '<iframe srcdoc="<script>alert(1)</script>"></iframe>'
-      );
-      expect(html).not.toMatch(/<iframe/i);
-      expect(html).not.toMatch(/srcdoc/i);
-    });
-
-    it('drops object/embed/form/meta/base/link passthrough tags', () => {
-      for (const tag of ['object', 'embed', 'form', 'meta', 'base', 'link']) {
-        const html = renderToHtml(`<${tag}></${tag}>`);
-        expect(html).not.toContain(`<${tag}`);
-      }
-    });
-
-    it('strips srcdoc/formaction/http-equiv/ping/background attributes', () => {
-      const html = renderToHtml(
-        '<a href="/x" ping="https://evil" formaction="javascript:alert(1)">x</a>'
-      );
-      expect(html).not.toMatch(/ping=/i);
-      expect(html).not.toMatch(/formaction=/i);
-    });
-
-    it('keeps the youtube component iframe (component output is not dropped)', () => {
+    it('renders the youtube component iframe from SeeMark syntax', () => {
       const html = renderToHtml(
         '@![Vid](https://www.youtube.com/embed/abc123)'
       );
-      // DROPPED_TAGS only affects walked passthrough nodes, not component output.
       expect(html).toMatch(/<iframe/i);
       expect(html).toContain('youtube.com/embed');
     });
