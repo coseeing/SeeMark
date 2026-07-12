@@ -42,4 +42,16 @@ export default [
     plugins: sharedPlugins,
     external: [/node_modules/],
   },
+  {
+    input: 'src/entries/vue.js',
+    output: [
+      {
+        file: 'lib/see-mark-vue.cjs',
+        format: 'cjs',
+        sourcemap: true,
+      },
+    ],
+    plugins: sharedPlugins,
+    external: [/node_modules/],
+  },
 ];

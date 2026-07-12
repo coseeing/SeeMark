@@ -9,6 +9,9 @@
     },
     "./html": {
       "default": "./lib/see-mark-html.cjs"
+    },
+    "./vue": {
+      "default": "./lib/see-mark-vue.cjs"
     }
   },
   "files": [
@@ -62,7 +65,8 @@
   "peerDependencies": {
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "vue": "^3.2.0"
   },
   "peerDependenciesMeta": {
     "prop-types": {
@@ -72,6 +76,9 @@
       "optional": true
     },
     "react-dom": {
+      "optional": true
+    },
+    "vue": {
       "optional": true
     }
   }
