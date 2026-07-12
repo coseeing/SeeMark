@@ -181,23 +181,25 @@ hydrate correctly.
 
 ### Bundler compatibility
 
-The `/vue` entry ships two builds: bundlers get an ESM build
-(`import` condition) so their single `vue` copy is shared with your app, while
-Node — CommonJS and ESM alike — gets the CommonJS build (`node` condition).
-Two practical notes:
+Like the React and HTML entries, `/vue` ships a CommonJS bundle. Bundlers
+(Vite, webpack) pre-bundle it to ESM automatically and share your app's single
+`vue` copy; no extra config is needed for a normal registry install. Two
+notes:
 
 - **AsciiMath under ESM-strict bundlers (Vite, esbuild) is unavailable.**
   MathJax implements AsciiMath through a MathJax-v2 legacy shim that cannot
-  run under strict mode. SeeMark loads it lazily, so importing SeeMark and
-  rendering LaTeX/Nemeth work everywhere; converting AsciiMath in an
-  ESM-strict bundle throws a descriptive error. Set `enableAsciimath: false`
-  in that environment (backticks then render as ordinary code spans).
-  Server-side (Node/webpack) AsciiMath is unaffected.
+  run under strict mode, and bundlers convert even CommonJS deps to
+  always-strict ESM. SeeMark loads it lazily, so importing SeeMark and
+  rendering LaTeX/Nemeth work everywhere; converting AsciiMath in such a
+  bundle throws a descriptive error. Set `enableAsciimath: false` in that
+  environment (backticks then render as ordinary code spans). Server-side
+  (Node/webpack) AsciiMath is unaffected.
 - **Linked-package development**: if you consume SeeMark via `npm link` /
-  `file:` during development, add `resolve.dedupe: ['vue']` to your Vite
-  config — the linked repo carries its own `node_modules/vue`, and two Vue
-  runtimes on one page silently break reactivity across the component
-  boundary. Registry installs are unaffected. See
+  `file:` during development, add `optimizeDeps.include: ['@coseeing/see-mark/vue']`
+  and `resolve.dedupe: ['vue']` to your Vite config — Vite skips CJS→ESM
+  pre-bundling for symlinked packages, and the linked repo carries its own
+  `node_modules/vue` (two Vue runtimes on one page silently break reactivity
+  across the component boundary). Registry installs need neither. See
   `examples/vue-playground/vite.config.js` for a working setup (including the
   `global` → `globalThis` define that mathjax-full needs in browsers).
 
