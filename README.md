@@ -209,11 +209,23 @@ React adapter's behavior. If you render untrusted markdown, sanitize it at the
 source, or sanitize the HTML adapter's string output with DOMPurify via its
 `sanitize` hook.
 
-The Vue adapter makes exactly one exception: string-valued `on*` attributes
-(e.g. `onclick="..."`) are dropped from raw passthrough elements. Vue would
-otherwise attach them as live inline handlers (React ignores string handlers),
-which would make the Vue adapter strictly more dangerous than the React one.
-Event handling on your own custom components (`@click`, `v-on`) is unaffected.
+To keep the Vue adapter no more dangerous than the React one, raw passthrough
+neutralizes three Vue-specific execution vectors — none of which affect your
+own custom components (`@click`/`v-on`, `ref`, `key` on components all work
+normally):
+
+- **string `on*` attributes** (e.g. `onclick="..."`) are dropped. Vue would
+  otherwise attach them as live inline handlers; React ignores string
+  handlers.
+- **raw `<script>` elements are dropped.** A `<script>` built as a VNode is
+  not parser-inserted and executes on mount; React's script elements are
+  inert and the HTML adapter's string output is inert under `innerHTML`.
+- **the Vue-reserved props `ref`, `key`, `ref_for`, `ref_key`** are stripped,
+  so untrusted markup cannot register on the host component's `$refs` or
+  corrupt keyed diffing.
+
+Everything else — including `javascript:` URLs and `<style>` — still passes
+through verbatim; sanitize untrusted input at the source.
 
 ## Table of Contents
 

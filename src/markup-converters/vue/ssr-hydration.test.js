@@ -86,9 +86,23 @@ describe('SSR + hydration', () => {
     // SSR section.
     jest.spyOn(console, 'warn').mockImplementation(() => {});
     jest.spyOn(console, 'error').mockImplementation(() => {});
-    const { html, container } = await hydrateInJsdom(fullSyntaxMarkdown);
+
+    // Inlined (not via hydrateInJsdom) so we can capture a server node BEFORE
+    // hydration and prove it was ADOPTED, not replaced. The h1 carries no
+    // MJX-* id, so — unlike the math subtree — it is a clean structural-reuse
+    // signal unaffected by MathJax's per-parse id drift.
+    const html = await renderToString(makeApp(fullSyntaxMarkdown));
     expect(html).toContain('<h1');
-    expect(container.querySelector('h1')).not.toBeNull();
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    container.innerHTML = html;
+    const serverH1 = container.querySelector('h1');
+
+    makeApp(fullSyntaxMarkdown).mount(container);
+    await nextTick();
+
+    // Reference identity: a full client re-render would have discarded serverH1.
+    expect(container.querySelector('h1')).toBe(serverH1);
     expect(
       container.querySelector('span[aria-hidden="true"] svg')
     ).not.toBeNull();

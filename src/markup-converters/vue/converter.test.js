@@ -35,6 +35,45 @@ describe('vue converter', () => {
     expect(window.__seemarkPwned).toBeUndefined();
   });
 
+  it('drops raw <script> so it cannot execute on mount', () => {
+    // A live <script> built via h() is not parser-inserted and WOULD execute
+    // once mounted — strictly more dangerous than the React/HTML adapters.
+    delete window.__seemarkScriptRan;
+    const wrapper = mountMarkup(
+      'before <script>window.__seemarkScriptRan = true;</script> after'
+    );
+    expect(wrapper.find('script').exists()).toBe(false);
+    expect(window.__seemarkScriptRan).toBeUndefined();
+    expect(wrapper.text()).toContain('before');
+    expect(wrapper.text()).toContain('after');
+  });
+
+  it('strips Vue reserved props (ref/key) from raw passthrough', () => {
+    // ref/key handed to h() become framework directives, not attributes:
+    // `ref` would hijack the consuming component instance's $refs.
+    const refs = {};
+    mount({
+      render() {
+        return h('div', convertMarkup('<span ref="hijack" key="9">x</span>'));
+      },
+      mounted() {
+        refs.hijack = this.$refs.hijack;
+      },
+    });
+    expect(refs.hijack).toBeUndefined();
+  });
+
+  it('restores camelCase SVG attribute names lowercased by the HTML parser', () => {
+    // htmlparser2 lowercases viewBox -> viewbox; Vue's SVG setAttribute is
+    // case-sensitive, so without restoration the attribute is inert.
+    const wrapper = mountMarkup(
+      '<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><rect /></svg>'
+    );
+    const svg = wrapper.get('svg').element;
+    expect(svg.getAttribute('viewBox')).toBe('0 0 100 100');
+    expect(svg.getAttribute('preserveAspectRatio')).toBe('xMidYMid');
+  });
+
   it('keeps non-handler attributes verbatim, including data-* on unknown types', () => {
     const wrapper = mountMarkup(
       '<span data-seemark-element-type="not-a-real-type" data-foo="bar">x</span>'

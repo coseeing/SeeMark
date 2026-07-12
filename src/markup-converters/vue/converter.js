@@ -11,17 +11,99 @@ import defaultComponents from './default-components/default-components';
 // Vue sets string-valued native on* props via setAttribute (see vuejs/core
 // shouldSetAsProp's native-on special case), which creates LIVE inline
 // handlers — unlike React, which warns and ignores string handlers. Dropping
-// them keeps this adapter no more dangerous than the React one. This is the
-// ONLY attribute filtering the adapter does; everything else (including
-// javascript: URLs) passes through verbatim — see the README trust model.
+// them keeps this adapter no more dangerous than the React one. Everything
+// else (including javascript: URLs) passes through verbatim — see the README
+// trust model.
 const isInlineHandlerAttr = (name) => /^on/i.test(name);
+
+// Vue reserves these vnode props: handed to h() they become framework
+// directives, not DOM attributes. Raw user markup must never reach them —
+// `ref` would register on the CONSUMING component's $refs (letting untrusted
+// content clobber a ref the app relies on), and `key`/`ref_for`/`ref_key`
+// corrupt keyed diffing across re-renders. htmlparser2 lowercases attribute
+// names, so a lowercase check suffices.
+const RESERVED_VNODE_PROPS = new Set(['key', 'ref', 'ref_for', 'ref_key']);
+
+// htmlparser2 lowercases attribute names when parsing HTML, which turns SVG's
+// case-sensitive camelCase attributes into inert ones: Vue applies attributes
+// on an SVG element via setAttribute, which (unlike on HTML elements)
+// preserves case, so `viewbox` never behaves as `viewBox`. The React adapter
+// (html-react-parser) and the browser's own SVG foreign-content parsing both
+// restore this casing; we mirror them. Keyed by the lowercased name
+// htmlparser2 emits. (MathJax's own SVG never travels this path — the math
+// component injects it via innerHTML — so this only affects raw inline SVG.)
+const SVG_CAMELCASE_ATTRS = {
+  allowreorder: 'allowReorder',
+  attributename: 'attributeName',
+  attributetype: 'attributeType',
+  autoreverse: 'autoReverse',
+  basefrequency: 'baseFrequency',
+  baseprofile: 'baseProfile',
+  calcmode: 'calcMode',
+  clippathunits: 'clipPathUnits',
+  diffuseconstant: 'diffuseConstant',
+  edgemode: 'edgeMode',
+  externalresourcesrequired: 'externalResourcesRequired',
+  filterres: 'filterRes',
+  filterunits: 'filterUnits',
+  glyphref: 'glyphRef',
+  gradienttransform: 'gradientTransform',
+  gradientunits: 'gradientUnits',
+  kernelmatrix: 'kernelMatrix',
+  kernelunitlength: 'kernelUnitLength',
+  keypoints: 'keyPoints',
+  keysplines: 'keySplines',
+  keytimes: 'keyTimes',
+  lengthadjust: 'lengthAdjust',
+  limitingconeangle: 'limitingConeAngle',
+  markerheight: 'markerHeight',
+  markerunits: 'markerUnits',
+  markerwidth: 'markerWidth',
+  maskcontentunits: 'maskContentUnits',
+  maskunits: 'maskUnits',
+  numoctaves: 'numOctaves',
+  pathlength: 'pathLength',
+  patterncontentunits: 'patternContentUnits',
+  patterntransform: 'patternTransform',
+  patternunits: 'patternUnits',
+  pointsatx: 'pointsAtX',
+  pointsaty: 'pointsAtY',
+  pointsatz: 'pointsAtZ',
+  preservealpha: 'preserveAlpha',
+  preserveaspectratio: 'preserveAspectRatio',
+  primitiveunits: 'primitiveUnits',
+  refx: 'refX',
+  refy: 'refY',
+  repeatcount: 'repeatCount',
+  repeatdur: 'repeatDur',
+  requiredextensions: 'requiredExtensions',
+  requiredfeatures: 'requiredFeatures',
+  specularconstant: 'specularConstant',
+  specularexponent: 'specularExponent',
+  spreadmethod: 'spreadMethod',
+  startoffset: 'startOffset',
+  stddeviation: 'stdDeviation',
+  stitchtiles: 'stitchTiles',
+  surfacescale: 'surfaceScale',
+  systemlanguage: 'systemLanguage',
+  tablevalues: 'tableValues',
+  targetx: 'targetX',
+  targety: 'targetY',
+  textlength: 'textLength',
+  viewbox: 'viewBox',
+  viewtarget: 'viewTarget',
+  xchannelselector: 'xChannelSelector',
+  ychannelselector: 'yChannelSelector',
+  zoomandpan: 'zoomAndPan',
+};
 
 const toPassthroughProps = (attribs) => {
   if (!attribs) return null;
   const props = {};
   for (const [name, value] of Object.entries(attribs)) {
     if (isInlineHandlerAttr(name)) continue;
-    props[name] = value;
+    if (RESERVED_VNODE_PROPS.has(name)) continue;
+    props[SVG_CAMELCASE_ATTRS[name] || name] = value;
   }
   return props;
 };
@@ -72,6 +154,12 @@ const convertMarkup = (markup = '', components = {}) => {
         // array.
         return h(Component, props, { default: () => walkAll(node.children) });
       }
+      // A raw <script> built via h()/createElement is NOT parser-inserted, so
+      // it EXECUTES on mount — unlike the React adapter (its script elements
+      // are inert) and the HTML adapter (its string output is inert under
+      // innerHTML). Drop it so the Vue adapter is not more dangerous than the
+      // React one. <style> applies identically in both adapters, so it stays.
+      if (node.type === 'script') return null;
       return h(
         node.name,
         toPassthroughProps(node.attribs),
