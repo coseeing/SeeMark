@@ -11,6 +11,8 @@
       "default": "./lib/see-mark-html.cjs"
     },
     "./vue": {
+      "node": "./lib/see-mark-vue.cjs",
+      "import": "./lib/see-mark-vue.mjs",
       "default": "./lib/see-mark-vue.cjs"
     }
   },

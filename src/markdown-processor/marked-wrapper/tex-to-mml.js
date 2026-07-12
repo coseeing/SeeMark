@@ -24,10 +24,10 @@
 //
 //  Load the packages needed for MathJax
 //
-import { TeX } from 'mathjax-full/js/input/tex';
-import { HTMLDocument } from 'mathjax-full/js/handlers/html/HTMLDocument';
-import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor';
-import { STATE } from 'mathjax-full/js/core/MathItem';
+import { TeX } from 'mathjax-full/js/input/tex.js';
+import { HTMLDocument } from 'mathjax-full/js/handlers/html/HTMLDocument.js';
+import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor.js';
+import { STATE } from 'mathjax-full/js/core/MathItem.js';
 
 import { AllPackages } from 'mathjax-full/js/input/tex/AllPackages.js';
 

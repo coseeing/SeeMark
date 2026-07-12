@@ -22,25 +22,39 @@ let cached = null;
 
 const loadAsciimathRuntime = () => {
   if (!cached) {
-    const { AsciiMath } = require('mathjax-full/js/input/asciimath.js');
-    const {
-      HTMLDocument,
-    } = require('mathjax-full/js/handlers/html/HTMLDocument.js');
-    const { liteAdaptor } = require('mathjax-full/js/adaptors/liteAdaptor.js');
-    const { STATE } = require('mathjax-full/js/core/MathItem.js');
-    const {
-      SerializedMmlVisitor,
-    } = require('mathjax-full/js/core/MmlTree/SerializedMmlVisitor.js');
+    // Any failure here — `require` missing in an ESM build, or the legacy
+    // shim's strict-mode crash under a bundler — gets one actionable message
+    // instead of a cryptic internal error. (Don't gate on `typeof require`:
+    // the commonjs plugin rewrites that expression during bundling.)
+    try {
+      const { AsciiMath } = require('mathjax-full/js/input/asciimath.js');
+      const {
+        HTMLDocument,
+      } = require('mathjax-full/js/handlers/html/HTMLDocument.js');
+      const {
+        liteAdaptor,
+      } = require('mathjax-full/js/adaptors/liteAdaptor.js');
+      const { STATE } = require('mathjax-full/js/core/MathItem.js');
+      const {
+        SerializedMmlVisitor,
+      } = require('mathjax-full/js/core/MmlTree/SerializedMmlVisitor.js');
 
-    const asciimath = new AsciiMath();
-    const html = new HTMLDocument('', liteAdaptor(), { InputJax: asciimath });
-    const visitor = new SerializedMmlVisitor();
+      const asciimath = new AsciiMath();
+      const html = new HTMLDocument('', liteAdaptor(), { InputJax: asciimath });
+      const visitor = new SerializedMmlVisitor();
 
-    cached = {
-      html,
-      STATE,
-      toMathML: (node) => visitor.visitTree(node, html),
-    };
+      cached = {
+        html,
+        STATE,
+        toMathML: (node) => visitor.visitTree(node, html),
+      };
+    } catch (error) {
+      throw new Error(
+        'SeeMark: AsciiMath is unavailable in this environment (MathJax legacy shim limitation — ' +
+          `${error.message}). Set enableAsciimath: false, or consume the CommonJS build; ` +
+          'see the README bundler notes.'
+      );
+    }
   }
   return cached;
 };

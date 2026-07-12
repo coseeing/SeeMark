@@ -56,6 +56,18 @@ export default [
         format: 'cjs',
         sourcemap: true,
       },
+      // The Vue entry also ships as ESM. A CJS-only build makes bundlers
+      // resolve `require('vue')` to vue.cjs.js while the consuming app
+      // imports the esm-bundler build — two separate Vue reactivity
+      // instances in one page, so props tracked by the app's copy never
+      // invalidate computeds created by SeeMark's copy (custom `components`
+      // overrides silently stop reacting). The ESM build keeps `import 'vue'`
+      // intact so the consumer's bundler resolves a single Vue.
+      {
+        file: 'lib/see-mark-vue.mjs',
+        format: 'es',
+        sourcemap: true,
+      },
     ],
     plugins: sharedPlugins,
     external: [/node_modules/],
