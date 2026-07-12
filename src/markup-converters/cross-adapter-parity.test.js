@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ * @jest-environment-options {"customExportConditions": ["node", "node-addons"]}
+ */
 import '@testing-library/jest-dom';
 import { render, cleanup } from '@testing-library/react';
 
@@ -7,7 +11,12 @@ import { SUPPORTED_COMPONENT_TYPES } from '../shared/supported-components';
 
 import { fullSyntaxMarkdown } from './html/full-syntax-fixture';
 
-// CONTRACT TEST — the formal drift guard between the React and HTML adapters.
+import { h } from 'vue';
+import { mount } from '@vue/test-utils';
+
+import createMarkdownToVueParser from '../parsers/create-markdown-to-vue-parser';
+
+// CONTRACT TEST — the formal drift guard between the React, HTML and Vue adapters.
 //
 // The HTML default components are hand-written mirrors of the React ones (a
 // deliberate trade-off: it keeps /html framework-free instead of depending on
@@ -17,6 +26,8 @@ import { fullSyntaxMarkdown } from './html/full-syntax-fixture';
 // differences (self-closing tags, attribute order, className vs class, style
 // spacing, empty-string vs omitted attributes) are normalized away — both
 // outputs are parsed by the SAME DOM parser first.
+// The Vue default components are a third hand-written mirror under the same
+// contract: same markdown in, same semantic DOM out.
 //
 // Every type in SUPPORTED_COMPONENT_TYPES must be exercised by at least one
 // case (each case declares which types it `covers`; a coverage test below
@@ -42,6 +53,14 @@ const toDom = (htmlString) => {
   const el = document.createElement('div');
   el.innerHTML = htmlString;
   return el;
+};
+
+const renderVueToDom = (markdown) => {
+  const parse = createMarkdownToVueParser({
+    options: OPTIONS,
+    components: {},
+  });
+  return mount({ render: () => h('div', parse(markdown)) });
 };
 
 // Canonical, format-agnostic signature of a DOM subtree.
@@ -75,10 +94,13 @@ const parity = (markdown) => {
   const htmlSig = signature(
     toDom(renderToHtml(markdown, { options: OPTIONS }))
   );
-  return { reactSig, htmlSig };
+  const vueWrapper = renderVueToDom(markdown);
+  const vueSig = signature(vueWrapper.element);
+  vueWrapper.unmount();
+  return { reactSig, htmlSig, vueSig };
 };
 
-describe('cross-adapter parity (React vs HTML)', () => {
+describe('cross-adapter parity (React vs HTML vs Vue)', () => {
   afterEach(() => cleanup());
 
   // [name, markdown, covers] — `covers` declares which component types the
@@ -141,8 +163,9 @@ describe('cross-adapter parity (React vs HTML)', () => {
   it.each(cases)(
     'produces matching semantic DOM for: %s',
     (_name, markdown) => {
-      const { reactSig, htmlSig } = parity(markdown);
+      const { reactSig, htmlSig, vueSig } = parity(markdown);
       expect(htmlSig).toBe(reactSig);
+      expect(vueSig).toBe(reactSig);
     }
   );
 
