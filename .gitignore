@@ -6,3 +6,6 @@ coverage/
 npm-debug.log*
 .DS_Store
 
+
+# staged-delivery local verification evidence (recordings, screenshots) — never committed
+.staged-delivery/
