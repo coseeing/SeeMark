@@ -5,7 +5,10 @@ import { sampleMarkdown } from './sample-markdown';
 
 const OPTIONS = {
   latexDelimiter: 'bracket',
-  asciimathDelimiter: 'graveaccent',
+  // AsciiMath is disabled: MathJax's AsciiMath legacy shim cannot run under
+  // ESM-strict bundlers like Vite (see the README's bundler-compatibility
+  // note). LaTeX and Nemeth work fine.
+  enableAsciimath: false,
   documentFormat: 'inline',
   imageFiles: { 'pic-id': 'https://picsum.photos/240/160' },
 };

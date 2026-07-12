@@ -15,7 +15,7 @@ External links: @[open in tab](https://example.com), [titled][[Example homepage]
 
 ![captioned linked image][[A sample caption]](pic-id)((https://example.com))
 
-Math inline: \\(a^2 + b^2 = c^2\\) and AsciiMath \`sqrt(x)/2\`.
+Math inline: \\(a^2 + b^2 = c^2\\) rendered by MathJax (AsciiMath is disabled under Vite — see README).
 
 @![Plain iframe](https://example.com/embed)
 
