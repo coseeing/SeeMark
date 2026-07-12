@@ -103,6 +103,118 @@ interface Position {
 }
 ```
 
+## Vue
+
+The `@coseeing/see-mark/vue` entry renders the same markdown pipeline to Vue 3
+VNodes. Vue 3.2+ is required (declared as an optional peer dependency — React
+users are unaffected).
+
+### Usage
+
+```js
+import { createApp, defineComponent, h, ref } from 'vue';
+import { SeeMark, createMarkdownToVueParser } from '@coseeing/see-mark/vue';
+
+// Option 1: the <SeeMark> component (idiomatic for most apps)
+const App = defineComponent({
+  setup() {
+    const source = ref('# Hello \\(a^2 + b^2 = c^2\\)');
+    return () => h(SeeMark, { source: source.value, options: OPTIONS });
+  },
+});
+
+// Option 2: the parser factory (mirrors createMarkdownToReactParser)
+const parse = createMarkdownToVueParser({ options: OPTIONS });
+const MyDoc = defineComponent({
+  props: { markdown: String },
+  setup(props) {
+    return () => h('article', parse(props.markdown));
+  },
+});
+```
+
+`options` accepts the same table as the React parser (see above).
+`createMarkdownToVueParser` returns a function producing a fresh VNode array —
+call it inside a render function. `<SeeMark>` re-parses when `source` changes
+and rebuilds its parser when `options`/`components` change; pass stable object
+references for `options`/`components` (an inline literal re-creates the parser
+on every parent render).
+
+### Custom components
+
+A custom component is an ordinary Vue 3 component (functional, `defineComponent`
+or SFC). Payload arrives as props; children arrive through the **default slot**.
+Declare the payload props you use (plus `position`) — undeclared payload keys
+would otherwise fall through onto the root element as DOM attributes.
+
+```js
+const Alert = defineComponent({
+  props: {
+    variant: { type: String, default: '' },
+    title: { type: String, default: '' },
+    internalLinkId: { type: String, default: '' },
+    position: { type: Object, default: undefined },
+  },
+  setup(props, { slots }) {
+    return () =>
+      h('div', { class: `alert alert-${props.variant}` }, [
+        props.title ? h('strong', null, props.title) : null,
+        slots.default?.(),
+      ]);
+  },
+});
+
+h(SeeMark, { source, options: OPTIONS, components: { alert: Alert } });
+```
+
+Errors thrown by a custom component surface at mount/render time and follow
+Vue's normal error path (`app.config.errorHandler`), not at parse time.
+
+### SSR
+
+The Vue adapter is SSR-safe (`@vue/server-renderer` / Nuxt): MathJax runs in
+the parsing stage, not in components. One caveat: MathJax assigns
+globally-incrementing element IDs, so a server parse and a client parse of the
+same document can disagree on `MJX-*` attribute values, which may surface as
+attribute-level hydration warnings in dev builds. Structure and content
+hydrate correctly.
+
+### Bundler compatibility
+
+The `/vue` entry ships two builds: bundlers get an ESM build
+(`import` condition) so their single `vue` copy is shared with your app, while
+Node — CommonJS and ESM alike — gets the CommonJS build (`node` condition).
+Two practical notes:
+
+- **AsciiMath under ESM-strict bundlers (Vite, esbuild) is unavailable.**
+  MathJax implements AsciiMath through a MathJax-v2 legacy shim that cannot
+  run under strict mode. SeeMark loads it lazily, so importing SeeMark and
+  rendering LaTeX/Nemeth work everywhere; converting AsciiMath in an
+  ESM-strict bundle throws a descriptive error. Set `enableAsciimath: false`
+  in that environment (backticks then render as ordinary code spans).
+  Server-side (Node/webpack) AsciiMath is unaffected.
+- **Linked-package development**: if you consume SeeMark via `npm link` /
+  `file:` during development, add `resolve.dedupe: ['vue']` to your Vite
+  config — the linked repo carries its own `node_modules/vue`, and two Vue
+  runtimes on one page silently break reactivity across the component
+  boundary. Registry installs are unaffected. See
+  `examples/vue-playground/vite.config.js` for a working setup (including the
+  `global` → `globalThis` define that mathjax-full needs in browsers).
+
+## Security / trust model
+
+SeeMark adapters are **not sanitizers**. Raw HTML in the markdown source
+passes through to the output — including `javascript:` URLs — matching the
+React adapter's behavior. If you render untrusted markdown, sanitize it at the
+source, or sanitize the HTML adapter's string output with DOMPurify via its
+`sanitize` hook.
+
+The Vue adapter makes exactly one exception: string-valued `on*` attributes
+(e.g. `onclick="..."`) are dropped from raw passthrough elements. Vue would
+otherwise attach them as live inline handlers (React ignores string handlers),
+which would make the Vue adapter strictly more dangerous than the React one.
+Event handling on your own custom components (`@click`, `v-on`) is unaffected.
+
 ## Table of Contents
 
 ### Usage
