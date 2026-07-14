@@ -199,9 +199,9 @@ notes:
   and `resolve.dedupe: ['vue']` to your Vite config — Vite skips CJS→ESM
   pre-bundling for symlinked packages, and the linked repo carries its own
   `node_modules/vue` (two Vue runtimes on one page silently break reactivity
-  across the component boundary). Registry installs need neither. See
-  `examples/vue-playground/vite.config.js` for a working setup (including the
-  `global` → `globalThis` define that mathjax-full needs in browsers).
+  across the component boundary). Registry installs need neither. In the
+  browser you may also need a `global` → `globalThis` define, since
+  mathjax-full references the Node.js `global` at module scope.
 
 ## Security / trust model
 
