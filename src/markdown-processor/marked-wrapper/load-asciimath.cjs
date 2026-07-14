@@ -1,25 +1,16 @@
 // Lazy loader for MathJax's AsciiMath input jax.
 //
-// mathjax-full implements AsciiMath through a MathJax-v2 legacy shim that
-// calls `arguments.callee` while bootstrapping its object system — code that
-// throws under strict mode. CommonJS consumers (Node, webpack) evaluate it in
-// sloppy mode and work, but ESM-strict bundlers (Vite, esbuild) throw AT
-// IMPORT TIME if these modules are required at the top level, which used to
-// make `import '@coseeing/see-mark/*'` crash any Vite app on startup.
+// MathJax's AsciiMath is a legacy shim that crashes under strict mode.
+// ESM-strict bundlers (Vite, esbuild) would hit that crash AT IMPORT TIME if
+// these modules were required at the top level — enough to break `import
+// '@coseeing/see-mark'` on startup. Requiring them lazily, on the first
+// conversion, means merely importing SeeMark (and rendering LaTeX/Nemeth)
+// never touches the shim. Converting AsciiMath under such a bundler still
+// throws; see the README (`enableAsciimath: false` avoids it).
 //
-// SeeMark ships a CommonJS bundle, but bundlers (Vite, esbuild) pre-bundle
-// even CJS deps by converting them to always-strict ESM, so the crash still
-// applies to bundler consumers. Keeping the requires inside the function
-// defers that evaluation to the first actual AsciiMath conversion: merely
-// importing SeeMark (and rendering LaTeX/Nemeth) never touches the shim.
-// Converting AsciiMath under such a bundler still throws — an upstream
-// mathjax-full limitation, documented in the README; `enableAsciimath: false`
-// avoids it entirely.
-//
-// This file is CommonJS on purpose: ESM `import` cannot be deferred, and
-// rollup's commonjs plugin is configured (`ignore` in rollup.config.mjs) to
-// leave these requires in place instead of hoisting them into top-level
-// imports.
+// CommonJS on purpose: an ESM `import` cannot be deferred like this. Rollup's
+// commonjs plugin is told (`ignore` in rollup.config.mjs) to leave these
+// requires in place.
 
 let cached = null;
 

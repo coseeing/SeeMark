@@ -8,30 +8,20 @@ import {
 
 import defaultComponents from './default-components/default-components';
 
-// Vue sets string-valued native on* props via setAttribute (see vuejs/core
-// shouldSetAsProp's native-on special case), which creates LIVE inline
-// handlers — unlike React, which warns and ignores string handlers. Dropping
-// them keeps this adapter no more dangerous than the React one. Everything
-// else (including javascript: URLs) passes through verbatim — see the README
-// trust model.
+// Vue turns string on* attributes into live inline handlers; React ignores
+// them. Drop them so this adapter is no more dangerous than React — everything
+// else (javascript: URLs included) passes through, per the README trust model.
 const isInlineHandlerAttr = (name) => /^on/i.test(name);
 
-// Vue reserves these vnode props: handed to h() they become framework
-// directives, not DOM attributes. Raw user markup must never reach them —
-// `ref` would register on the CONSUMING component's $refs (letting untrusted
-// content clobber a ref the app relies on), and `key`/`ref_for`/`ref_key`
-// corrupt keyed diffing across re-renders. htmlparser2 lowercases attribute
-// names, so a lowercase check suffices.
+// Vue treats these as framework directives, not DOM attributes. Untrusted
+// markup must never reach them: `ref` would register on the consuming
+// component's $refs, and `key`/`ref_for`/`ref_key` corrupt keyed diffing.
 const RESERVED_VNODE_PROPS = new Set(['key', 'ref', 'ref_for', 'ref_key']);
 
-// htmlparser2 lowercases attribute names when parsing HTML, which turns SVG's
-// case-sensitive camelCase attributes into inert ones: Vue applies attributes
-// on an SVG element via setAttribute, which (unlike on HTML elements)
-// preserves case, so `viewbox` never behaves as `viewBox`. The React adapter
-// (html-react-parser) and the browser's own SVG foreign-content parsing both
-// restore this casing; we mirror them. Keyed by the lowercased name
-// htmlparser2 emits. (MathJax's own SVG never travels this path — the math
-// component injects it via innerHTML — so this only affects raw inline SVG.)
+// htmlparser2 lowercases attribute names, which breaks SVG's case-sensitive
+// camelCase attributes (`viewbox` never acts as `viewBox`). Restore the
+// casing, as the React adapter and the browser's SVG parser do. Only raw
+// inline SVG hits this — MathJax's SVG is injected via innerHTML.
 const SVG_CAMELCASE_ATTRS = {
   allowreorder: 'allowReorder',
   attributename: 'attributeName',
@@ -108,10 +98,8 @@ const toPassthroughProps = (attribs) => {
   return props;
 };
 
-// Stage 1 guarantees parseable payloads (it attribute-escapes the JSON and
-// strips forged data-seemark-* from user raw HTML), so an unparseable payload
-// can only mean a SeeMark bug — fail loudly instead of silently emitting a
-// fallback element that would leak data-seemark-* attributes downstream.
+// Stage 1 guarantees parseable payloads, so a parse failure can only be a
+// SeeMark bug — fail loudly instead of silently leaking data-seemark-* markup.
 const parsePayload = (payloadStr, type) => {
   if (!payloadStr) return {};
   try {
@@ -131,8 +119,7 @@ const convertMarkup = (markup = '', components = {}) => {
 
   const walk = (node) => {
     if (node.type === 'text') return node.data;
-    // Comments cannot round-trip through VNodes the way they do through the
-    // HTML adapter's strings; the React adapter drops them too.
+    // No VNode representation for comments; the React adapter drops them too.
     if (node.type === 'comment') return null;
     if (
       node.type === 'tag' ||
@@ -146,19 +133,14 @@ const convertMarkup = (markup = '', components = {}) => {
           node.attribs[SEE_MARK_PAYLOAD_DATA_ATTRIBUTES],
           type
         );
-        // Children travel as the default slot — the one idiom every Vue
-        // component form (functional, defineComponent, SFC) understands.
-        // Rebuilt on every slot invocation: a slot must return fresh VNodes
-        // each call (a component may call slots.default() twice in one
-        // render, or re-render later) — never a cached, possibly-mounted
-        // array.
+        // Children travel as the default slot (the idiom every Vue component
+        // form understands). Rebuilt per invocation, never cached: a slot must
+        // return fresh VNodes each call.
         return h(Component, props, { default: () => walkAll(node.children) });
       }
-      // A raw <script> built via h()/createElement is NOT parser-inserted, so
-      // it EXECUTES on mount — unlike the React adapter (its script elements
-      // are inert) and the HTML adapter (its string output is inert under
-      // innerHTML). Drop it so the Vue adapter is not more dangerous than the
-      // React one. <style> applies identically in both adapters, so it stays.
+      // A <script> built as a VNode executes on mount (React's and the HTML
+      // adapter's are inert). Drop it so this adapter is no more dangerous than
+      // React. <style> is inert either way, so it stays.
       if (node.type === 'script') return null;
       return h(
         node.name,
