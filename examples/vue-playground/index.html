@@ -13,6 +13,38 @@
         clip: rect(0 0 0 0);
         white-space: nowrap;
       }
+
+      /* Demo styling only. SeeMark's default components are intentionally
+         unstyled — a real consumer supplies its own CSS. These rules mirror
+         Access8Math's conventions (bordered tables, constrained images) so the
+         playground looks like a styled deployment instead of raw browser
+         defaults. They do not affect the adapter's output. */
+      article {
+        overflow-x: auto; /* let very wide tables scroll instead of blowing out the page */
+      }
+      table {
+        border: 1px solid #333;
+        border-collapse: collapse;
+      }
+      tr {
+        border: inherit;
+      }
+      th,
+      td {
+        padding: 0.25rem 0.5rem;
+        border: 1px solid #333;
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+      figure {
+        margin: 0.75rem 0;
+      }
+      figcaption {
+        font-size: 0.9em;
+        color: #555;
+      }
     </style>
   </head>
   <body>
