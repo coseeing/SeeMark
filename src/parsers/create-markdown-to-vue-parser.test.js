@@ -34,6 +34,22 @@ describe('createMarkdownToVueParser', () => {
     ).not.toBeNull();
   });
 
+  // The Vue entry defaults enableAsciimath to false (React/HTML default it on),
+  // so ordinary inline code never routes to MathJax's AsciiMath shim — which
+  // crashes under Vite/esbuild dep pre-bundling.
+  it('defaults AsciiMath OFF: backtick content renders as a code span, not math', () => {
+    const wrapper = mountMarkdown('use `x+y` here');
+    expect(wrapper.find('span.sr-only').exists()).toBe(false);
+    expect(wrapper.get('code').text()).toBe('x+y');
+  });
+
+  it('renders backtick AsciiMath as math when enableAsciimath is opted in', () => {
+    const wrapper = mountMarkdown('use `x+y` here', {
+      options: { ...OPTIONS, enableAsciimath: true },
+    });
+    expect(wrapper.get('span.sr-only').element.innerHTML).toContain('<math');
+  });
+
   it('resolves image ids through options.imageFiles', () => {
     const wrapper = mountMarkdown('![cat](pic-id)');
     expect(wrapper.get('img').attributes('src')).toBe(

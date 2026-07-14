@@ -133,7 +133,12 @@ const MyDoc = defineComponent({
 });
 ```
 
-`options` accepts the same table as the React parser (see above).
+`options` accepts the same table as the React parser (see above), with one
+changed default: **`enableAsciimath` defaults to `false`** for the Vue entry
+(React/HTML default it to `true`). AsciiMath's backtick delimiter otherwise
+turns ordinary inline code into math, and its MathJax shim can't run under
+Vite/esbuild (see Bundler compatibility). Pass `enableAsciimath: true` to opt
+in where it works.
 `createMarkdownToVueParser` returns a function producing a fresh VNode array —
 call it inside a render function. `<SeeMark>` re-parses when `source` changes
 and rebuilds its parser when `options`/`components` change; pass stable object
@@ -188,12 +193,14 @@ notes:
 
 - **AsciiMath under ESM-strict bundlers (Vite, esbuild) is unavailable.**
   MathJax implements AsciiMath through a MathJax-v2 legacy shim that cannot
-  run under strict mode, and bundlers convert even CommonJS deps to
-  always-strict ESM. SeeMark loads it lazily, so importing SeeMark and
-  rendering LaTeX/Nemeth work everywhere; converting AsciiMath in such a
-  bundle throws a descriptive error. Set `enableAsciimath: false` in that
-  environment (backticks then render as ordinary code spans). Server-side
-  (Node/webpack) AsciiMath is unaffected.
+  run under strict mode, and Vite's dependency pre-bundling converts even
+  CommonJS deps to always-strict ESM. SeeMark loads it lazily, so importing
+  SeeMark and rendering LaTeX/Nemeth work everywhere; the Vue entry also
+  **defaults `enableAsciimath` to `false`**, so ordinary backtick content
+  (inline code) renders as code spans out of the box. Explicitly setting
+  `enableAsciimath: true` under such a bundler throws a descriptive error when
+  it hits AsciiMath. Server-side (Node/webpack) AsciiMath is unaffected — a
+  plain esbuild *build* (not Vite's dep pre-bundle) does not trip it either.
 - **Linked-package development**: if you consume SeeMark via `npm link` /
   `file:` during development, add `optimizeDeps.include: ['@coseeing/see-mark/vue']`
   and `resolve.dedupe: ['vue']` to your Vite config — Vite skips CJS→ESM

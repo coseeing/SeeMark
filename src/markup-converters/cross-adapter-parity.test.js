@@ -34,6 +34,11 @@ import createMarkdownToVueParser from '../parsers/create-markdown-to-vue-parser'
 // enforces the union). Adding component #16 without a parity case fails CI.
 
 const OPTIONS = {
+  // Explicit — the Vue entry defaults enableAsciimath to false, but parity is
+  // about "same options in, same DOM out"; force it on so all three adapters
+  // are compared under one configuration (the default divergence is covered by
+  // create-markdown-to-vue-parser.test.js).
+  enableAsciimath: true,
   latexDelimiter: 'bracket',
   asciimathDelimiter: 'graveaccent',
   documentFormat: 'inline',
