@@ -1,20 +1,6 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 import { createRenderer } from './helpers';
-
-const createBlobUrlManager = () => {
-  const cache = new Map();
-
-  return (href, imageFile) => {
-    if (cache.has(href)) {
-      return cache.get(href);
-    }
-    const blobUrl = URL.createObjectURL(imageFile);
-    cache.set(href, blobUrl);
-    return blobUrl;
-  };
-};
-
-const blobUrlManager = createBlobUrlManager();
+import { resolveImageSource } from './image-source';
 
 const markedImage = ({ imageFiles, shouldBuildImageObjectURL }) => {
   const renderer = {
@@ -22,14 +8,10 @@ const markedImage = ({ imageFiles, shouldBuildImageObjectURL }) => {
       extractMeta(token) {
         const alt = token.text;
         const imageId = token.href;
-        const isUrl = /^https?:/i.test(imageId);
-        const imageFile = isUrl ? null : imageFiles[imageId];
-
-        const source = isUrl
-          ? imageId
-          : shouldBuildImageObjectURL
-            ? blobUrlManager(imageId, imageFile)
-            : imageFile;
+        const source = resolveImageSource(imageId, {
+          imageFiles,
+          shouldBuildImageObjectURL,
+        });
 
         return { alt, imageId, source };
       },
