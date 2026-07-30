@@ -21,34 +21,15 @@
  *  limitations under the License.
  */
 
-//
-//  Load the packages needed for MathJax
-//
-import { AsciiMath } from 'mathjax-full/js/input/asciimath.js';
-import { HTMLDocument } from 'mathjax-full/js/handlers/html/HTMLDocument.js';
-import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor.js';
-import { STATE } from 'mathjax-full/js/core/MathItem.js';
-
-//
-//  Create the input jax
-//
-const asciimath = new AsciiMath();
-
-//
-//  Create an HTML document using a LiteDocument and the input jax
-//
-const html = new HTMLDocument('', liteAdaptor(), { InputJax: asciimath });
-
-//
-//  Create a MathML serializer
-//
-import { SerializedMmlVisitor } from 'mathjax-full/js/core/MmlTree/SerializedMmlVisitor.js';
-const visitor = new SerializedMmlVisitor();
-const toMathML = (node) => visitor.visitTree(node, html);
+// MathJax's AsciiMath modules are loaded lazily, on the first conversion —
+// see load-asciimath.cjs for why (its legacy shim crashes ESM-strict
+// bundlers at import time).
+import loadAsciimathRuntime from './load-asciimath.cjs';
 
 const asciiMathToMMLFactory =
   ({ htmlMathDisplay }) =>
   (mstring) => {
+    const { html, STATE, toMathML } = loadAsciimathRuntime();
     return toMathML(
       html.convert(mstring || '', {
         display: htmlMathDisplay === 'block',

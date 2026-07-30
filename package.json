@@ -9,6 +9,9 @@
     },
     "./html": {
       "default": "./lib/see-mark-html.cjs"
+    },
+    "./vue": {
+      "default": "./lib/see-mark-vue.cjs"
     }
   },
   "files": [
@@ -34,6 +37,8 @@
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
+    "@vue/server-renderer": "^3.5.39",
+    "@vue/test-utils": "^2.4.11",
     "babel-jest": "^30.0.5",
     "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.2",
@@ -46,7 +51,8 @@
     "jest": "^30.0.0",
     "jest-environment-jsdom": "^30.0.4",
     "prettier": "^3.5.3",
-    "rollup": "^4.40.1"
+    "rollup": "^4.40.1",
+    "vue": "^3.5.39"
   },
   "dependencies": {
     "@coseeing/nemeth2latex": "^0.2.0",
@@ -59,11 +65,21 @@
   "peerDependencies": {
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "vue": "^3.2.0"
   },
   "peerDependenciesMeta": {
-    "prop-types": { "optional": true },
-    "react": { "optional": true },
-    "react-dom": { "optional": true }
+    "prop-types": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
   }
 }
