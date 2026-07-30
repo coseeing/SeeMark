@@ -12,7 +12,6 @@ import { fullSyntaxMarkdown } from '../html/full-syntax-fixture';
 
 const OPTIONS = {
   latexDelimiter: 'bracket',
-  asciimathDelimiter: 'graveaccent',
   documentFormat: 'inline',
   imageFiles: { 'pic-id': 'https://example.com/p.png' },
 };

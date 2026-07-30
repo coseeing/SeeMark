@@ -34,8 +34,6 @@ function extractPlainText(inlineTokens = []) {
  *   Must match the value used by the markdown renderer so that math tokens
  *   inside headings are recognised and their text is correctly extracted.
  *   Defaults to 'bracket'.
- * @param {string} [options.asciimathDelimiter] - AsciiMath delimiter style ('graveaccent', 'asciimath').
- *   Must match the value used by the markdown renderer. Defaults to 'graveaccent'.
  * @param {string} [options.nemethDelimiter] - Nemeth delimiter style ('at', 'nemeth').
  *   Must match the value used by the markdown renderer. Defaults to 'at'.
  * @returns {{ level: number, id: string, text: string }[]}
@@ -50,10 +48,8 @@ function extractPlainText(inlineTokens = []) {
 const createTableOfContents = (markdown, options = {}) => {
   const { lexer } = createMarkdownProcessor({
     enableLatex: options.enableLatex !== false,
-    enableAsciimath: options.enableAsciimath !== false,
     enableNemeth: options.enableNemeth !== false,
     latexDelimiter: options.latexDelimiter ?? 'bracket',
-    asciimathDelimiter: options.asciimathDelimiter ?? 'graveaccent',
     nemethDelimiter: options.nemethDelimiter ?? 'at',
   });
   const tokens = lexer(markdown);

@@ -1,5 +1,4 @@
 import latex2mmlFactory from '../marked-wrapper/tex-to-mml';
-import asciimath2mmlFactory from '../marked-wrapper/ascii-math-to-mml';
 import mml2svg from '../marked-wrapper/mml-to-svg';
 import { createRenderer } from './helpers';
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
@@ -22,24 +21,11 @@ const LaTeX_delimiter_dict = {
   },
 };
 
-const AsciiMath_delimiter_dict = {
-  asciimath: {
-    start: '\\\\\\a',
-    end: '\\\\\\a',
-    type: 'asciimath',
-  },
-  graveaccent: {
-    start: '`',
-    end: '`',
-    type: 'asciimath',
-  },
-};
-
 /**
- * Marked extension for math expressions (LaTeX and AsciiMath).
+ * Marked extension for LaTeX math expressions.
  *
  * This extension handles inline math rendering with support for multiple
- * delimiter styles (bracket, dollar, latex for LaTeX; graveaccent for AsciiMath).
+ * delimiter styles ('bracket', 'dollar', 'latex').
  *
  * The tokenizer includes preceding text in token.raw but stores the pure math
  * expression in token.mathraw, which is used by the position tracker for
@@ -47,46 +33,23 @@ const AsciiMath_delimiter_dict = {
  *
  * @param {Object} options - Configuration options
  * @param {string} options.latexDelimiter - LaTeX delimiter style ('bracket', 'dollar', 'latex')
- * @param {string} options.asciimathDelimiter - AsciiMath delimiter style ('graveaccent', 'asciimath')
  * @param {string} options.documentFormat - Document format for MathML display ('inline' or 'block')
  * @returns {Object} Marked extension object with math tokenizer and renderer
  */
-const markedMath = ({
-  enableLatex = true,
-  enableAsciimath = true,
-  latexDelimiter,
-  asciimathDelimiter,
-  documentFormat,
-}) => {
-  if (!enableLatex && !enableAsciimath) {
+const markedMath = ({ enableLatex = true, latexDelimiter, documentFormat }) => {
+  if (!enableLatex) {
     return { extensions: [] };
   }
 
-  const asciimath2mml = asciimath2mmlFactory({
-    htmlMathDisplay: documentFormat,
-  });
   const latex2mml = latex2mmlFactory({ htmlMathDisplay: documentFormat });
 
   const LaTeX_delimiter = LaTeX_delimiter_dict[latexDelimiter];
-  const AsciiMath_delimiter = AsciiMath_delimiter_dict[asciimathDelimiter];
 
   const latex_restring = `(?<=[^\\\\]?)${LaTeX_delimiter.start}(.*?[^\\\\])?${LaTeX_delimiter.end}`;
-  const asciimath_restring = `(?<=[^\\\\]?)${AsciiMath_delimiter.start}(.*?[^\\\\])?${AsciiMath_delimiter.end}`;
-
   const latex_start_restring = `(?<=[^\\\\]?)${LaTeX_delimiter.start}`;
-  const asciimath_start_restring = `(?<=[^\\\\]?)${AsciiMath_delimiter.start}`;
 
-  const matchPatterns = [
-    ...(enableLatex ? [latex_restring] : []),
-    ...(enableAsciimath ? [asciimath_restring] : []),
-  ];
-  const startPatterns = [
-    ...(enableLatex ? [latex_start_restring] : []),
-    ...(enableAsciimath ? [asciimath_start_restring] : []),
-  ];
-
-  const reTexMath = new RegExp(`(.*?)(${matchPatterns.join('|')})`, 's');
-  const reTexMath_start = new RegExp(startPatterns.join('|'));
+  const reTexMath = new RegExp(`(.*?)(${latex_restring})`, 's');
+  const reTexMath_start = new RegExp(latex_start_restring);
 
   return {
     extensions: [
@@ -100,18 +63,10 @@ const markedMath = ({
         tokenizer(src) {
           const match = reTexMath.exec(src);
           if (match) {
-            const math = match[3] || match[4];
-            const AsciiMath_delimiter_raw_start =
-              AsciiMath_delimiter.start.replace(/\\\\\\/g, '\\');
-            let typed;
-            if (match[2].startsWith(AsciiMath_delimiter_raw_start)) {
-              typed = 'asciimath';
-            } else {
-              typed = 'latex';
-            }
+            const math = match[3];
             return {
               type: 'math',
-              typed,
+              typed: 'latex',
               raw: match[0],
               text: match[1] || '',
               tokens: this.lexer.inlineTokens(match[1]),
@@ -122,10 +77,7 @@ const markedMath = ({
         },
         renderer: createRenderer(SUPPORTED_COMPONENT_TYPES.MATH, {
           extractMeta(token) {
-            const mathMl =
-              token.typed === 'asciimath'
-                ? asciimath2mml(token.math)
-                : latex2mml(token.math);
+            const mathMl = latex2mml(token.math);
             const svg = mml2svg(mathMl);
             return {
               math: token.math,

@@ -9,7 +9,6 @@ import SeeMark from './seemark';
 
 const OPTIONS = {
   latexDelimiter: 'bracket',
-  asciimathDelimiter: 'graveaccent',
   documentFormat: 'inline',
   imageFiles: { 'pic-id': 'https://example.com/p.png' },
 };

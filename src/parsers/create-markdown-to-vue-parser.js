@@ -7,15 +7,7 @@ import { createMarkdownParserOptions } from './options';
 // render many times. Returns an array of VNodes — call it inside a render
 // function (VNodes must be freshly created on every render).
 const createMarkdownToVueParser = ({ options, components } = {}) => {
-  // AsciiMath is off by default for the Vue entry (React/HTML default it on):
-  // its backtick delimiter turns ordinary inline code into math, and MathJax's
-  // AsciiMath shim crashes under Vite/esbuild dep pre-bundling — the bundlers
-  // most Vue apps use (see load-asciimath.cjs). Opt in with enableAsciimath:
-  // true where it works.
-  const parsedOptions = createMarkdownParserOptions({
-    enableAsciimath: false,
-    ...options,
-  });
+  const parsedOptions = createMarkdownParserOptions(options);
 
   const parseMarkdown = (markdownContent) => {
     const seemarkMarkup = markdownProcessor(markdownContent, parsedOptions);

@@ -16,24 +16,20 @@ import imageDisplayLink from './marked-extentions/image-display-link';
 import iframe from './marked-extentions/iframe';
 
 export const createMarkdownProcessor = (options = {}) => {
-  const asciimathDelimiter = options.asciimathDelimiter || 'graveaccent';
   const nemethDelimiter = options.nemethDelimiter || 'at';
 
   const enableLatex = options.enableLatex !== false;
-  const enableAsciimath = options.enableAsciimath !== false;
   const enableNemeth = options.enableNemeth !== false;
 
   return markedProcessorFactory({
     latexDelimiter: options.latexDelimiter,
-    asciimathDelimiter,
     nemethDelimiter,
     documentFormat: options.documentFormat,
     imageFiles: options.imageFiles,
     shouldBuildImageObjectURL: options.shouldBuildImageObjectURL,
     enableLatex,
-    enableAsciimath,
     extensions: [
-      ...(enableLatex || enableAsciimath ? [math] : []),
+      ...(enableLatex ? [math] : []),
       ...(enableNemeth ? [nemeth] : []),
       alert,
       heading,

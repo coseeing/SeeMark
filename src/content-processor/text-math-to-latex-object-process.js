@@ -16,31 +16,21 @@ const LaTeX_delimiter_dict = {
   },
 };
 
-const AsciiMath_delimiter_dict = {
-  asciimath: {
-    start: '\\\\\\a',
-    end: '\\\\\\a',
-    type: 'asciimath',
-  },
-  graveaccent: {
-    start: '`',
-    end: '`',
-    type: 'asciimath',
-  },
+// Backtick code spans are shielded from delimiter conversion: a `$x$` inside
+// a code span must stay literal, not get rewritten as LaTeX.
+const codeSpan_delimiter = {
+  start: '`',
+  end: '`',
 };
 
 const textMathToLatexObjectFactory =
-  ({ latexDelimiter, asciimathDelimiter }) =>
+  ({ latexDelimiter }) =>
   (input) => {
     const LaTeX_delimiter = LaTeX_delimiter_dict[latexDelimiter];
-    const AsciiMath_delimiter = AsciiMath_delimiter_dict[asciimathDelimiter];
 
     const latex_restring = `(?<=[^\\\\]?)${LaTeX_delimiter.start}(.*?[^\\\\])?${LaTeX_delimiter.end}`;
-    const asciimath_restring = `(?<=[^\\\\]?)${AsciiMath_delimiter.start}(.*?[^\\\\])?${AsciiMath_delimiter.end}`;
-    const reTexMath = new RegExp(
-      `${latex_restring}|${asciimath_restring}`,
-      'g'
-    );
+    const codespan_restring = `(?<=[^\\\\]?)${codeSpan_delimiter.start}(.*?[^\\\\])?${codeSpan_delimiter.end}`;
+    const reTexMath = new RegExp(`${latex_restring}|${codespan_restring}`, 'g');
 
     const datas = [];
     let m = null;
@@ -58,14 +48,9 @@ const textMathToLatexObjectFactory =
             data: input.slice(start, end),
           });
         }
-        // const delimiterObj = Object.values(delimiter_dict);
-        const AsciiMath_delimiter_raw_start = AsciiMath_delimiter.start.replace(
-          /\\\\\\/g,
-          '\\'
-        );
         let data, type;
-        if (m[0].startsWith(AsciiMath_delimiter_raw_start)) {
-          type = 'asciimath-content';
+        if (m[0].startsWith(codeSpan_delimiter.start)) {
+          type = 'codespan-content';
           data = m[2];
         } else {
           type = 'latex-content';

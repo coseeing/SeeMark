@@ -13,7 +13,6 @@ const latexDelimiterConvertor = (mode) => (data) => {
 
       const textMathParser = textMathToLatexObjectFactory({
         latexDelimiter,
-        asciimathDelimiter: 'graveaccent',
       });
 
       return textMathParser(line).reduce((a, b) => {
@@ -26,7 +25,7 @@ const latexDelimiterConvertor = (mode) => (data) => {
           } else {
             result = `\\(${b.data}\\)`;
           }
-        } else if (b.type === 'asciimath-content') {
+        } else if (b.type === 'codespan-content') {
           result = `\`${b.data}\``;
         } else {
           result = `${b.data}`;

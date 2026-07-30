@@ -61,7 +61,7 @@ describe('markdownProcessor', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should handle asciimath expressions with graveaccent delimiter', () => {
+  it('should render backtick content as a code span, not math', () => {
     const markdownContent = '`a+b=c`';
     const options = {
       latexDelimiter: 'bracket',
@@ -74,44 +74,11 @@ describe('markdownProcessor', () => {
     const container = createDOMFromHTML(result);
 
     const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
+    expect(mathEl).toBeNull();
 
-    expect(mathEl).toBeTruthy();
-
-    const payload = JSON.parse(
-      mathEl.getAttribute(SEE_MARK_PAYLOAD_DATA_ATTRIBUTES)
-    );
-
-    expect(payload.typed).toBe('asciimath');
-    expect(payload.math).toBe('a+b=c');
-    expect(payload.mathMl).toBeTruthy();
-    expect(payload.svg).toBeTruthy();
-  });
-
-  it('should handle asciimath expressions with asciimath delimiter', () => {
-    const markdownContent = '\\aa+b=c\\a';
-    const options = {
-      asciimathDelimiter: 'asciimath',
-      latexDelimiter: 'bracket',
-      documentFormat: 'inline',
-      imageFiles: {},
-    };
-
-    const result = markdownProcessor(markdownContent, options);
-
-    const container = createDOMFromHTML(result);
-
-    const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
-
-    expect(mathEl).toBeTruthy();
-
-    const payload = JSON.parse(
-      mathEl.getAttribute(SEE_MARK_PAYLOAD_DATA_ATTRIBUTES)
-    );
-
-    expect(payload.typed).toBe('asciimath');
-    expect(payload.math).toBe('a+b=c');
-    expect(payload.mathMl).toBeTruthy();
-    expect(payload.svg).toBeTruthy();
+    const codeEl = container.querySelector('code');
+    expect(codeEl).toBeTruthy();
+    expect(codeEl.textContent).toBe('a+b=c');
   });
 
   it('should handle nemeth braille math expressions', () => {
@@ -425,10 +392,11 @@ describe('markdownProcessor', () => {
     expect(mathEl).toBeNull();
   });
 
-  it('should not parse asciimath when enableAsciimath is false', () => {
-    const markdownContent = '`a+b=c`';
+  it('should silently ignore the removed enableAsciimath/asciimathDelimiter options', () => {
+    const markdownContent = '\\(a+b=c\\) and `a+b=c`';
     const options = {
-      enableAsciimath: false,
+      enableAsciimath: true,
+      asciimathDelimiter: 'graveaccent',
       latexDelimiter: 'bracket',
       documentFormat: 'inline',
       imageFiles: {},
@@ -439,51 +407,16 @@ describe('markdownProcessor', () => {
     const container = createDOMFromHTML(result);
 
     const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
-
-    expect(mathEl).toBeNull();
-  });
-
-  it('should still parse latex when enableAsciimath is false', () => {
-    const markdownContent = '\\(a+b=c\\)';
-    const options = {
-      enableAsciimath: false,
-      latexDelimiter: 'bracket',
-      documentFormat: 'inline',
-      imageFiles: {},
-    };
-
-    const result = markdownProcessor(markdownContent, options);
-
-    const container = createDOMFromHTML(result);
-
-    const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
-
     expect(mathEl).toBeTruthy();
 
     const payload = JSON.parse(
       mathEl.getAttribute(SEE_MARK_PAYLOAD_DATA_ATTRIBUTES)
     );
-
     expect(payload.typed).toBe('latex');
-  });
 
-  it('should not parse any math when both enableLatex and enableAsciimath are false', () => {
-    const markdownContent = '\\(a+b=c\\) `a+b=c`';
-    const options = {
-      enableLatex: false,
-      enableAsciimath: false,
-      latexDelimiter: 'bracket',
-      documentFormat: 'inline',
-      imageFiles: {},
-    };
-
-    const result = markdownProcessor(markdownContent, options);
-
-    const container = createDOMFromHTML(result);
-
-    const mathEl = getElementByType(container, SUPPORTED_COMPONENT_TYPES.MATH);
-
-    expect(mathEl).toBeNull();
+    const codeEl = container.querySelector('code');
+    expect(codeEl).toBeTruthy();
+    expect(codeEl.textContent).toBe('a+b=c');
   });
 
   it('should process image with URL as imageId', () => {
