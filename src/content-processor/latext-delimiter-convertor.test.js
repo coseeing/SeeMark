@@ -66,4 +66,20 @@ describe('latexDelimiterConvertor', () => {
       );
     });
   });
+
+  // An empty span leaves the regex's optional content group unmatched; the
+  // literal string "undefined" must never reach the output.
+  describe('empty delimiter pairs', () => {
+    it('does not emit "undefined" for an empty code span', () => {
+      expect(latexDelimiterConvertor('d2b')('a `` b')).toBe('a `` b\n');
+    });
+
+    it('does not emit "undefined" for an empty dollar pair', () => {
+      expect(latexDelimiterConvertor('d2b')('a $$ b')).toBe('a \\(\\) b\n');
+    });
+
+    it('does not emit "undefined" for an empty bracket pair', () => {
+      expect(latexDelimiterConvertor('b2d')('a \\(\\) b')).toBe('a $$ b\n');
+    });
+  });
 });

@@ -28,6 +28,11 @@ const textMathToLatexObjectFactory =
   (input) => {
     const LaTeX_delimiter = LaTeX_delimiter_dict[latexDelimiter];
 
+    // Known limitation: a backtick is matched one at a time, so a code span
+    // opened with a run of several backticks (the markdown way to embed a
+    // literal backtick) is mis-segmented and its contents are not shielded.
+    // Fixing that means matching an equal-length closing run, which changes
+    // how existing content converts — tracked separately.
     const latex_restring = `(?<=[^\\\\]?)${LaTeX_delimiter.start}(.*?[^\\\\])?${LaTeX_delimiter.end}`;
     const codespan_restring = `(?<=[^\\\\]?)${codeSpan_delimiter.start}(.*?[^\\\\])?${codeSpan_delimiter.end}`;
     const reTexMath = new RegExp(`${latex_restring}|${codespan_restring}`, 'g');
@@ -48,13 +53,16 @@ const textMathToLatexObjectFactory =
             data: input.slice(start, end),
           });
         }
+        // The content group is optional, so an empty span ("$$", "``") leaves
+        // it undefined; default to '' or it reaches the caller's template
+        // literal and gets emitted as the string "undefined".
         let data, type;
         if (m[0].startsWith(codeSpan_delimiter.start)) {
           type = 'codespan-content';
-          data = m[2];
+          data = m[2] ?? '';
         } else {
           type = 'latex-content';
-          data = m[1];
+          data = m[1] ?? '';
         }
 
         datas.push({
