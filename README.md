@@ -103,6 +103,139 @@ interface Position {
 }
 ```
 
+## Vue
+
+The `@coseeing/see-mark/vue` entry renders the same markdown pipeline to Vue 3
+VNodes. Vue 3.2+ is required (declared as an optional peer dependency — React
+users are unaffected).
+
+### Usage
+
+```js
+import { createApp, defineComponent, h, ref } from 'vue';
+import { SeeMark, createMarkdownToVueParser } from '@coseeing/see-mark/vue';
+
+// Option 1: the <SeeMark> component (idiomatic for most apps)
+const App = defineComponent({
+  setup() {
+    const source = ref('# Hello \\(a^2 + b^2 = c^2\\)');
+    return () => h(SeeMark, { source: source.value, options: OPTIONS });
+  },
+});
+
+// Option 2: the parser factory (mirrors createMarkdownToReactParser)
+const parse = createMarkdownToVueParser({ options: OPTIONS });
+const MyDoc = defineComponent({
+  props: { markdown: String },
+  setup(props) {
+    return () => h('article', parse(props.markdown));
+  },
+});
+```
+
+`options` accepts the same table as the React parser (see above), with one
+changed default: **`enableAsciimath` defaults to `false`** for the Vue entry
+(React/HTML default it to `true`). AsciiMath's backtick delimiter otherwise
+turns ordinary inline code into math, and its MathJax shim can't run under
+Vite/esbuild (see Bundler compatibility). Pass `enableAsciimath: true` to opt
+in where it works.
+`createMarkdownToVueParser` returns a function producing a fresh VNode array —
+call it inside a render function. `<SeeMark>` re-parses when `source` changes
+and rebuilds its parser when `options`/`components` change; pass stable object
+references for `options`/`components` (an inline literal re-creates the parser
+on every parent render).
+
+### Custom components
+
+A custom component is an ordinary Vue 3 component (functional, `defineComponent`
+or SFC). Payload arrives as props; children arrive through the **default slot**.
+Declare the payload props you use (plus `position`) — undeclared payload keys
+would otherwise fall through onto the root element as DOM attributes.
+
+```js
+const Alert = defineComponent({
+  props: {
+    variant: { type: String, default: '' },
+    title: { type: String, default: '' },
+    internalLinkId: { type: String, default: '' },
+    position: { type: Object, default: undefined },
+  },
+  setup(props, { slots }) {
+    return () =>
+      h('div', { class: `alert alert-${props.variant}` }, [
+        props.title ? h('strong', null, props.title) : null,
+        slots.default?.(),
+      ]);
+  },
+});
+
+h(SeeMark, { source, options: OPTIONS, components: { alert: Alert } });
+```
+
+Errors thrown by a custom component surface at mount/render time and follow
+Vue's normal error path (`app.config.errorHandler`), not at parse time.
+
+### SSR
+
+The Vue adapter is SSR-safe (`@vue/server-renderer` / Nuxt): MathJax runs in
+the parsing stage, not in components. One caveat: MathJax assigns
+globally-incrementing element IDs, so a server parse and a client parse of the
+same document can disagree on `MJX-*` attribute values, which may surface as
+attribute-level hydration warnings in dev builds. Structure and content
+hydrate correctly.
+
+### Bundler compatibility
+
+Like the React and HTML entries, `/vue` ships a CommonJS bundle. Bundlers
+(Vite, webpack) pre-bundle it to ESM automatically and share your app's single
+`vue` copy; no extra config is needed for a normal registry install. Two
+notes:
+
+- **AsciiMath under ESM-strict bundlers (Vite, esbuild) is unavailable.**
+  MathJax implements AsciiMath through a MathJax-v2 legacy shim that cannot
+  run under strict mode, and Vite's dependency pre-bundling converts even
+  CommonJS deps to always-strict ESM. SeeMark loads it lazily, so importing
+  SeeMark and rendering LaTeX/Nemeth work everywhere; the Vue entry also
+  **defaults `enableAsciimath` to `false`**, so ordinary backtick content
+  (inline code) renders as code spans out of the box. Explicitly setting
+  `enableAsciimath: true` under such a bundler throws a descriptive error when
+  it hits AsciiMath. Server-side (Node/webpack) AsciiMath is unaffected — a
+  plain esbuild *build* (not Vite's dep pre-bundle) does not trip it either.
+- **Linked-package development**: if you consume SeeMark via `npm link` /
+  `file:` during development, add `optimizeDeps.include: ['@coseeing/see-mark/vue']`
+  and `resolve.dedupe: ['vue']` to your Vite config — Vite skips CJS→ESM
+  pre-bundling for symlinked packages, and the linked repo carries its own
+  `node_modules/vue` (two Vue runtimes on one page silently break reactivity
+  across the component boundary). Registry installs need neither. In the
+  browser you may also need a `global` → `globalThis` define, since
+  mathjax-full references the Node.js `global` at module scope.
+
+## Security / trust model
+
+SeeMark adapters are **not sanitizers**. Raw HTML in the markdown source
+passes through to the output — including `javascript:` URLs — matching the
+React adapter's behavior. If you render untrusted markdown, sanitize it at the
+source, or sanitize the HTML adapter's string output with DOMPurify via its
+`sanitize` hook.
+
+To keep the Vue adapter no more dangerous than the React one, raw passthrough
+neutralizes three Vue-specific execution vectors — none of which affect your
+own custom components (`@click`/`v-on`, `ref`, `key` on components all work
+normally):
+
+- **string `on*` attributes** (e.g. `onclick="..."`) are dropped. Vue would
+  otherwise attach them as live inline handlers; React ignores string
+  handlers.
+- **raw `<script>` elements are dropped.** A `<script>` built as a VNode is
+  not parser-inserted and executes on mount; React's script elements are
+  inert and the HTML adapter's string output is inert under `innerHTML`.
+- **the Vue-reserved props `ref`, `key`, `ref_for`, `ref_key`** are stripped,
+  so untrusted markup cannot register on the host component's `$refs` or
+  corrupt keyed diffing.
+
+Everything else — including `javascript:` URLs and `<style>` — still passes
+through verbatim; sanitize untrusted input at the source.
+
 ## Table of Contents
 
 ### Usage

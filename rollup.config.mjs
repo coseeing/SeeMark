@@ -7,6 +7,11 @@ const sharedPlugins = [
     requireReturnsDefault: (id) => {
       return id === 'html-react-parser';
     },
+    extensions: ['.js', '.cjs'],
+    // Leave load-asciimath.cjs's requires call-time instead of hoisting them
+    // to top-level imports — MathJax's AsciiMath shim must not be evaluated
+    // when the bundle is merely imported (see load-asciimath.cjs).
+    ignore: (id) => id.startsWith('mathjax-full/'),
   }),
   nodeResolve(),
   babel({
@@ -35,6 +40,18 @@ export default [
     output: [
       {
         file: 'lib/see-mark-html.cjs',
+        format: 'cjs',
+        sourcemap: true,
+      },
+    ],
+    plugins: sharedPlugins,
+    external: [/node_modules/],
+  },
+  {
+    input: 'src/entries/vue.js',
+    output: [
+      {
+        file: 'lib/see-mark-vue.cjs',
         format: 'cjs',
         sourcemap: true,
       },
