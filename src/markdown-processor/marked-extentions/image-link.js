@@ -1,6 +1,7 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 
 import { createRenderer } from './helpers';
+import { resolveImageSource } from './image-source';
 
 /**
  * Matches image with link syntax: ![alt](imageId)((target))
@@ -26,21 +27,6 @@ import { createRenderer } from './helpers';
 // Regex exported for test
 export const IMAGE_LINK_REGEXP = /^!\[([^\]]*)\]\(([^)]+)\)\(\(([^)]+)\)\)/;
 
-const createBlobUrlManager = () => {
-  const cache = new Map();
-
-  return (href, imageFile) => {
-    if (cache.has(href)) {
-      return cache.get(href);
-    }
-    const blobUrl = URL.createObjectURL(imageFile);
-    cache.set(href, blobUrl);
-    return blobUrl;
-  };
-};
-
-const blobUrlManager = createBlobUrlManager();
-
 const markedImageLink = ({ imageFiles, shouldBuildImageObjectURL }) => {
   return {
     extensions: [
@@ -59,13 +45,10 @@ const markedImageLink = ({ imageFiles, shouldBuildImageObjectURL }) => {
             const target = match[3];
 
             try {
-              const isUrl = /^https?:/i.test(imageId);
-              const imageFile = isUrl ? null : imageFiles[imageId];
-              const source = isUrl
-                ? imageId
-                : shouldBuildImageObjectURL
-                  ? blobUrlManager(imageId, imageFile)
-                  : imageFile;
+              const source = resolveImageSource(imageId, {
+                imageFiles,
+                shouldBuildImageObjectURL,
+              });
 
               return {
                 type: SUPPORTED_COMPONENT_TYPES.IMAGE_LINK,

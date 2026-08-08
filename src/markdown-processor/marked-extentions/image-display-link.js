@@ -1,6 +1,7 @@
 import { SUPPORTED_COMPONENT_TYPES } from '../../shared/supported-components';
 
 import { createRenderer } from './helpers';
+import { resolveImageSource } from './image-source';
 
 /**
  * Matches image with display text and link syntax: ![alt][[display]](imageId)((target))
@@ -31,21 +32,6 @@ import { createRenderer } from './helpers';
 export const IMAGE_DISPLAY_LINK_REGEXP =
   /^!\[([^\]]*)\]\[\[([^\]]+)\]\]\(([^)]+)\)\(\(([^)]+)\)\)/;
 
-const createBlobUrlManager = () => {
-  const cache = new Map();
-
-  return (href, imageFile) => {
-    if (cache.has(href)) {
-      return cache.get(href);
-    }
-    const blobUrl = URL.createObjectURL(imageFile);
-    cache.set(href, blobUrl);
-    return blobUrl;
-  };
-};
-
-const blobUrlManager = createBlobUrlManager();
-
 const markedImageDisplayLink = ({ imageFiles, shouldBuildImageObjectURL }) => {
   return {
     extensions: [
@@ -65,13 +51,10 @@ const markedImageDisplayLink = ({ imageFiles, shouldBuildImageObjectURL }) => {
             const target = match[4];
 
             try {
-              const isUrl = /^https?:/i.test(imageId);
-              const imageFile = isUrl ? null : imageFiles[imageId];
-              const source = isUrl
-                ? imageId
-                : shouldBuildImageObjectURL
-                  ? blobUrlManager(imageId, imageFile)
-                  : imageFile;
+              const source = resolveImageSource(imageId, {
+                imageFiles,
+                shouldBuildImageObjectURL,
+              });
 
               return {
                 type: SUPPORTED_COMPONENT_TYPES.IMAGE_DISPLAY_LINK,
