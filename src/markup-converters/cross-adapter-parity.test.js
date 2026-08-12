@@ -34,13 +34,7 @@ import createMarkdownToVueParser from '../parsers/create-markdown-to-vue-parser'
 // enforces the union). Adding component #16 without a parity case fails CI.
 
 const OPTIONS = {
-  // Explicit — the Vue entry defaults enableAsciimath to false, but parity is
-  // about "same options in, same DOM out"; force it on so all three adapters
-  // are compared under one configuration (the default divergence is covered by
-  // create-markdown-to-vue-parser.test.js).
-  enableAsciimath: true,
   latexDelimiter: 'bracket',
-  asciimathDelimiter: 'graveaccent',
   documentFormat: 'inline',
   imageFiles: { 'pic-id': 'https://example.com/p.png' },
 };
@@ -139,7 +133,7 @@ describe('cross-adapter parity (React vs HTML vs Vue)', () => {
     ['youtube', '@![Vid](https://www.youtube.com/embed/abc123)', ['youtube']],
     ['codepen', '@![Pen](https://codepen.io/user/embed/xyz)', ['codepen']],
     ['latex math', 'eq \\(a^2 + b^2 = c^2\\) done', ['math']],
-    ['asciimath', 'frac `a/b` done', ['math']],
+    ['code span', 'frac `a/b` done', []],
     [
       'mixed paragraph',
       '# Title\n\nSee [ref]<r1> and ![img](pic-id).',

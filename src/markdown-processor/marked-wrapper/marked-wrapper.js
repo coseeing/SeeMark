@@ -21,9 +21,7 @@ const stripSeemarkAttrs = (token) => {
 
 const markedProcessorFactory = ({
   enableLatex = true,
-  enableAsciimath = true,
   latexDelimiter,
-  asciimathDelimiter,
   nemethDelimiter,
   documentFormat,
   imageFiles = {},
@@ -51,9 +49,7 @@ const markedProcessorFactory = ({
     marked.use(
       extension({
         enableLatex,
-        enableAsciimath,
         latexDelimiter,
-        asciimathDelimiter,
         nemethDelimiter,
         documentFormat,
         imageFiles,

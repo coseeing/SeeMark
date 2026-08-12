@@ -41,10 +41,8 @@ const content = seeMarkReactParse(markdown);
 | Option Name               | Type    | Default Value  | Description                                                        |
 | ------------------------- | ------- | -------------- | ------------------------------------------------------------------ |
 | enableLatex               | boolean | true           | When false, LaTeX expressions are not parsed as math.              |
-| enableAsciimath           | boolean | true           | When false, AsciiMath expressions are not parsed as math.          |
 | enableNemeth              | boolean | true           | When false, the Nemeth braille math extension is disabled.         |
 | latexDelimiter            | string  | 'bracket'      | The delimiter for LaTeX expressions. Options: 'bracket' (`\(...\)`), 'dollar' (`$...$`), 'latex' (`\l...\l`). |
-| asciimathDelimiter        | string  | 'graveaccent'  | The delimiter for AsciiMath expressions. Options: 'graveaccent' (`` `...` ``), 'asciimath' (`\a...\a`). |
 | nemethDelimiter           | string  | 'at'           | The delimiter for Nemeth braille expressions. Options: 'at' (`@...@`), 'nemeth' (`\n...\n`). |
 | documentFormat            | string  | 'inline'       | The format of the document. Options: 'inline', 'block'.            |
 | imageFiles                | object  | { [ID]: File } | A map of image IDs to File objects for image rendering.            |
@@ -133,12 +131,7 @@ const MyDoc = defineComponent({
 });
 ```
 
-`options` accepts the same table as the React parser (see above), with one
-changed default: **`enableAsciimath` defaults to `false`** for the Vue entry
-(React/HTML default it to `true`). AsciiMath's backtick delimiter otherwise
-turns ordinary inline code into math, and its MathJax shim can't run under
-Vite/esbuild (see Bundler compatibility). Pass `enableAsciimath: true` to opt
-in where it works.
+`options` accepts the same table as the React parser (see above).
 `createMarkdownToVueParser` returns a function producing a fresh VNode array —
 call it inside a render function. `<SeeMark>` re-parses when `source` changes
 and rebuilds its parser when `options`/`components` change; pass stable object
@@ -188,19 +181,9 @@ hydrate correctly.
 
 Like the React and HTML entries, `/vue` ships a CommonJS bundle. Bundlers
 (Vite, webpack) pre-bundle it to ESM automatically and share your app's single
-`vue` copy; no extra config is needed for a normal registry install. Two
-notes:
+`vue` copy; no extra config is needed for a normal registry install. One
+note:
 
-- **AsciiMath under ESM-strict bundlers (Vite, esbuild) is unavailable.**
-  MathJax implements AsciiMath through a MathJax-v2 legacy shim that cannot
-  run under strict mode, and Vite's dependency pre-bundling converts even
-  CommonJS deps to always-strict ESM. SeeMark loads it lazily, so importing
-  SeeMark and rendering LaTeX/Nemeth work everywhere; the Vue entry also
-  **defaults `enableAsciimath` to `false`**, so ordinary backtick content
-  (inline code) renders as code spans out of the box. Explicitly setting
-  `enableAsciimath: true` under such a bundler throws a descriptive error when
-  it hits AsciiMath. Server-side (Node/webpack) AsciiMath is unaffected — a
-  plain esbuild *build* (not Vite's dep pre-bundle) does not trip it either.
 - **Linked-package development**: if you consume SeeMark via `npm link` /
   `file:` during development, add `optimizeDeps.include: ['@coseeing/see-mark/vue']`
   and `resolve.dedupe: ['vue']` to your Vite config — Vite skips CJS→ESM
@@ -266,10 +249,8 @@ const toc = createTableOfContents(markdown);
 | Option Name    | Type    | Default Value | Description                                                                                 |
 | -------------- | ------- | ------------- | ------------------------------------------------------------------------------------------- |
 | enableLatex    | boolean | true          | When false, LaTeX expressions are not parsed as math.                                       |
-| enableAsciimath | boolean | true         | When false, AsciiMath expressions are not parsed as math.                                   |
 | enableNemeth   | boolean | true          | When false, the Nemeth braille math extension is disabled.                                  |
 | latexDelimiter | string  | 'bracket'     | The delimiter for LaTeX expressions. Options: 'bracket' (`\(...\)`), 'dollar' (`$...$`), 'latex' (`\l...\l`). Must match the renderer. |
-| asciimathDelimiter | string  | 'graveaccent' | The delimiter for AsciiMath expressions. Options: 'graveaccent' (`` `...` ``), 'asciimath' (`\a...\a`). Must match the renderer. |
 | nemethDelimiter | string  | 'at'          | The delimiter for Nemeth braille expressions. Options: 'at' (`@...@`), 'nemeth' (`\n...\n`). Must match the renderer. |
 
 ### Return value
@@ -281,3 +262,17 @@ Each entry in the returned array has the following shape:
 | level | number | Heading level (1–6)                                          |
 | id    | string | URL-friendly slug, unique within the document               |
 | text  | string | Plain heading text with inline markdown syntax stripped      |
+
+## Migration
+
+### AsciiMath removal
+
+AsciiMath support has been removed (it relied on a MathJax-v2 legacy shim that
+cannot run under strict mode, making it unusable with ESM-strict bundlers like
+Vite). What changed:
+
+- Backtick content (`` `...` ``) always renders as a standard markdown code
+  span; it is never parsed as math.
+- The `enableAsciimath` and `asciimathDelimiter` options are gone. Passing
+  them is harmless — they are silently ignored.
+- LaTeX and Nemeth math are unaffected.

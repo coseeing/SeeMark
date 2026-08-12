@@ -7,11 +7,7 @@ const sharedPlugins = [
     requireReturnsDefault: (id) => {
       return id === 'html-react-parser';
     },
-    extensions: ['.js', '.cjs'],
-    // Leave load-asciimath.cjs's requires call-time instead of hoisting them
-    // to top-level imports — MathJax's AsciiMath shim must not be evaluated
-    // when the bundle is merely imported (see load-asciimath.cjs).
-    ignore: (id) => id.startsWith('mathjax-full/'),
+    extensions: ['.js'],
   }),
   nodeResolve(),
   babel({

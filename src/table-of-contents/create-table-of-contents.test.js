@@ -78,9 +78,7 @@ describe('createTableOfContents', () => {
   });
 
   it('should strip code span markdown from text field', () => {
-    const result = createTableOfContents('## Use `npm install`', {
-      asciimathDelimiter: 'asciimath', // backtick code spans conflict with the graveaccent AsciiMath delimiter
-    });
+    const result = createTableOfContents('## Use `npm install`');
 
     expect(result[0].text).toBe('Use npm install');
     expect(result[0].id).toBe('use-npm-install');
